@@ -1,16 +1,177 @@
 # MCP Job Search Node
 
-This project implements the server described in `mcp-jobsearch-node.md`. It scrapes LinkedIn job listings, filters them using an LLM, stores matches, and exposes MCP-compatible HTTP endpoints.
+This project implements a LinkedIn job scraper with persistent job indexing, deep scanning, and filtering capabilities. It scrapes LinkedIn job listings, performs detailed analysis of each job against a candidate profile using OpenAI, stores matches in a persistent job index, and exposes MCP-compatible HTTP endpoints.
 
 ## Setup
 
-1. Copy `.env.example` to `.env` and fill in your credentials.
+1. Copy `.env.example` to `.env` and fill in your credentials:
+   ```
+   LINKEDIN_EMAIL=your-linkedin-email@example.com
+   LINKEDIN_PASSWORD=your-linkedin-password
+   LINKEDIN_SEARCH_URL=https://www.linkedin.com/jobs/search/?keywords=your%20search%20terms
+   OPENAI_API_KEY=your-openai-api-key
+   OPENAI_MODEL=gpt-4o
+   DEEP_SCAN_CONCURRENCY=2
+   SMTP_HOST=smtp.example.com
+   SMTP_PORT=587
+   SMTP_USER=your-smtp-username
+   SMTP_PASS=your-smtp-password
+   DIGEST_FROM=jobs@example.com
+   DIGEST_TO=you@example.com
+   TIMEZONE=Australia/Sydney
+   ```
+
 2. Install dependencies with `npm install` (already done if cloned with `node_modules`).
-3. Start the server with `npm start`.
+3. Create a `profile.txt` file in the project root with your professional profile/resume.
+4. Start the server with `npm start`.
 
-## Endpoints
+## Core Features
 
-- `GET /latest_matches` – Returns the most recent JSON array of job matches.
-- `POST /send_digest` – Body `{ "email": "you@example.com" }`. Scrapes, filters and emails the matches.
+### Persistent Job Index
+- **Storage**: All scraped jobs are stored in a persistent JSON file (`data/job-index.json`).
+- **Deduplication**: Jobs are uniquely identified by LinkedIn job ID to prevent duplicate scanning.
+- **Profile Change Detection**: System detects when your profile changes and triggers rescans.
+- **Metadata**: Each job entry includes scan status, match score, and detailed information.
 
-The daily cron task runs at 07:00 AEST and emails the digest automatically.
+### Deep Scanning
+- **Detailed Extraction**: Visits each job posting to extract comprehensive details (description, requirements, salary).
+- **AI Analysis**: Uses OpenAI to analyze job details against your profile.
+- **Match Scoring**: Generates a match score (0-1) and explanation for each job.
+- **Concurrency Control**: Configurable number of concurrent scans to balance speed and resource usage.
+
+### API Endpoints
+
+#### Job Scanning and Retrieval
+- `GET /scan` – Triggers a LinkedIn scrape and deep scan without sending an email digest.
+  - **What it does**: Scrapes LinkedIn job listings, adds them to the job index, and performs deep scanning on new jobs.
+  - **When to use**: When you want to update your job index without sending an email.
+
+- `POST /rescan` – Forces a deep rescan of all jobs in the index.
+  - **What it does**: Re-evaluates all jobs against your current profile, even previously scanned ones.
+  - **When to use**: After updating your profile or when you want fresh match scores.
+
+- `GET /jobs` – Returns all jobs from the index with powerful filtering options:
+  - **Parameters**:
+    - `minScore=0.7` – Only return jobs with match score >= specified value (0-1)
+    - `scanned=true|false` – Filter by scan status (completed or pending scan)
+    - `limit=10` – Limit the number of results returned
+  - **When to use**: For browsing or filtering the job index in custom ways.
+
+- `GET /job/:id` – Returns detailed information for a specific job by ID.
+  - **What it does**: Retrieves complete job details including description, requirements, match score, etc.
+  - **When to use**: When you need to examine a specific job in detail.
+
+#### Email Digests
+- `GET /latest_matches` – Returns job matches with score >= 0.7 from the job index.
+  - **What it does**: Retrieves jobs that match your profile well (70% match or better).
+  - **When to use**: To quickly check your best matches without scanning.
+
+- `POST /send_digest` – Body `{ "email": "you@example.com" }`. Scrapes, deep scans, and emails the matches.
+  - **What it does**: Complete workflow - scrapes LinkedIn, updates index, deep scans jobs, and sends email digest.
+  - **When to use**: When you want to receive an email with your latest job matches.
+
+## Workflow Examples
+
+### Initial Setup Workflow
+1. Configure your `.env` file with LinkedIn credentials and search URL
+2. Create your `profile.txt` with your resume/professional profile
+3. Start the server: `npm start`
+4. Trigger initial scan: `npm run test:scan`
+5. Wait for deep scanning to complete
+6. View matched jobs: `npm run test:jobs:matched`
+
+### Daily Usage Workflow
+1. Server automatically runs daily scan at 07:00 AEST and emails digest
+2. Alternatively, manually trigger scan: `npm run test:scan`
+3. Check latest matches: `npm run test:latest`
+4. View specific job details: `ID=job_id npm run test:job`
+
+### Profile Update Workflow
+1. Update your `profile.txt` file with new skills/experience
+2. Force rescan of all jobs: `npm run test:rescan`
+3. View updated matches: `npm run test:jobs:matched`
+
+## Testing Commands
+
+The project includes comprehensive test commands for both real and mock data scenarios:
+
+### Unit Tests
+```bash
+# Run all unit tests (using test fixtures, not live scraping)
+npm run test:unit
+```
+
+### Endpoint Testing with Real Data
+```bash
+# Start the server first
+npm start
+
+# Trigger LinkedIn scraping and deep scanning (no email)
+npm run test:scan
+
+# Force deep rescan of all jobs in the index
+npm run test:rescan
+
+# Get all jobs from the index (formatted JSON output)
+npm run test:jobs:all
+
+# Get jobs with match score >= 0.7
+npm run test:jobs:matched
+
+# Get unscanned jobs only
+npm run test:jobs:unscanned
+
+# Get limited number of jobs (5)
+npm run test:jobs:limit
+
+# Get details for a specific job (set ID env var first)
+# Example: ID=4247412997 npm run test:job
+npm run test:job
+
+# Get latest matches (score >= 0.7)
+npm run test:latest
+
+# Trigger full workflow and send digest email
+# (update email in package.json first)
+npm run test:digest
+```
+
+### Endpoint Testing with Mock Data
+```bash
+# Test scan endpoint with mock data
+npm run test:scan:mock
+
+# Test rescan endpoint with mock data
+npm run test:rescan:mock
+
+# Test digest email with mock data
+npm run test:digest:mock
+```
+
+## How Mock Data Works
+
+Mock data testing uses pre-defined fixtures instead of live LinkedIn scraping:
+
+1. **Mock LinkedIn Search Results**: `test/fixtures/linkedin-search-results.json`
+   - Contains sample job listings as if scraped from LinkedIn
+   - Used by the `/scan` endpoint when `MOCK_DATA=true`
+
+2. **Mock Job Details**: `test/fixtures/linkedin-job-details.json`
+   - Contains detailed job information as if deep-scanned
+   - Used by the `/rescan` endpoint when `MOCK_DATA=true`
+
+To use mock data, the test commands with `:mock` suffix set the `MOCK_DATA=true` environment variable, which instructs the server to use fixture data instead of performing actual LinkedIn scraping or OpenAI analysis.
+
+## Automated Tasks
+
+The daily cron task runs at 07:00 AEST and automatically:
+1. Scrapes LinkedIn for new job listings
+2. Updates the job index with new jobs
+3. Deep scans any new or unscanned jobs
+4. Sends an email digest to the configured recipient
+
+## Data Storage
+
+- **Job Index**: `data/job-index.json` - Persistent storage of all jobs with metadata
+- **Daily Matches**: `data/YYYY-MM-DD.json` - Daily snapshots of matched jobs (legacy format)
+- **Screenshots**: `screenshots/` - Job posting screenshots captured during deep scanning (for debugging)

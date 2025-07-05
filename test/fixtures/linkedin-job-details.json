@@ -1,0 +1,67 @@
+[
+  {
+    "id": "4247412997",
+    "title": "Junior Full Stack Engineer",
+    "company": "Sleek",
+    "location": "Sydney, Australia",
+    "link": "https://au.linkedin.com/jobs/view/junior-full-stack-engineer-at-sleek-4247412997",
+    "posted": "2025-06-09",
+    "description": "We are looking for a Junior Full Stack Engineer to join our growing team at Sleek. The ideal candidate will have experience with JavaScript, React, and Node.js.\n\nResponsibilities:\n• Develop and maintain web applications using React and Node.js\n• Collaborate with the design team to implement user interfaces\n• Write clean, maintainable, and efficient code\n• Participate in code reviews and contribute to team discussions\n\nRequirements:\n• 1-2 years of experience in web development\n• Proficiency in JavaScript, HTML, and CSS\n• Experience with React and Node.js\n• Basic understanding of RESTful APIs\n• Familiarity with Git version control\n• Good problem-solving skills and attention to detail\n\nNice to have:\n• Experience with TypeScript\n• Knowledge of database systems (MongoDB, PostgreSQL)\n• Understanding of CI/CD pipelines\n\nSalary range: $70,000 - $90,000 per year",
+    "requirements": [
+      "1-2 years of experience in web development",
+      "Proficiency in JavaScript, HTML, and CSS",
+      "Experience with React and Node.js",
+      "Basic understanding of RESTful APIs",
+      "Familiarity with Git version control",
+      "Good problem-solving skills and attention to detail"
+    ],
+    "salary": "$70,000 - $90,000 per year",
+    "scanned": true,
+    "scanDate": "2025-07-05T12:00:00+10:00",
+    "matchScore": 0.85,
+    "matchReason": "This job is a good match for the candidate's profile as they have experience with JavaScript, React, and Node.js. The junior level position aligns with their 2 years of experience."
+  },
+  {
+    "id": "4247415436",
+    "title": "Senior Full Stack Engineer",
+    "company": "Sleek",
+    "location": "Sydney, Australia",
+    "link": "https://au.linkedin.com/jobs/view/senior-full-stack-engineer-at-sleek-4247415436",
+    "posted": "2025-05-15",
+    "description": "Sleek is seeking a Senior Full Stack Engineer to lead development efforts on our core product. The ideal candidate will have extensive experience with modern web technologies and a track record of delivering high-quality software.\n\nResponsibilities:\n• Lead the development of complex features and architectural improvements\n• Mentor junior developers and provide technical guidance\n• Collaborate with product managers to define requirements\n• Ensure code quality through testing and code reviews\n\nRequirements:\n• 5+ years of experience in full stack development\n• Expert knowledge of JavaScript, TypeScript, React, and Node.js\n• Experience with database design and optimization\n• Strong understanding of system architecture and design patterns\n• Experience with cloud services (AWS, Azure, or GCP)\n• Excellent communication and leadership skills\n\nSalary range: $120,000 - $150,000 per year",
+    "requirements": [
+      "5+ years of experience in full stack development",
+      "Expert knowledge of JavaScript, TypeScript, React, and Node.js",
+      "Experience with database design and optimization",
+      "Strong understanding of system architecture and design patterns",
+      "Experience with cloud services (AWS, Azure, or GCP)",
+      "Excellent communication and leadership skills"
+    ],
+    "salary": "$120,000 - $150,000 per year",
+    "scanned": true,
+    "scanDate": "2025-07-05T12:00:00+10:00",
+    "matchScore": 0.6,
+    "matchReason": "While the candidate has experience with the required technologies (JavaScript, React, Node.js), the position requires 5+ years of experience and the candidate only has 2 years. The senior level is not a good match for their current experience level."
+  },
+  {
+    "id": "4253499537",
+    "title": "Senior Full Stack Engineer",
+    "company": "HealthEngine",
+    "location": "Melbourne, Australia",
+    "link": "https://au.linkedin.com/jobs/view/senior-full-stack-engineer-at-healthengine-4253499537",
+    "posted": "2025-06-20",
+    "description": "HealthEngine is looking for a Senior Full Stack Engineer to join our team and help build innovative healthcare solutions. You will work on challenging problems in the healthcare space and make a real impact on people's lives.\n\nResponsibilities:\n• Design and implement new features for our healthcare platform\n• Work with cross-functional teams to deliver high-quality solutions\n• Optimize application performance and scalability\n• Contribute to technical decision-making and architecture discussions\n\nRequirements:\n• 4+ years of experience in full stack development\n• Strong proficiency in JavaScript, React, and Node.js\n• Experience with healthcare systems or HIPAA compliance is a plus\n• Knowledge of database systems and data modeling\n• Familiarity with cloud infrastructure and deployment\n\nSalary: Competitive compensation package",
+    "requirements": [
+      "4+ years of experience in full stack development",
+      "Strong proficiency in JavaScript, React, and Node.js",
+      "Experience with healthcare systems or HIPAA compliance is a plus",
+      "Knowledge of database systems and data modeling",
+      "Familiarity with cloud infrastructure and deployment"
+    ],
+    "salary": "Competitive compensation package",
+    "scanned": true,
+    "scanDate": "2025-07-05T12:00:00+10:00",
+    "matchScore": 0.65,
+    "matchReason": "The candidate has experience with the required technologies but falls short of the 4+ years of experience requirement. However, their strong skills in React and Node.js make them a potential fit with some growth opportunity."
+  }
+]
