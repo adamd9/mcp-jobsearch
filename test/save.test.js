@@ -1,5 +1,4 @@
-import { test } from 'node:test';
-import assert from 'node:assert';
+import { test, expect } from '@jest/globals';
 import fs from 'fs/promises';
 import { saveMatches } from '../src/save.js';
 
@@ -15,6 +14,6 @@ async function cleanup(path) {
 test('saveMatches writes JSON file and returns path', async () => {
   const path = await saveMatches(sample);
   const data = JSON.parse(await fs.readFile(path, 'utf8'));
-  assert.deepStrictEqual(data, sample);
+  expect(data).toEqual(sample);
   await cleanup(path);
 });

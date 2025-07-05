@@ -4,9 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "node --test",
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
     "start": "node src/server.js",
-    "test:unit": "node --test test/*.test.js",
+    "test:unit": "node --experimental-vm-modules node_modules/jest/bin/jest.js test/*.test.js",
     "test:scan": "curl -X GET http://localhost:8000/scan",
     "test:scan:mock": "MOCK_DATA=true curl -X GET http://localhost:8000/scan",
     "test:rescan": "curl -X POST http://localhost:8000/rescan",
@@ -30,9 +30,11 @@
     "fastify": "^5.4.0",
     "fastify-cron": "^1.4.0",
     "fastify-mcp": "^2.0.3",
-    "jest": "^30.0.4",
     "nodemailer": "^7.0.4",
     "openai": "^5.8.2",
     "playwright": "^1.53.2"
+  },
+  "devDependencies": {
+    "jest": "^30.0.4"
   }
 }

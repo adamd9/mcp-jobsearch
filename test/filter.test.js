@@ -1,5 +1,4 @@
-import { test } from 'node:test';
-import assert from 'node:assert';
+import { test, expect } from '@jest/globals';
 import { filterJobs } from '../src/filter.js';
 
 const mockAI = {
@@ -14,5 +13,5 @@ const mockAI = {
 
 test('filterJobs returns parsed matches from AI response', async () => {
   const result = await filterJobs([], 'profile text', mockAI);
-  assert.deepStrictEqual(result, [{ title: 'Hit' }]);
+  expect(result).toEqual([{ title: 'Hit' }]);
 });

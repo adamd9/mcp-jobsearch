@@ -20,7 +20,7 @@ This project implements a LinkedIn job scraper with persistent job indexing, dee
    TIMEZONE=Australia/Sydney
    ```
 
-2. Install dependencies with `npm install` (already done if cloned with `node_modules`).
+2. Run `./setup.sh` to install npm packages and Playwright's browser dependencies.
 3. Create a `plan.json` file (or use the `/plan` endpoint) describing your profile, search terms and deep scan criteria.
 4. Start the server with `npm start`.
 
