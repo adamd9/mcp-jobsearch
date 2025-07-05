@@ -33,6 +33,44 @@ This project implements a LinkedIn job scraper with persistent job indexing, dee
 - **Profile Change Detection**: System detects when your profile changes and triggers rescans.
 - **Metadata**: Each job entry includes scan status, match score, and detailed information.
 
+#### Job Index Structure
+Each job in `data/job-index.json` keeps the basic listing data along with the
+results of the most recent deep scan:
+
+```json
+{
+  "id": "123456",
+  "title": "Full Stack Engineer",
+  "company": "ExampleCo",
+  "link": "https://linkedin.com/jobs/view/123456",
+  "posted": "2025-06-09",
+  "scanned": true,
+  "scanDate": "2025-07-05T12:00:00+10:00",
+  "matchScore": 0.85,
+  "matchReason": "Good skills overlap with your profile",
+  "description": "Full job description...",
+  "requirements": ["Skill 1", "Skill 2"],
+  "location": "Sydney, Australia",
+  "salary": "$100k - $120k"
+}
+```
+
+After each deep scan the `matchScore` and `matchReason` are updated so you can
+see why a job was scored the way it was. When a job is rescanned (for example
+after updating your profile) you may choose to store multiple scores in an array
+so previous results are preserved:
+
+```json
+{
+  "scanHistory": [
+    { "date": "2025-07-05T12:00:00+10:00", "score": 0.85,
+      "summary": "Good skills overlap with your profile" },
+    { "date": "2025-07-10T12:00:00+10:00", "score": 0.88,
+      "summary": "Profile updated with React experience" }
+  ]
+}
+```
+
 ### Deep Scanning
 - **Detailed Extraction**: Visits each job posting to extract comprehensive details (description, requirements, salary).
 - **AI Analysis**: Uses OpenAI to analyze job details against your profile.
@@ -206,6 +244,7 @@ The daily cron task runs at 07:00 AEST and automatically:
 
 ## Data Storage
 
-- **Job Index**: `data/job-index.json` - Persistent storage of all jobs with metadata
+- **Job Index**: `data/job-index.json` - Persistent storage of all jobs with metadata.
+See [Job Index Structure](#job-index-structure) for the fields stored with each job. The file also records `lastScanDate` and a `profileHash` so the system can detect when a rescan is needed.
 - **Daily Matches**: `data/YYYY-MM-DD.json` - Daily snapshots of matched jobs (legacy format)
 - **Screenshots**: `screenshots/` - Job posting screenshots captured during deep scanning (for debugging)
