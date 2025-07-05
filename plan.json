@@ -1,0 +1,5 @@
+{
+  "profile": "Senior full-stack engineer with TS, Node, AWS, big-data experience",
+  "searchTerms": ["full stack engineer", "node aws"],
+  "scanPrompt": "Match roles that emphasise TypeScript and cloud architecture"
+}

@@ -2,11 +2,11 @@ import Fastify from "fastify";
 import { fastifyMCPSSE } from "fastify-mcp";
 import fastifyCron from "fastify-cron";
 import { scrapeLinkedIn } from "./scrape.js";
-import { filterJobs } from "./filter.js";
 import { sendDigest } from "./mailer.js";
 import { getJobIndex, getMatchedJobs, getJobsToScan, updateJobIndex } from "./storage.js";
 import { deepScanJobs } from "./deep-scan.js";
 import { loadConfig } from "./config.js";
+import { getPlan, savePlan, createPlanFromDescription } from "./plan.js";
 import fs from "fs/promises";
 import path from "path";
 
@@ -24,14 +24,48 @@ const start = async () => {
     cronTime: "0 7 * * *",        // 07:00 every day
     start: true,
     onTick: async () => {
-      const raw     = await scrapeLinkedIn(process.env.LINKEDIN_SEARCH_URL);
-      const matches = await filterJobs(raw, await fs.readFile("profile.txt", "utf8"));
+      const plan = await getPlan();
+      for (const term of plan.searchTerms) {
+        const url = `https://www.linkedin.com/jobs/search/?keywords=${encodeURIComponent(term)}`;
+        await scrapeLinkedIn(url, { deepScan: true, profileText: plan.profile, scanPrompt: plan.scanPrompt });
+      }
+      const matches = await getMatchedJobs(0.7);
       await saveMatches(matches);
       await sendDigest(process.env.DIGEST_TO, matches);
     },
     timeZone: process.env.TIMEZONE
   }]
 });
+
+  // Plan endpoints
+  app.get('/plan', async () => {
+    return getPlan();
+  });
+
+  app.post('/plan', async (req, reply) => {
+    try {
+      const description = req.body.description;
+      if (!description) {
+        reply.status(400).send({ error: 'description required' });
+        return;
+      }
+      const plan = await createPlanFromDescription(description);
+      reply.send(plan);
+    } catch (error) {
+      reply.status(500).send({ error: error.message });
+    }
+  });
+
+  app.put('/plan', async (req, reply) => {
+    try {
+      const current = await getPlan();
+      const updated = { ...current, ...req.body };
+      await savePlan(updated);
+      reply.send(updated);
+    } catch (error) {
+      reply.status(500).send({ error: error.message });
+    }
+  });
 
 // MCP resource - Get latest matches from job index
 app.get("/latest_matches", async () => {
@@ -97,8 +131,12 @@ app.post("/send_digest", async (req, reply) => {
       return;
     }
     
-    // Use real scraping and deep scan
-    const { jobs } = await scrapeLinkedIn(config.linkedinSearchUrl, { deepScan: true });
+    // Use real scraping and deep scan based on plan
+    const plan = await getPlan();
+    for (const term of plan.searchTerms) {
+      const url = `https://www.linkedin.com/jobs/search/?keywords=${encodeURIComponent(term)}`;
+      await scrapeLinkedIn(url, { deepScan: true, profileText: plan.profile, scanPrompt: plan.scanPrompt });
+    }
     
     // Get matched jobs from index
     const matches = await getMatchedJobs(0.7);
@@ -137,10 +175,16 @@ app.get("/scan", async (req, reply) => {
       return;
     }
     
-    // Use real scraping
-    const { jobs } = await scrapeLinkedIn(config.linkedinSearchUrl);
-    
-    reply.send({ scanned: jobs.length });
+    // Use real scraping based on plan
+    const plan = await getPlan();
+    let total = 0;
+    for (const term of plan.searchTerms) {
+      const url = `https://www.linkedin.com/jobs/search/?keywords=${encodeURIComponent(term)}`;
+      const { jobs } = await scrapeLinkedIn(url);
+      total += jobs.length;
+    }
+
+    reply.send({ scanned: total });
   } catch (error) {
     console.error(`Error scanning: ${error.message}`);
     reply.status(500).send({ error: error.message });
@@ -181,13 +225,12 @@ app.post("/rescan", async (req, reply) => {
     
     // Get all jobs from index
     const jobs = await getJobIndex();
-    
-    // Get profile text
-    const profilePath = path.join(process.cwd(), 'profile.txt');
-    const profile = await fs.readFile(profilePath, 'utf8');
-    
+
+    const plan = await getPlan();
+    const profile = plan.profile || await fs.readFile(path.join(process.cwd(), 'profile.txt'), 'utf8');
+
     // Force rescan all jobs
-    const results = await deepScanJobs(jobs, profile, config.deepScanConcurrency);
+    const results = await deepScanJobs(jobs, profile, config.deepScanConcurrency, plan.scanPrompt);
     
     reply.send({ rescanned: results.length });
   } catch (error) {

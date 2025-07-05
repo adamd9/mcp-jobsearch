@@ -6,24 +6,17 @@
   "scripts": {
     "test": "node --test",
     "start": "node src/server.js",
-    
     "test:unit": "node --test test/*.test.js",
-    
     "test:scan": "curl -X GET http://localhost:8000/scan",
     "test:scan:mock": "MOCK_DATA=true curl -X GET http://localhost:8000/scan",
-    
     "test:rescan": "curl -X POST http://localhost:8000/rescan",
     "test:rescan:mock": "MOCK_DATA=true curl -X POST http://localhost:8000/rescan",
-    
     "test:jobs:all": "curl -X GET http://localhost:8000/jobs | json_pp",
     "test:jobs:matched": "curl -X GET 'http://localhost:8000/jobs?minScore=0.7' | json_pp",
     "test:jobs:unscanned": "curl -X GET 'http://localhost:8000/jobs?scanned=false' | json_pp",
     "test:jobs:limit": "curl -X GET 'http://localhost:8000/jobs?limit=5' | json_pp",
-    
     "test:job": "curl -X GET http://localhost:8000/job/$ID | json_pp",
-    
     "test:latest": "curl -X GET http://localhost:8000/latest_matches | json_pp",
-    
     "test:digest": "curl -X POST -H 'Content-Type: application/json' -d '{\"email\":\"your-email@example.com\"}' http://localhost:8000/send_digest",
     "test:digest:mock": "MOCK_DATA=true curl -X POST -H 'Content-Type: application/json' -d '{\"email\":\"your-email@example.com\"}' http://localhost:8000/send_digest"
   },
@@ -37,6 +30,7 @@
     "fastify": "^5.4.0",
     "fastify-cron": "^1.4.0",
     "fastify-mcp": "^2.0.3",
+    "jest": "^30.0.4",
     "nodemailer": "^7.0.4",
     "openai": "^5.8.2",
     "playwright": "^1.53.2"

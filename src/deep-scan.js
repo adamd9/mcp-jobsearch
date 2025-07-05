@@ -18,7 +18,7 @@ const openai = new OpenAI({
  * @param {string} profile - User profile text
  * @returns {Promise<Object>} - Scan results
  */
-export async function deepScanJob(jobUrl, jobId, profile) {
+export async function deepScanJob(jobUrl, jobId, profile, scanPrompt = '') {
   console.log(`Deep scanning job: ${jobUrl}`);
   
   const browser = await chromium.launch({ 
@@ -56,7 +56,7 @@ export async function deepScanJob(jobUrl, jobId, profile) {
     const jobDetails = await extractJobDetails(page);
     
     // Match job to profile
-    const matchResults = await matchJobToProfile(jobDetails, profile);
+    const matchResults = await matchJobToProfile(jobDetails, profile, scanPrompt);
     
     // Save screenshot for debugging if needed
     await page.screenshot({ path: `data/job-screenshots/${jobId}.png` });
@@ -235,7 +235,7 @@ function extractSalary(description) {
  * @param {string} profile - User profile
  * @returns {Promise<Object>} - Match results
  */
-async function matchJobToProfile(jobDetails, profile) {
+async function matchJobToProfile(jobDetails, profile, scanPrompt = '') {
   try {
     // Prepare job details for OpenAI
     const { title, company, location, description, requirements, salary } = jobDetails;
@@ -248,7 +248,7 @@ async function matchJobToProfile(jobDetails, profile) {
     // Prepare the prompt for OpenAI
     const prompt = `
 You are a job matching expert. Analyze the job details below and compare them to the candidate's profile.
-Provide a match score from 0 to 1 (where 1 is a perfect match) and explain your reasoning.
+${scanPrompt ? `Additional criteria:\n${scanPrompt}\n` : ''}Provide a match score from 0 to 1 (where 1 is a perfect match) and explain your reasoning.
 
 JOB DETAILS:
 Title: ${title || 'N/A'}
@@ -319,7 +319,7 @@ Provide your analysis in the following JSON format:
  * @param {number} concurrency - Number of concurrent scans
  * @returns {Promise<Array>} - Scan results
  */
-export async function deepScanJobs(jobs, profile, concurrency = 2) {
+export async function deepScanJobs(jobs, profile, concurrency = 2, scanPrompt = '') {
   console.log(`Deep scanning ${jobs.length} jobs with concurrency ${concurrency}`);
   
   // Ensure screenshots directory exists
@@ -335,8 +335,8 @@ export async function deepScanJobs(jobs, profile, concurrency = 2) {
   const results = [];
   for (let i = 0; i < jobs.length; i += concurrency) {
     const batch = jobs.slice(i, i + concurrency);
-    const batchPromises = batch.map(job => 
-      deepScanJob(job.link, job.id, profile)
+    const batchPromises = batch.map(job =>
+      deepScanJob(job.link, job.id, profile, scanPrompt)
     );
     
     const batchResults = await Promise.all(batchPromises);
