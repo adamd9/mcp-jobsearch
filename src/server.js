@@ -6,15 +6,18 @@ import { filterJobs } from "./filter.js";
 import { sendDigest } from "./mailer.js";
 import { getJobIndex, getMatchedJobs, getJobsToScan, updateJobIndex } from "./storage.js";
 import { deepScanJobs } from "./deep-scan.js";
+import { loadConfig } from "./config.js";
 import fs from "fs/promises";
 import path from "path";
-import dotenv from "dotenv";
-dotenv.config();
 
 const app = Fastify();
 
 // Use top-level await inside an async IIFE
 const start = async () => {
+  // Load configuration from file and environment variables
+  const config = await loadConfig();
+  console.log(`Starting server with mockMode: ${config.mockMode}`);
+  
   await app.register(fastifyMCPSSE);
   await app.register(fastifyCron, {
   jobs: [{
@@ -49,8 +52,11 @@ app.get("/latest_matches", async () => {
 app.post("/send_digest", async (req, reply) => {
   const to = req.body.email;
   try {
+    // Get current configuration
+    const config = await loadConfig();
+    
     // Check if using mock data
-    if (process.env.MOCK_DATA === 'true') {
+    if (config.mockMode) {
       console.log('Using mock data for digest');
       
       // Load mock search results
@@ -92,7 +98,7 @@ app.post("/send_digest", async (req, reply) => {
     }
     
     // Use real scraping and deep scan
-    const { jobs } = await scrapeLinkedIn(process.env.LINKEDIN_SEARCH_URL, { deepScan: true });
+    const { jobs } = await scrapeLinkedIn(config.linkedinSearchUrl, { deepScan: true });
     
     // Get matched jobs from index
     const matches = await getMatchedJobs(0.7);
@@ -101,7 +107,7 @@ app.post("/send_digest", async (req, reply) => {
     await saveMatches(matches);
     
     // Send digest email
-    await sendDigest(to, matches);
+    await sendDigest(to || config.digestTo, matches);
     
     reply.send({ sent: matches.length });
   } catch (error) {
@@ -110,29 +116,33 @@ app.post("/send_digest", async (req, reply) => {
   }
 });
 
-// MCP tool - Trigger scan without sending digest
+// MCP tool - Scan without sending digest
 app.get("/scan", async (req, reply) => {
   try {
-    console.log('Starting scan without sending digest');
+    // Get current configuration
+    const config = await loadConfig();
     
     // Check if using mock data
-    if (process.env.MOCK_DATA === 'true') {
+    if (config.mockMode) {
       console.log('Using mock data for scan');
+      
+      // Load mock data
       const mockDataPath = path.join(process.cwd(), 'test/fixtures/linkedin-search-results.json');
       const mockJobs = JSON.parse(await fs.readFile(mockDataPath, 'utf8'));
       
       // Update job index with mock data
-      const result = await updateJobIndex(mockJobs);
+      await updateJobIndex(mockJobs);
       
       reply.send({ scanned: mockJobs.length, mock: true });
       return;
     }
     
     // Use real scraping
-    const { jobs } = await scrapeLinkedIn(process.env.LINKEDIN_SEARCH_URL, { deepScan: true });
+    const { jobs } = await scrapeLinkedIn(config.linkedinSearchUrl);
+    
     reply.send({ scanned: jobs.length });
   } catch (error) {
-    console.error(`Error during scan: ${error.message}`);
+    console.error(`Error scanning: ${error.message}`);
     reply.status(500).send({ error: error.message });
   }
 });
@@ -140,17 +150,11 @@ app.get("/scan", async (req, reply) => {
 // MCP tool - Force rescan of all jobs in the index
 app.post("/rescan", async (req, reply) => {
   try {
-    console.log('Starting forced rescan of all jobs');
-    
-    // Get profile text
-    const profilePath = path.join(process.cwd(), 'profile.txt');
-    const profile = await fs.readFile(profilePath, 'utf8');
-    
-    // Get all jobs from index
-    const jobIndex = await getJobIndex();
+    // Get current configuration
+    const config = await loadConfig();
     
     // Check if using mock data
-    if (process.env.MOCK_DATA === 'true') {
+    if (config.mockMode) {
       console.log('Using mock data for rescan');
       
       // Load mock job details
@@ -175,13 +179,19 @@ app.post("/rescan", async (req, reply) => {
       return;
     }
     
-    // Use real deep scanning
-    const concurrency = parseInt(process.env.DEEP_SCAN_CONCURRENCY || '2');
-    await deepScanJobs(jobIndex.jobs, profile, concurrency);
+    // Get all jobs from index
+    const jobs = await getJobIndex();
     
-    reply.send({ rescanned: jobIndex.jobs.length });
+    // Get profile text
+    const profilePath = path.join(process.cwd(), 'profile.txt');
+    const profile = await fs.readFile(profilePath, 'utf8');
+    
+    // Force rescan all jobs
+    const results = await deepScanJobs(jobs, profile, config.deepScanConcurrency);
+    
+    reply.send({ rescanned: results.length });
   } catch (error) {
-    console.error(`Error during rescan: ${error.message}`);
+    console.error(`Error rescanning: ${error.message}`);
     reply.status(500).send({ error: error.message });
   }
 });

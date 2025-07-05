@@ -148,19 +148,53 @@ npm run test:rescan:mock
 npm run test:digest:mock
 ```
 
+## Configuration
+
+The application uses a configuration system that combines settings from:
+
+1. Default values in code
+2. `config.json` file in the project root
+3. Environment variables (which take precedence)
+
+### Configuration File
+
+You can edit the `config.json` file to set persistent configuration options:
+
+```json
+{
+  "mockMode": false,
+  "openaiModel": "gpt-4o",
+  "deepScanConcurrency": 2,
+  "timezone": "Australia/Sydney",
+  "jobIndexPath": "data/job-index.json"
+}
+```
+
+### Key Configuration Options
+
+- **mockMode**: When set to `true`, the system uses mock data instead of real scraping/scanning
+- **openaiModel**: The OpenAI model to use for job matching
+- **deepScanConcurrency**: Number of concurrent deep scans to perform
+- **timezone**: Timezone for cron scheduling
+- **jobIndexPath**: Path to the job index file
+
 ## How Mock Data Works
 
 Mock data testing uses pre-defined fixtures instead of live LinkedIn scraping:
 
 1. **Mock LinkedIn Search Results**: `test/fixtures/linkedin-search-results.json`
    - Contains sample job listings as if scraped from LinkedIn
-   - Used by the `/scan` endpoint when `MOCK_DATA=true`
+   - Used by the `/scan` endpoint when mock mode is enabled
 
 2. **Mock Job Details**: `test/fixtures/linkedin-job-details.json`
    - Contains detailed job information as if deep-scanned
-   - Used by the `/rescan` endpoint when `MOCK_DATA=true`
+   - Used by the `/rescan` endpoint when mock mode is enabled
 
-To use mock data, the test commands with `:mock` suffix set the `MOCK_DATA=true` environment variable, which instructs the server to use fixture data instead of performing actual LinkedIn scraping or OpenAI analysis.
+To enable mock mode, you can either:
+
+1. Set `mockMode: true` in `config.json` (persistent setting)
+2. Set the `MOCK_DATA=true` environment variable (temporary override)
+3. Use the test commands with `:mock` suffix which set the environment variable automatically
 
 ## Automated Tasks
 
