@@ -5,7 +5,7 @@ import { updateJobIndex, generateJobId, getJobsToScan, hasProfileChanged } from 
 import { deepScanJobs } from './deep-scan.js';
 
 export async function scrapeLinkedIn(url, options = {}) {
-  const { keepOpen = false, debug = false, deepScan = false, forceRescan = false } = options;
+  const { keepOpen = false, debug = false, deepScan = false, forceRescan = false, profileText = null, scanPrompt = '' } = options;
   console.log(`Starting LinkedIn scrape for URL: ${url}`);
   console.log(`Debug mode: ${debug ? 'ON' : 'OFF'}, Keep browser open: ${keepOpen ? 'YES' : 'NO'}`);
   
@@ -207,8 +207,11 @@ export async function scrapeLinkedIn(url, options = {}) {
   if (deepScan) {
     try {
       // Check if profile has changed
-      const profilePath = path.join(process.cwd(), 'profile.txt');
-      const profile = await fs.readFile(profilePath, 'utf8');
+      let profile = profileText;
+      if (!profile) {
+        const profilePath = path.join(process.cwd(), 'profile.txt');
+        profile = await fs.readFile(profilePath, 'utf8');
+      }
       
       // Get jobs that need scanning
       const profileChanged = await hasProfileChanged(profile);
@@ -224,7 +227,7 @@ export async function scrapeLinkedIn(url, options = {}) {
         
         // Deep scan the jobs
         const concurrency = parseInt(process.env.DEEP_SCAN_CONCURRENCY || '2');
-        await deepScanJobs(jobsToScan, profile, concurrency);
+        await deepScanJobs(jobsToScan, profile, concurrency, scanPrompt);
         
         console.log('Deep scanning complete');
       } else {

@@ -51,9 +51,8 @@ export async function loadConfig() {
     deepScanConcurrency: parseInt(process.env.DEEP_SCAN_CONCURRENCY) || fileConfig.deepScanConcurrency || defaultConfig.deepScanConcurrency,
     timezone: process.env.TIMEZONE || fileConfig.timezone || defaultConfig.timezone,
     jobIndexPath: process.env.JOB_INDEX_PATH || fileConfig.jobIndexPath || defaultConfig.jobIndexPath,
-    
+
     // Required environment variables (no defaults)
-    linkedinSearchUrl: process.env.LINKEDIN_SEARCH_URL,
     digestTo: process.env.DIGEST_TO,
   };
   

@@ -9,8 +9,11 @@ Create a **Node 18+** project that exposes an MCP‑compliant HTTP server which
 
 | Method | Path | Purpose |
 |--------|------|---------|
+| `GET`  | `/plan` | Retrieve the current plan. |
+| `POST` | `/plan` | Generate a plan from a natural language description. |
+| `PUT`  | `/plan` | Update the existing plan fields. |
 | `GET`  | `/latest_matches` | Return the JSON array from today’s file (or the most recent one). |
-| `POST` | `/send_digest` | Body param `{ "email": "you@example.com" }` → run a fresh scrape+filter, then email the matches as an HTML list. |
+| `POST` | `/send_digest` | Body param `{ "email": "you@example.com" }` → run a full scrape and email the matches. |
 
 ---
 
@@ -42,7 +45,6 @@ touch .env README.md
 ```env
 LINKEDIN_EMAIL=…
 LINKEDIN_PASSWORD=…
-LINKEDIN_SEARCH_URL="https://www.linkedin.com/jobs/search/?keywords=Your+Query&location=Australia"
 OPENAI_API_KEY=…
 SMTP_HOST=smtp.gmail.com
 SMTP_PORT=465
@@ -50,6 +52,7 @@ SMTP_USER=…
 SMTP_PASS=…
 DIGEST_TO=you@example.com
 TIMEZONE=Australia/Sydney
+# plan.json defines search terms and scan prompt
 ```
 
 ---
@@ -151,9 +154,9 @@ import Fastify from "fastify";
 import mcp from "fastify-mcp";
 import cron from "fastify-cron";
 import { scrapeLinkedIn } from "./scrape.js";
-import { filterJobs }     from "./filter.js";
 import { saveMatches }    from "./save.js";
 import { sendDigest }     from "./mailer.js";
+import { getPlan }        from "./plan.js";
 import fs from "fs/promises";
 import dotenv from "dotenv";
 dotenv.config();
@@ -165,8 +168,12 @@ await app.register(cron, {
     cronTime: "0 7 * * *",        // 07:00 every day
     start: true,
     onTick: async () => {
-      const raw     = await scrapeLinkedIn(process.env.LINKEDIN_SEARCH_URL);
-      const matches = await filterJobs(raw, await fs.readFile("profile.txt", "utf8"));
+      const plan = await getPlan();
+      for (const term of plan.searchTerms) {
+        const url = `https://www.linkedin.com/jobs/search/?keywords=${encodeURIComponent(term)}`;
+        await scrapeLinkedIn(url, { deepScan: true, profileText: plan.profile, scanPrompt: plan.scanPrompt });
+      }
+      const matches = await getMatchedJobs(0.7);
       await saveMatches(matches);
       await sendDigest(process.env.DIGEST_TO, matches);
     },
@@ -183,9 +190,13 @@ app.get("/latest_matches", async () => {
 
 // MCP tool
 app.post("/send_digest", async (req, reply) => {
-  const to      = req.body.email;
-  const raw     = await scrapeLinkedIn(process.env.LINKEDIN_SEARCH_URL);
-  const matches = await filterJobs(raw, await fs.readFile("profile.txt", "utf8"));
+  const to   = req.body.email;
+  const plan = await getPlan();
+  for (const term of plan.searchTerms) {
+    const url = `https://www.linkedin.com/jobs/search/?keywords=${encodeURIComponent(term)}`;
+    await scrapeLinkedIn(url, { deepScan: true, profileText: plan.profile, scanPrompt: plan.scanPrompt });
+  }
+  const matches = await getMatchedJobs(0.7);
   await saveMatches(matches);
   await sendDigest(to, matches);
   reply.send({ sent: matches.length });
@@ -199,7 +210,9 @@ app.listen({ port: 8000, host: "0.0.0.0" });
 ## 4 · Run Locally
 
 ```bash
-echo "Senior full‑stack engineer with TS, Node, AWS, big‑data experience" > profile.txt
+cat > plan.json <<EOF
+{ "profile": "Senior full-stack engineer", "searchTerms": ["node", "typescript"], "scanPrompt": "Focus on serverless roles" }
+EOF
 node src/server.js
 # Server up at http://localhost:8000
 # Cron will auto‑email daily digest at 07:00 AEST
@@ -216,8 +229,11 @@ node src/server.js
 
 ## 6 · Using MCP Tools
 
-* **GET** `/latest_matches` → JSON array  
-* **POST** `/send_digest` with body `{ "email": "me@me.com" }` → `{ "sent": N }`  
+* **GET** `/plan` → current plan
+* **POST** `/plan` with body `{ "description": "..." }` → create plan
+* **PUT** `/plan` → update plan
+* **GET** `/latest_matches` → JSON array
+* **POST** `/send_digest` with body `{ "email": "me@me.com" }` → `{ "sent": N }`
 
 Any MCP‑aware LLM or workflow (LangGraph, AutoGen, etc.) can now invoke those endpoints as tools.
 

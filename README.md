@@ -8,7 +8,6 @@ This project implements a LinkedIn job scraper with persistent job indexing, dee
    ```
    LINKEDIN_EMAIL=your-linkedin-email@example.com
    LINKEDIN_PASSWORD=your-linkedin-password
-   LINKEDIN_SEARCH_URL=https://www.linkedin.com/jobs/search/?keywords=your%20search%20terms
    OPENAI_API_KEY=your-openai-api-key
    OPENAI_MODEL=gpt-4o
    DEEP_SCAN_CONCURRENCY=2
@@ -22,10 +21,11 @@ This project implements a LinkedIn job scraper with persistent job indexing, dee
    ```
 
 2. Install dependencies with `npm install` (already done if cloned with `node_modules`).
-3. Create a `profile.txt` file in the project root with your professional profile/resume.
+3. Create a `plan.json` file (or use the `/plan` endpoint) describing your profile, search terms and deep scan criteria.
 4. Start the server with `npm start`.
 
 ## Core Features
+- **Plan Driven Search**: Define your profile, search terms and scan prompt in `plan.json` or via the `/plan` API.
 
 ### Persistent Job Index
 - **Storage**: All scraped jobs are stored in a persistent JSON file (`data/job-index.json`).
@@ -79,6 +79,11 @@ so previous results are preserved:
 
 ### API Endpoints
 
+#### Plan Management
+- `GET /plan` – Retrieve the current plan.
+- `POST /plan` – Body `{ "description": "..." }` to generate a plan from text using OpenAI.
+- `PUT /plan` – Update fields of the existing plan (`profile`, `searchTerms`, `scanPrompt`).
+
 #### Job Scanning and Retrieval
 - `GET /scan` – Triggers a LinkedIn scrape and deep scan without sending an email digest.
   - **What it does**: Scrapes LinkedIn job listings, adds them to the job index, and performs deep scanning on new jobs.
@@ -111,8 +116,8 @@ so previous results are preserved:
 ## Workflow Examples
 
 ### Initial Setup Workflow
-1. Configure your `.env` file with LinkedIn credentials and search URL
-2. Create your `profile.txt` with your resume/professional profile
+1. Configure your `.env` file with LinkedIn credentials
+2. Create your `plan.json` (or POST to `/plan`) with profile and search terms
 3. Start the server: `npm start`
 4. Trigger initial scan: `npm run test:scan`
 5. Wait for deep scanning to complete
@@ -125,7 +130,7 @@ so previous results are preserved:
 4. View specific job details: `ID=job_id npm run test:job`
 
 ### Profile Update Workflow
-1. Update your `profile.txt` file with new skills/experience
+1. Update your `plan.json` (or use `PUT /plan`) with new skills or search terms
 2. Force rescan of all jobs: `npm run test:rescan`
 3. View updated matches: `npm run test:jobs:matched`
 
@@ -248,3 +253,4 @@ The daily cron task runs at 07:00 AEST and automatically:
 See [Job Index Structure](#job-index-structure) for the fields stored with each job. The file also records `lastScanDate` and a `profileHash` so the system can detect when a rescan is needed.
 - **Daily Matches**: `data/YYYY-MM-DD.json` - Daily snapshots of matched jobs (legacy format)
 - **Screenshots**: `screenshots/` - Job posting screenshots captured during deep scanning (for debugging)
+- **Plan**: `plan.json` - Defines profile text, search terms and deep scan prompt.
