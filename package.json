@@ -30,6 +30,7 @@
     "fastify": "^5.4.0",
     "fastify-cron": "^1.4.0",
     "fastify-mcp": "^2.0.3",
+    "zod": "^3.24.1",
     "nodemailer": "^7.0.4",
     "openai": "^5.8.2",
     "playwright": "^1.53.2"

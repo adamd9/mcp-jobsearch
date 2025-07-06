@@ -1,5 +1,5 @@
 import Fastify from "fastify";
-import { fastifyMCPSSE } from "fastify-mcp";
+import { streamableHttp } from "fastify-mcp";
 import fastifyCron from "fastify-cron";
 import { scrapeLinkedIn } from "./scrape.js";
 import { sendDigest } from "./mailer.js";
@@ -7,6 +7,7 @@ import { getJobIndex, getMatchedJobs, getJobsToScan, updateJobIndex } from "./st
 import { deepScanJobs } from "./deep-scan.js";
 import { loadConfig } from "./config.js";
 import { getPlan, savePlan, createPlanFromDescription } from "./plan.js";
+import { createServer as createMcpServer } from "./mcp-server.js";
 import fs from "fs/promises";
 import path from "path";
 
@@ -18,7 +19,11 @@ const start = async () => {
   const config = await loadConfig();
   console.log(`Starting server with mockMode: ${config.mockMode}`);
   
-  await app.register(fastifyMCPSSE);
+  await app.register(streamableHttp, {
+    stateful: false,
+    mcpEndpoint: "/mcp",
+    createServer: createMcpServer,
+  });
   await app.register(fastifyCron, {
   jobs: [{
     cronTime: "0 7 * * *",        // 07:00 every day
