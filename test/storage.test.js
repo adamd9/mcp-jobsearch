@@ -220,4 +220,28 @@ describe('Job Index Storage', () => {
     expect(result[0].id).toBe('123456');
     expect(result[1].id).toBe('345678');
   });
+
+  test('getJobIndexStats returns summary information', async () => {
+    const mockJobIndex = {
+      jobs: [
+        { id: '1', scanned: true, matchScore: 0.8 },
+        { id: '2', scanned: false },
+        { id: '3', scanned: true, matchScore: 0.5 }
+      ],
+      lastScanDate: '2025-07-05T12:00:00+10:00',
+      profileHash: 'abc123'
+    };
+
+    jest.spyOn(fs, 'readFile').mockResolvedValue(JSON.stringify(mockJobIndex));
+
+    const stats = await storage.getJobIndexStats(0.7);
+
+    expect(stats).toEqual({
+      totalJobs: 3,
+      scannedJobs: 2,
+      unscannedJobs: 1,
+      matchedJobs: 1,
+      lastScanDate: '2025-07-05T12:00:00+10:00'
+    });
+  });
 });

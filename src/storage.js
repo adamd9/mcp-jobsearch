@@ -209,9 +209,34 @@ export async function hasProfileChanged(profileText) {
  */
 export async function getMatchedJobs(minScore = 0.7) {
   const jobIndex = await getJobIndex();
-  return jobIndex.jobs.filter(job => 
-    job.scanned && 
-    job.matchScore !== null && 
+  return jobIndex.jobs.filter(job =>
+    job.scanned &&
+    job.matchScore !== null &&
     job.matchScore >= minScore
   );
+}
+
+/**
+ * Get summary statistics about the job index
+ * @param {number} minScore - Minimum score used to count matched jobs
+ * @returns {Promise<Object>} - Stats object
+ */
+export async function getJobIndexStats(minScore = 0.7) {
+  const jobIndex = await getJobIndex();
+  const totalJobs = jobIndex.jobs.length;
+  const scannedJobs = jobIndex.jobs.filter(j => j.scanned).length;
+  const unscannedJobs = totalJobs - scannedJobs;
+  const matchedJobs = jobIndex.jobs.filter(j =>
+    j.scanned &&
+    j.matchScore !== null &&
+    j.matchScore >= minScore
+  ).length;
+
+  return {
+    totalJobs,
+    scannedJobs,
+    unscannedJobs,
+    matchedJobs,
+    lastScanDate: jobIndex.lastScanDate
+  };
 }

@@ -3,7 +3,7 @@ import { fastifyMCPSSE } from "fastify-mcp";
 import fastifyCron from "fastify-cron";
 import { scrapeLinkedIn } from "./scrape.js";
 import { sendDigest } from "./mailer.js";
-import { getJobIndex, getMatchedJobs, getJobsToScan, updateJobIndex } from "./storage.js";
+import { getJobIndex, getMatchedJobs, getJobsToScan, updateJobIndex, getJobIndexStats } from "./storage.js";
 import { deepScanJobs } from "./deep-scan.js";
 import { loadConfig } from "./config.js";
 import { getPlan, savePlan, createPlanFromDescription } from "./plan.js";
@@ -11,6 +11,7 @@ import fs from "fs/promises";
 import path from "path";
 
 const app = Fastify();
+let scanInProgress = false;
 
 // Use top-level await inside an async IIFE
 const start = async () => {
@@ -24,14 +25,19 @@ const start = async () => {
     cronTime: "0 7 * * *",        // 07:00 every day
     start: true,
     onTick: async () => {
-      const plan = await getPlan();
-      for (const term of plan.searchTerms) {
-        const url = `https://www.linkedin.com/jobs/search/?keywords=${encodeURIComponent(term)}`;
-        await scrapeLinkedIn(url, { deepScan: true, profileText: plan.profile, scanPrompt: plan.scanPrompt });
+      scanInProgress = true;
+      try {
+        const plan = await getPlan();
+        for (const term of plan.searchTerms) {
+          const url = `https://www.linkedin.com/jobs/search/?keywords=${encodeURIComponent(term)}`;
+          await scrapeLinkedIn(url, { deepScan: true, profileText: plan.profile, scanPrompt: plan.scanPrompt });
+        }
+        const matches = await getMatchedJobs(0.7);
+        await saveMatches(matches);
+        await sendDigest(process.env.DIGEST_TO, matches);
+      } finally {
+        scanInProgress = false;
       }
-      const matches = await getMatchedJobs(0.7);
-      await saveMatches(matches);
-      await sendDigest(process.env.DIGEST_TO, matches);
     },
     timeZone: process.env.TIMEZONE
   }]
@@ -67,6 +73,17 @@ const start = async () => {
     }
   });
 
+  // Status endpoint
+  app.get('/status', async () => {
+    const plan = await getPlan();
+    const stats = await getJobIndexStats();
+    return {
+      scanning: scanInProgress,
+      plan,
+      jobIndex: stats
+    };
+  });
+
 // MCP resource - Get latest matches from job index
 app.get("/latest_matches", async () => {
   try {
@@ -86,6 +103,7 @@ app.get("/latest_matches", async () => {
 app.post("/send_digest", async (req, reply) => {
   const to = req.body.email;
   try {
+    scanInProgress = true;
     // Get current configuration
     const config = await loadConfig();
     
@@ -151,12 +169,15 @@ app.post("/send_digest", async (req, reply) => {
   } catch (error) {
     console.error(`Error sending digest: ${error.message}`);
     reply.status(500).send({ error: error.message });
+  } finally {
+    scanInProgress = false;
   }
 });
 
 // MCP tool - Scan without sending digest
 app.get("/scan", async (req, reply) => {
   try {
+    scanInProgress = true;
     // Get current configuration
     const config = await loadConfig();
     
@@ -188,12 +209,15 @@ app.get("/scan", async (req, reply) => {
   } catch (error) {
     console.error(`Error scanning: ${error.message}`);
     reply.status(500).send({ error: error.message });
+  } finally {
+    scanInProgress = false;
   }
 });
 
 // MCP tool - Force rescan of all jobs in the index
 app.post("/rescan", async (req, reply) => {
   try {
+    scanInProgress = true;
     // Get current configuration
     const config = await loadConfig();
     
@@ -236,6 +260,8 @@ app.post("/rescan", async (req, reply) => {
   } catch (error) {
     console.error(`Error rescanning: ${error.message}`);
     reply.status(500).send({ error: error.message });
+  } finally {
+    scanInProgress = false;
   }
 });
 
