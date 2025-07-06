@@ -10,6 +10,7 @@ const defaultConfig = {
   mockMode: false,
   openaiModel: 'gpt-4o',
   deepScanConcurrency: 2,
+  deepScanLimit: 50,
   timezone: 'Australia/Sydney',
   jobIndexPath: path.join(process.cwd(), 'data', 'job-index.json'),
   // Audit logging configuration
@@ -55,6 +56,7 @@ export async function loadConfig() {
     
     openaiModel: process.env.OPENAI_MODEL || fileConfig.openaiModel || defaultConfig.openaiModel,
     deepScanConcurrency: parseInt(process.env.DEEP_SCAN_CONCURRENCY) || fileConfig.deepScanConcurrency || defaultConfig.deepScanConcurrency,
+    deepScanLimit: parseInt(process.env.DEEP_SCAN_LIMIT) || fileConfig.deepScanLimit || defaultConfig.deepScanLimit,
     timezone: process.env.TIMEZONE || fileConfig.timezone || defaultConfig.timezone,
     jobIndexPath: process.env.JOB_INDEX_PATH || fileConfig.jobIndexPath || defaultConfig.jobIndexPath,
     

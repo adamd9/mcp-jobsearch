@@ -162,7 +162,7 @@ export function createServer() {
                   backgroundJobs.scan.scannedJobs = scannedCount;
                 };
                 
-                await deepScanJobs(jobsToScan, profile, concurrency, plan.scanPrompt, progressCallback, auditLogger);
+                await deepScanJobs(jobsToScan, profile, concurrency, plan.scanPrompt, progressCallback, auditLogger, config.deepScanLimit);
                 console.log('Deep scanning complete');
                 
                 // Generate mock data if audit logging is enabled
@@ -333,7 +333,8 @@ export function createServer() {
                 concurrency,
                 plan.scanPrompt,
                 progressCallback,
-                auditLogger
+                auditLogger,
+                config.deepScanLimit
               );
               
               // Generate mock data if audit logging is enabled
@@ -358,7 +359,8 @@ export function createServer() {
                 config.deepScanConcurrency,
                 plan.scanPrompt,
                 progressCallback,
-                auditLogger
+                auditLogger,
+                config.deepScanLimit
               );
               
               // Generate mock data if audit logging is enabled

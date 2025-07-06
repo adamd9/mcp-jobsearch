@@ -344,10 +344,14 @@ Provide your analysis in the following JSON format:
  * @param {string} scanPrompt - Additional criteria for job matching
  * @param {Function} progressCallback - Optional callback function to report progress
  * @param {Object} auditLogger - Optional audit logger instance
+ * @param {number} limit - Maximum number of jobs to scan (default: 50)
  * @returns {Promise<Array>} - Scan results
  */
-export async function deepScanJobs(jobs, profile, concurrency = 2, scanPrompt = '', progressCallback = null, auditLogger = null) {
-  console.log(`Deep scanning ${jobs.length} jobs with concurrency ${concurrency}`);
+export async function deepScanJobs(jobs, profile, concurrency = 2, scanPrompt = '', progressCallback = null, auditLogger = null, limit = 50) {
+  // Apply limit if provided
+  const jobsToScan = limit > 0 && jobs.length > limit ? jobs.slice(0, limit) : jobs;
+  
+  console.log(`Deep scanning ${jobsToScan.length} jobs with concurrency ${concurrency}${limit > 0 && jobs.length > limit ? ` (limited from ${jobs.length} total jobs)` : ''}`);
   
   // Ensure screenshots directory exists
   try {
@@ -360,8 +364,8 @@ export async function deepScanJobs(jobs, profile, concurrency = 2, scanPrompt = 
   
   // Process jobs in batches to control concurrency
   const results = [];
-  for (let i = 0; i < jobs.length; i += concurrency) {
-    const batch = jobs.slice(i, i + concurrency);
+  for (let i = 0; i < jobsToScan.length; i += concurrency) {
+    const batch = jobsToScan.slice(i, i + concurrency);
     const batchPromises = batch.map(job =>
       deepScanJob(job.link, job.id, profile, scanPrompt, auditLogger)
         .then(result => {
@@ -376,10 +380,10 @@ export async function deepScanJobs(jobs, profile, concurrency = 2, scanPrompt = 
     const batchResults = await Promise.all(batchPromises);
     results.push(...batchResults);
     
-    console.log(`Completed batch ${Math.floor(i/concurrency) + 1}/${Math.ceil(jobs.length/concurrency)} (${i + batch.length}/${jobs.length} jobs)`);
+    console.log(`Completed batch ${Math.floor(i/concurrency) + 1}/${Math.ceil(jobsToScan.length/concurrency)} (${i + batch.length}/${jobsToScan.length} jobs)`);
     
     // Small delay between batches to avoid rate limiting
-    if (i + concurrency < jobs.length) {
+    if (i + concurrency < jobsToScan.length) {
       await new Promise(resolve => setTimeout(resolve, 1000));
     }
   }
