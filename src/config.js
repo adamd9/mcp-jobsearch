@@ -12,6 +12,12 @@ const defaultConfig = {
   deepScanConcurrency: 2,
   timezone: 'Australia/Sydney',
   jobIndexPath: path.join(process.cwd(), 'data', 'job-index.json'),
+  // Audit logging configuration
+  auditLogging: true,
+  auditLogPath: path.join(process.cwd(), 'data', 'audit-logs'),
+  captureSearchResults: true,
+  captureJobDetails: true,
+  captureScreenshots: true,
 };
 
 /**
@@ -51,6 +57,25 @@ export async function loadConfig() {
     deepScanConcurrency: parseInt(process.env.DEEP_SCAN_CONCURRENCY) || fileConfig.deepScanConcurrency || defaultConfig.deepScanConcurrency,
     timezone: process.env.TIMEZONE || fileConfig.timezone || defaultConfig.timezone,
     jobIndexPath: process.env.JOB_INDEX_PATH || fileConfig.jobIndexPath || defaultConfig.jobIndexPath,
+    
+    // Audit logging configuration
+    auditLogging: process.env.AUDIT_LOGGING === 'true' ? true :
+                 process.env.AUDIT_LOGGING === 'false' ? false :
+                 fileConfig.auditLogging !== undefined ? fileConfig.auditLogging :
+                 defaultConfig.auditLogging,
+    auditLogPath: process.env.AUDIT_LOG_PATH || fileConfig.auditLogPath || defaultConfig.auditLogPath,
+    captureSearchResults: process.env.CAPTURE_SEARCH_RESULTS === 'true' ? true :
+                         process.env.CAPTURE_SEARCH_RESULTS === 'false' ? false :
+                         fileConfig.captureSearchResults !== undefined ? fileConfig.captureSearchResults :
+                         defaultConfig.captureSearchResults,
+    captureJobDetails: process.env.CAPTURE_JOB_DETAILS === 'true' ? true :
+                      process.env.CAPTURE_JOB_DETAILS === 'false' ? false :
+                      fileConfig.captureJobDetails !== undefined ? fileConfig.captureJobDetails :
+                      defaultConfig.captureJobDetails,
+    captureScreenshots: process.env.CAPTURE_SCREENSHOTS === 'true' ? true :
+                       process.env.CAPTURE_SCREENSHOTS === 'false' ? false :
+                       fileConfig.captureScreenshots !== undefined ? fileConfig.captureScreenshots :
+                       defaultConfig.captureScreenshots,
 
     // Required environment variables (no defaults)
     digestTo: process.env.DIGEST_TO,

@@ -3,15 +3,26 @@ import fs from 'fs/promises';
 import path from 'path';
 import { updateJobIndex, generateJobId, getJobsToScan, hasProfileChanged } from './storage.js';
 import { deepScanJobs } from './deep-scan.js';
+import { loadConfig } from './config.js';
+import { createAuditLogger } from './audit-logger.js';
 
 export async function scrapeLinkedIn(url, options = {}) {
-  const { keepOpen = false, debug = false, deepScan = false, forceRescan = false, profileText = null, scanPrompt = '' } = options;
+  const { keepOpen = false, debug = false, deepScan = false, forceRescan = false, profileText = null, scanPrompt = '', progressCallback = null } = options;
   console.log(`Starting LinkedIn scrape for URL: ${url}`);
   console.log(`Debug mode: ${debug ? 'ON' : 'OFF'}, Keep browser open: ${keepOpen ? 'YES' : 'NO'}`);
   
+  // Load configuration
+  const config = await loadConfig();
+  
+  // Initialize audit logger
+  const auditLogger = await createAuditLogger(config);
+  
+  // Extract search term from URL
+  const searchTerm = extractSearchTermFromUrl(url);
+  
   // Set headless to false for debugging to see the browser
   const browser = await chromium.launch({ 
-    headless: false,
+    headless: !debug, // Only show browser in debug mode
     slowMo: debug ? 100 : 0, // Slow down actions by 100ms in debug mode
   });
   const page = await browser.newPage();
@@ -69,7 +80,13 @@ export async function scrapeLinkedIn(url, options = {}) {
     
     // Take screenshot after basic content is loaded
     console.log('Taking screenshot for debugging...');
-    await page.screenshot({ path: 'debug-linkedin.png' });
+    const screenshotBuffer = await page.screenshot();
+    
+    // Save locally for debugging
+    await fs.writeFile('debug-linkedin.png', screenshotBuffer);
+    
+    // Log screenshot to audit log
+    await auditLogger.logScreenshot(`search-${searchTerm.replace(/\s+/g, '-')}`, screenshotBuffer);
     
     // Give the page a bit more time to fully load
     console.log('Waiting a bit longer for page to stabilize...');
@@ -177,6 +194,9 @@ export async function scrapeLinkedIn(url, options = {}) {
     scrapedDate: new Date().toISOString()
   }));
   
+  // Log search results to audit log
+  await auditLogger.logSearchResults(searchTerm, enhancedJobs);
+  
   // Update the job index with the new jobs
   const jobIndex = await updateJobIndex(enhancedJobs, forceRescan);
   
@@ -227,9 +247,29 @@ export async function scrapeLinkedIn(url, options = {}) {
         
         // Deep scan the jobs
         const concurrency = parseInt(process.env.DEEP_SCAN_CONCURRENCY || '2');
-        await deepScanJobs(jobsToScan, profile, concurrency, scanPrompt);
+        
+        // Create job details capture callback
+        const jobDetailsCallback = async (jobId, jobDetails) => {
+          // Log job details to audit log
+          await auditLogger.logJobDetails(jobId, jobDetails);
+          
+          // Call progress callback if provided
+          if (typeof progressCallback === 'function') {
+            progressCallback(jobId, jobDetails);
+          }
+        };
+        
+        // Pass audit logger to deep scan
+        await deepScanJobs(jobsToScan, profile, concurrency, scanPrompt, jobDetailsCallback, auditLogger);
         
         console.log('Deep scanning complete');
+        
+        // Generate mock data if audit logging is enabled
+        if (config.auditLogging) {
+          console.log('Generating mock data from audit logs...');
+          const mockDataResult = await auditLogger.generateMockData();
+          console.log(`Mock data generation complete: ${JSON.stringify(mockDataResult)}`);
+        }
       } else {
         console.log('No jobs need deep scanning');
       }
@@ -262,4 +302,35 @@ function extractCompanyFromTitle(title) {
   }
   
   return null;
+}
+
+/**
+ * Extract search term from LinkedIn URL
+ * @param {string} url - LinkedIn search URL
+ * @returns {string} - Extracted search term or 'unknown'
+ */
+function extractSearchTermFromUrl(url) {
+  if (!url) return 'unknown';
+  
+  try {
+    const urlObj = new URL(url);
+    
+    // Extract keywords parameter
+    if (urlObj.searchParams.has('keywords')) {
+      return decodeURIComponent(urlObj.searchParams.get('keywords'));
+    }
+    
+    // Try to extract from path segments
+    const pathSegments = urlObj.pathname.split('/');
+    for (let i = 0; i < pathSegments.length; i++) {
+      if (pathSegments[i] === 'search' && i + 1 < pathSegments.length) {
+        return pathSegments[i + 1].replace(/-/g, ' ');
+      }
+    }
+    
+    return 'unknown';
+  } catch (error) {
+    console.error(`Error extracting search term from URL: ${error.message}`);
+    return 'unknown';
+  }
 }

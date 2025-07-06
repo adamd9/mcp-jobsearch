@@ -16,9 +16,11 @@ const openai = new OpenAI({
  * @param {string} jobUrl - URL of the job posting
  * @param {string} jobId - ID of the job
  * @param {string} profile - User profile text
+ * @param {string} scanPrompt - Additional criteria for job matching
+ * @param {Object} auditLogger - Optional audit logger instance
  * @returns {Promise<Object>} - Scan results
  */
-export async function deepScanJob(jobUrl, jobId, profile, scanPrompt = '') {
+export async function deepScanJob(jobUrl, jobId, profile, scanPrompt = '', auditLogger = null) {
   console.log(`Deep scanning job: ${jobUrl}`);
   
   const browser = await chromium.launch({ 
@@ -55,11 +57,19 @@ export async function deepScanJob(jobUrl, jobId, profile, scanPrompt = '') {
     // Extract job details
     const jobDetails = await extractJobDetails(page);
     
+    // Take screenshot for audit logging and debugging
+    const screenshotBuffer = await page.screenshot();
+    
+    // Save screenshot locally for debugging
+    await fs.writeFile(`data/job-screenshots/${jobId}.png`, screenshotBuffer);
+    
+    // Log screenshot to audit log if enabled
+    if (auditLogger) {
+      await auditLogger.logScreenshot(`job-${jobId}`, screenshotBuffer);
+    }
+    
     // Match job to profile
     const matchResults = await matchJobToProfile(jobDetails, profile, scanPrompt);
-    
-    // Save screenshot for debugging if needed
-    await page.screenshot({ path: `data/job-screenshots/${jobId}.png` });
     
     // Close the browser
     await browser.close();
@@ -69,8 +79,14 @@ export async function deepScanJob(jobUrl, jobId, profile, scanPrompt = '') {
       ...jobDetails,
       ...matchResults,
       scanned: true,
-      scanDate: new Date().toISOString()
+      scanDate: new Date().toISOString(),
+      jobUrl
     };
+    
+    // Log job details to audit log if enabled
+    if (auditLogger) {
+      await auditLogger.logJobDetails(jobId, scanResults);
+    }
     
     // Update job in index
     await markJobAsScanned(jobId, scanResults);
@@ -81,14 +97,22 @@ export async function deepScanJob(jobUrl, jobId, profile, scanPrompt = '') {
     await browser.close();
     
     // Mark as scanned but with error
-    await markJobAsScanned(jobId, {
+    const errorResult = {
       scanned: true,
       scanDate: new Date().toISOString(),
       error: error.message,
-      matchScore: 0
-    });
+      matchScore: 0,
+      jobUrl
+    };
     
-    return { error: error.message };
+    // Log error to audit log if enabled
+    if (auditLogger) {
+      await auditLogger.logJobDetails(jobId, errorResult);
+    }
+    
+    await markJobAsScanned(jobId, errorResult);
+    
+    return errorResult;
   }
 }
 
@@ -317,9 +341,12 @@ Provide your analysis in the following JSON format:
  * @param {Array} jobs - Array of jobs to scan
  * @param {string} profile - User profile
  * @param {number} concurrency - Number of concurrent scans
+ * @param {string} scanPrompt - Additional criteria for job matching
+ * @param {Function} progressCallback - Optional callback function to report progress
+ * @param {Object} auditLogger - Optional audit logger instance
  * @returns {Promise<Array>} - Scan results
  */
-export async function deepScanJobs(jobs, profile, concurrency = 2, scanPrompt = '') {
+export async function deepScanJobs(jobs, profile, concurrency = 2, scanPrompt = '', progressCallback = null, auditLogger = null) {
   console.log(`Deep scanning ${jobs.length} jobs with concurrency ${concurrency}`);
   
   // Ensure screenshots directory exists
@@ -336,11 +363,20 @@ export async function deepScanJobs(jobs, profile, concurrency = 2, scanPrompt = 
   for (let i = 0; i < jobs.length; i += concurrency) {
     const batch = jobs.slice(i, i + concurrency);
     const batchPromises = batch.map(job =>
-      deepScanJob(job.link, job.id, profile, scanPrompt)
+      deepScanJob(job.link, job.id, profile, scanPrompt, auditLogger)
+        .then(result => {
+          // Call progress callback if provided
+          if (typeof progressCallback === 'function') {
+            progressCallback(job.id, result);
+          }
+          return result;
+        })
     );
     
     const batchResults = await Promise.all(batchPromises);
     results.push(...batchResults);
+    
+    console.log(`Completed batch ${Math.floor(i/concurrency) + 1}/${Math.ceil(jobs.length/concurrency)} (${i + batch.length}/${jobs.length} jobs)`);
     
     // Small delay between batches to avoid rate limiting
     if (i + concurrency < jobs.length) {
