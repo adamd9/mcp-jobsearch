@@ -13,6 +13,7 @@ import {
   getMatchedJobs,
   getJobsToScan,
   hasProfileChanged,
+  saveJobIndex,
 } from "./storage.js";
 import fs from "fs/promises";
 import path from "path";
@@ -613,6 +614,30 @@ export function createServer() {
       readOnlyHint: true,
       openWorldHint: false,
       examples: [{ input: {}, output: { totalJobs: 42, scannedJobs: 30, matchedJobs: 15 } }]
+    }
+  );
+
+  // Reset job index
+  mcpServer.tool(
+    "reset_job_index",
+    "Reset the job index to start fresh",
+    {},
+    async () => {
+      await saveJobIndex({ 
+        jobs: [],
+        lastScanDate: null,
+        profileHash: null
+      });
+      
+      return {
+        content: [{ type: "text", text: "Job index has been reset successfully. All jobs have been removed." }],
+        structuredContent: { success: true },
+      };
+    },
+    {
+      title: "Reset Job Index",
+      readOnlyHint: false,
+      openWorldHint: false
     }
   );
 
