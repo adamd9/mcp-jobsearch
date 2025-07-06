@@ -83,6 +83,7 @@ so previous results are preserved:
 - `GET /plan` – Retrieve the current plan.
 - `POST /plan` – Body `{ "description": "..." }` to generate a plan from text using OpenAI.
 - `PUT /plan` – Update fields of the existing plan (`profile`, `searchTerms`, `scanPrompt`).
+- `GET /status` – Returns overall system status including the current plan, job index statistics and whether a scan is running.
 
 #### Job Scanning and Retrieval
 - `GET /scan` – Triggers a LinkedIn scrape and deep scan without sending an email digest.
