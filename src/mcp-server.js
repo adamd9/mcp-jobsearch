@@ -5,6 +5,7 @@ import { loadConfig } from "./config.js";
 import { scrapeLinkedIn } from "./scrape.js";
 import { deepScanJobs } from "./deep-scan.js";
 import { sendDigest } from "./mailer.js";
+import { createAuditLogger } from "./audit-logger.js";
 import {
   getJobIndex,
   updateJobIndex,
@@ -151,15 +152,25 @@ export function createServer() {
                 // Deep scan the jobs with real OpenAI assessment
                 const concurrency = parseInt(process.env.DEEP_SCAN_CONCURRENCY || '2');
                 
+                // Initialize audit logger
+                const auditLogger = await createAuditLogger(config);
+                
                 // Track progress
                 let scannedCount = 0;
-                const progressCallback = () => {
+                const progressCallback = (jobId, jobDetails) => {
                   scannedCount++;
                   backgroundJobs.scan.scannedJobs = scannedCount;
                 };
                 
-                await deepScanJobs(jobsToScan, profile, concurrency, plan.scanPrompt, progressCallback);
+                await deepScanJobs(jobsToScan, profile, concurrency, plan.scanPrompt, progressCallback, auditLogger);
                 console.log('Deep scanning complete');
+                
+                // Generate mock data if audit logging is enabled
+                if (config.auditLogging) {
+                  console.log('Generating mock data from audit logs...');
+                  const mockDataResult = await auditLogger.generateMockData();
+                  console.log(`Mock data generation complete: ${JSON.stringify(mockDataResult)}`);
+                }
               }
             } else {
               // Non-mock mode: real scraping
@@ -306,9 +317,12 @@ export function createServer() {
               console.log(`Performing real assessment on ${jobs.length} mock jobs`);
               const concurrency = parseInt(process.env.DEEP_SCAN_CONCURRENCY || '2');
               
+              // Initialize audit logger
+              const auditLogger = await createAuditLogger(config);
+              
               // Track progress
               let scannedCount = 0;
-              const progressCallback = () => {
+              const progressCallback = (jobId, jobDetails) => {
                 scannedCount++;
                 backgroundJobs.rescan.scannedJobs = scannedCount;
               };
@@ -318,11 +332,23 @@ export function createServer() {
                 profile,
                 concurrency,
                 plan.scanPrompt,
-                progressCallback
+                progressCallback,
+                auditLogger
               );
+              
+              // Generate mock data if audit logging is enabled
+              if (config.auditLogging) {
+                console.log('Generating mock data from audit logs...');
+                const mockDataResult = await auditLogger.generateMockData();
+                console.log(`Mock data generation complete: ${JSON.stringify(mockDataResult)}`);
+              }
             } else {
               // Non-mock mode: perform real deep scan
-              const progressCallback = () => {
+              
+              // Initialize audit logger
+              const auditLogger = await createAuditLogger(config);
+              
+              const progressCallback = (jobId, jobDetails) => {
                 backgroundJobs.rescan.scannedJobs++;
               };
               
@@ -331,8 +357,16 @@ export function createServer() {
                 profile,
                 config.deepScanConcurrency,
                 plan.scanPrompt,
-                progressCallback
+                progressCallback,
+                auditLogger
               );
+              
+              // Generate mock data if audit logging is enabled
+              if (config.auditLogging) {
+                console.log('Generating mock data from audit logs...');
+                const mockDataResult = await auditLogger.generateMockData();
+                console.log(`Mock data generation complete: ${JSON.stringify(mockDataResult)}`);
+              }
             }
             
             // Mark as completed

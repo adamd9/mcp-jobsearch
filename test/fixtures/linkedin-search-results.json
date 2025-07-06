@@ -1,42 +1,14 @@
 [
   {
-    "id": "4247412997",
-    "title": "Junior Full Stack Engineer",
-    "link": "https://au.linkedin.com/jobs/view/junior-full-stack-engineer-at-sleek-4247412997",
-    "posted": "2025-06-09",
-    "company": "Sleek",
-    "scrapedDate": "2025-07-05T12:00:00+10:00"
+    "id": "test-job-1",
+    "title": "Test Job 1",
+    "company": "Test Company",
+    "link": "https://example.com/job/1"
   },
   {
-    "id": "4247415436",
-    "title": "Senior Full Stack Engineer",
-    "link": "https://au.linkedin.com/jobs/view/senior-full-stack-engineer-at-sleek-4247415436",
-    "posted": "2025-05-15",
-    "company": "Sleek",
-    "scrapedDate": "2025-07-05T12:00:00+10:00"
-  },
-  {
-    "id": "4253499537",
-    "title": "Senior Full Stack Engineer",
-    "link": "https://au.linkedin.com/jobs/view/senior-full-stack-engineer-at-healthengine-4253499537",
-    "posted": "2025-06-20",
-    "company": "HealthEngine",
-    "scrapedDate": "2025-07-05T12:00:00+10:00"
-  },
-  {
-    "id": "4261234567",
-    "title": "Frontend Developer",
-    "link": "https://au.linkedin.com/jobs/view/frontend-developer-at-techco-4261234567",
-    "posted": "2025-07-01",
-    "company": "TechCo",
-    "scrapedDate": "2025-07-05T12:00:00+10:00"
-  },
-  {
-    "id": "4271234568",
-    "title": "Backend Engineer",
-    "link": "https://au.linkedin.com/jobs/view/backend-engineer-at-datacompany-4271234568",
-    "posted": "2025-06-28",
-    "company": "DataCompany",
-    "scrapedDate": "2025-07-05T12:00:00+10:00"
+    "id": "test-job-2",
+    "title": "Test Job 2",
+    "company": "Test Company",
+    "link": "https://example.com/job/2"
   }
 ]
