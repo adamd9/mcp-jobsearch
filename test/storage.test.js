@@ -1,28 +1,6 @@
 import { jest } from '@jest/globals';
 import fs from 'fs/promises';
-import path from 'path';
-import {
-  getJobIndex,
-  saveJobIndex,
-  updateJobIndex,
-  markJobAsScanned,
-  getJobsToScan,
-  hasProfileChanged,
-  generateJobId,
-  generateProfileHash,
-  getMatchedJobs
-} from '../src/storage.js';
-
-// Mock fs
-jest.mock('fs/promises', () => {
-  const originalModule = jest.requireActual('fs/promises');
-  return {
-    ...originalModule,
-    readFile: jest.fn(),
-    writeFile: jest.fn(),
-    mkdir: jest.fn()
-  };
-});
+import * as storage from '../src/storage.js';
 
 describe('Job Index Storage', () => {
   beforeEach(() => {
@@ -31,10 +9,10 @@ describe('Job Index Storage', () => {
 
   test('getJobIndex should return empty index if file does not exist', async () => {
     // Mock fs.readFile to throw ENOENT error
-    fs.readFile.mockRejectedValue({ code: 'ENOENT' });
+    jest.spyOn(fs, 'readFile').mockRejectedValue({ code: 'ENOENT' });
     
     // Call the function
-    const result = await getJobIndex();
+    const result = await storage.getJobIndex();
     
     // Assertions
     expect(result).toBeDefined();
@@ -55,10 +33,10 @@ describe('Job Index Storage', () => {
     };
     
     // Mock fs.readFile to return mock data
-    fs.readFile.mockResolvedValue(JSON.stringify(mockJobIndex));
+    jest.spyOn(fs, 'readFile').mockResolvedValue(JSON.stringify(mockJobIndex));
     
     // Call the function
-    const result = await getJobIndex();
+    const result = await storage.getJobIndex();
     
     // Assertions
     expect(result).toEqual(mockJobIndex);
@@ -74,7 +52,9 @@ describe('Job Index Storage', () => {
     };
     
     // Call the function
-    await saveJobIndex(mockJobIndex);
+    jest.spyOn(fs, 'mkdir').mockResolvedValue();
+    jest.spyOn(fs, 'writeFile').mockResolvedValue();
+    await storage.saveJobIndex(mockJobIndex);
     
     // Assertions
     expect(fs.mkdir).toHaveBeenCalled();
@@ -99,14 +79,11 @@ describe('Job Index Storage', () => {
       { id: '345678', title: 'New Job 2', link: 'https://linkedin.com/jobs/view/345678' }
     ];
     
-    // Mock getJobIndex to return existing index
-    jest.spyOn(global, 'getJobIndex').mockResolvedValue(mockExistingIndex);
-    
-    // Mock saveJobIndex
-    jest.spyOn(global, 'saveJobIndex').mockResolvedValue();
+    jest.spyOn(fs, 'readFile').mockResolvedValue(JSON.stringify(mockExistingIndex));
+    jest.spyOn(fs, 'writeFile').mockResolvedValue();
     
     // Call the function
-    const result = await updateJobIndex(newJobs);
+    const result = await storage.updateJobIndex(newJobs);
     
     // Assertions
     expect(result.jobs.length).toBe(3); // 1 existing + 2 new
@@ -134,16 +111,16 @@ describe('Job Index Storage', () => {
     };
     
     // Mock getJobIndex to return existing index
-    jest.spyOn(global, 'getJobIndex').mockResolvedValue(mockExistingIndex);
-    
-    // Mock saveJobIndex
-    jest.spyOn(global, 'saveJobIndex').mockResolvedValue();
+    jest.spyOn(fs, 'readFile').mockResolvedValue(JSON.stringify(mockExistingIndex));
+    jest.spyOn(fs, 'writeFile').mockResolvedValue();
     
     // Call the function
-    await markJobAsScanned('123456', scanResults);
+    await storage.markJobAsScanned('123456', scanResults);
     
     // Assertions
-    expect(global.saveJobIndex).toHaveBeenCalledWith(expect.objectContaining({
+    expect(fs.writeFile).toHaveBeenCalledWith(expect.any(String), expect.any(String), 'utf8');
+    const writtenData = JSON.parse(fs.writeFile.mock.calls[0][1]);
+    expect(writtenData).toEqual(expect.objectContaining({
       jobs: expect.arrayContaining([
         expect.objectContaining({
           id: '123456',
@@ -168,11 +145,10 @@ describe('Job Index Storage', () => {
       profileHash: 'abc123'
     };
     
-    // Mock getJobIndex to return mock index
-    jest.spyOn(global, 'getJobIndex').mockResolvedValue(mockJobIndex);
+    jest.spyOn(fs, 'readFile').mockResolvedValue(JSON.stringify(mockJobIndex));
     
     // Call the function
-    const result = await getJobsToScan(false);
+    const result = await storage.getJobsToScan(false);
     
     // Assertions
     expect(result.length).toBe(2);
@@ -191,11 +167,10 @@ describe('Job Index Storage', () => {
       profileHash: 'abc123'
     };
     
-    // Mock getJobIndex to return mock index
-    jest.spyOn(global, 'getJobIndex').mockResolvedValue(mockJobIndex);
+    jest.spyOn(fs, 'readFile').mockResolvedValue(JSON.stringify(mockJobIndex));
     
     // Call the function with forceRescan = true
-    const result = await getJobsToScan(true);
+    const result = await storage.getJobsToScan(true);
     
     // Assertions
     expect(result.length).toBe(2);
@@ -209,23 +184,18 @@ describe('Job Index Storage', () => {
       profileHash: 'abc123'
     };
     
-    // Mock getJobIndex to return mock index
-    jest.spyOn(global, 'getJobIndex').mockResolvedValue(mockJobIndex);
-    
-    // Mock saveJobIndex
-    jest.spyOn(global, 'saveJobIndex').mockResolvedValue();
-    
-    // Mock generateProfileHash to return a different hash
-    jest.spyOn(global, 'generateProfileHash').mockReturnValue('def456');
+    jest.spyOn(fs, 'readFile').mockResolvedValue(JSON.stringify(mockJobIndex));
+    jest.spyOn(fs, 'writeFile').mockResolvedValue();
     
     // Call the function with a new profile
-    const result = await hasProfileChanged('New profile content');
+    const result = await storage.hasProfileChanged('New profile content');
     
     // Assertions
     expect(result).toBe(true);
-    expect(global.saveJobIndex).toHaveBeenCalledWith(expect.objectContaining({
-      profileHash: 'def456'
-    }));
+    expect(fs.writeFile).toHaveBeenCalled();
+    const saved = JSON.parse(fs.writeFile.mock.calls[0][1]);
+    const expectedHash = storage.generateProfileHash('New profile content');
+    expect(saved.profileHash).toBe(expectedHash);
   });
 
   test('getMatchedJobs should return jobs with minimum match score', async () => {
@@ -240,11 +210,10 @@ describe('Job Index Storage', () => {
       profileHash: 'abc123'
     };
     
-    // Mock getJobIndex to return mock index
-    jest.spyOn(global, 'getJobIndex').mockResolvedValue(mockJobIndex);
+    jest.spyOn(fs, 'readFile').mockResolvedValue(JSON.stringify(mockJobIndex));
     
     // Call the function with minScore = 0.7
-    const result = await getMatchedJobs(0.7);
+    const result = await storage.getMatchedJobs(0.7);
     
     // Assertions
     expect(result.length).toBe(2);
