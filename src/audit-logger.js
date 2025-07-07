@@ -1,5 +1,7 @@
 import fs from 'fs/promises';
 import path from 'path';
+import { format } from 'date-fns';
+import { utcToZonedTime } from 'date-fns-tz';
 
 /**
  * Audit logger for capturing data during scraping and deep scanning
@@ -16,7 +18,8 @@ export class AuditLogger {
     this.captureSearchResults = config.captureSearchResults;
     this.captureJobDetails = config.captureJobDetails;
     this.captureScreenshots = config.captureScreenshots;
-    this.sessionId = new Date().toISOString().replace(/[:.]/g, '-');
+    this.timezone = config.timezone || 'UTC';
+    this.sessionId = this.formatTimestamp(new Date()).replace(/[:.]/g, '-');
   }
 
   /**
@@ -67,7 +70,7 @@ export class AuditLogger {
       
       const data = {
         searchTerm,
-        timestamp: new Date().toISOString(),
+        timestamp: this.formatTimestamp(new Date()),
         jobCount: jobs.length,
         jobs
       };
@@ -92,7 +95,7 @@ export class AuditLogger {
       
       const data = {
         jobId,
-        timestamp: new Date().toISOString(),
+        timestamp: this.formatTimestamp(new Date()),
         ...jobDetails
       };
       
@@ -206,6 +209,25 @@ export class AuditLogger {
  * @param {Object} config - Configuration object
  * @returns {Promise<AuditLogger>} - Initialized audit logger
  */
+/**
+ * Format a date using the configured timezone
+ * @param {Date} date - The date to format
+ * @returns {string} - Formatted date string
+ */
+AuditLogger.prototype.formatTimestamp = function(date) {
+  try {
+    // Convert the UTC date to the specified timezone
+    const zonedDate = utcToZonedTime(date, this.timezone);
+    
+    // Format the date in ISO format but in the correct timezone
+    return format(zonedDate, "yyyy-MM-dd'T'HH:mm:ss.SSSxxx", { timeZone: this.timezone });
+  } catch (error) {
+    console.error(`Error formatting timestamp with timezone ${this.timezone}: ${error.message}`);
+    // Fall back to standard ISO string (UTC) if there's an error
+    return date.toISOString();
+  }
+};
+
 export async function createAuditLogger(config) {
   const logger = new AuditLogger(config);
   await logger.init();
