@@ -228,10 +228,48 @@ Mock data testing uses pre-defined fixtures instead of live LinkedIn scraping:
 1. **Mock LinkedIn Search Results**: `test/fixtures/linkedin-search-results.json`
    - Contains sample job listings as if scraped from LinkedIn
    - Used by the `/scan` endpoint when mock mode is enabled
+   - Format structure:
+     ```json
+     [
+       {
+         "title": "Software Engineer, Backend",        // Job title
+         "link": "https://www.linkedin.com/jobs/...", // Full LinkedIn job URL
+         "posted": "2025-07-02",                    // Posting date (YYYY-MM-DD)
+         "id": "software-engineer-backend-at-...",   // Unique job identifier
+         "company": null,                            // Company name (may be null)
+         "scrapedDate": "2025-07-06T21:03:06.401Z"  // ISO timestamp of scraping
+       },
+       // Additional job listings...
+     ]
+     ```
 
 2. **Mock Job Details**: `test/fixtures/linkedin-job-details.json`
    - Contains detailed job information as if deep-scanned
    - Used by the `/rescan` endpoint when mock mode is enabled
+   - Format structure:
+     ```json
+     [
+       {
+         "jobId": "senior-node-js-engineer-at-...",  // Unique job identifier
+         "timestamp": "2025-07-06T21:03:22.853Z",   // ISO timestamp of scan
+         "title": "Senior Node.js Engineer",         // Job title
+         "company": "ROSE",                         // Company name
+         "location": "New York, NY",                // Job location
+         "description": "This is a contract...",    // Full job description
+         "requirements": [                          // Extracted key requirements
+           "At least three years of relevant Node.js...",
+           // Additional requirements...
+         ],
+         "salary": "$90,000",                       // Salary info (may be null)
+         "matchScore": 0.85,                        // AI-generated match score (0-1)
+         "matchReason": "The candidate's profile...", // AI explanation of match
+         "scanned": true,                           // Whether job was deep-scanned
+         "scanDate": "2025-07-06T21:03:22.848Z",    // ISO timestamp of deep scan
+         "jobUrl": "https://www.linkedin.com/jobs/..." // Original LinkedIn URL
+       },
+       // Additional job details...
+     ]
+     ```
 
 To enable mock mode, you can either:
 
@@ -254,3 +292,98 @@ See [Job Index Structure](#job-index-structure) for the fields stored with each 
 - **Daily Matches**: `data/YYYY-MM-DD.json` - Daily snapshots of matched jobs (legacy format)
 - **Screenshots**: `screenshots/` - Job posting screenshots captured during deep scanning (for debugging)
 - **Plan**: `plan.json` - Defines profile text, search terms and deep scan prompt.
+
+## Job Data Structure
+
+When jobs are deep-scanned, the system uses an LLM to process and structure the job data. Here's the structure of a job after deep scanning:
+
+```json
+{
+  "jobId": "unique-job-identifier",       // Unique identifier for the job
+  "timestamp": "2025-07-06T21:03:22.853Z", // When the job was processed
+  "title": "Senior Engineer",             // Job title
+  "company": "Company Name",              // Company name
+  "location": "City, State",              // Job location
+  "description": "Full job description...", // Raw job description as scraped from LinkedIn
+  "requirements": [                       // Key requirements extracted by the LLM
+    "5+ years experience with...",
+    "Bachelor's degree in...",
+    "Experience with cloud platforms..."
+  ],
+  "salary": "$90,000-$120,000",           // Salary information if available
+  "jobType": "Full-time",                // Job type (full-time, part-time, contract)
+  "experienceLevel": "Senior",           // Experience level (entry, mid, senior)
+  "remoteStatus": "Hybrid",              // Remote status (remote, hybrid, on-site)
+  "companyInfo": {                        // Extracted company information
+    "size": "1,000-5,000 employees",      // Company size if mentioned
+    "industry": "Software Development",    // Industry sector
+    "founded": "2010",                   // Founding year if mentioned
+    "description": "Leading tech company..." // Brief company description
+  },
+  "benefits": [                          // Benefits mentioned in the job posting
+    "Health insurance",
+    "401(k) matching",
+    "Unlimited PTO"
+  ],
+  "technologies": [                      // Technologies/tools mentioned
+    "TypeScript",
+    "React",
+    "AWS"
+  ],
+  "matchScore": 0.85,                     // AI-generated match score (0-1)
+  "matchReason": "Detailed explanation...", // AI explanation of the match score
+  "scanned": true,                        // Whether job was deep-scanned
+  "scanDate": "2025-07-06T21:03:22.848Z", // When the job was deep-scanned
+  "jobUrl": "https://linkedin.com/jobs/..." // Original job URL
+}
+```
+
+### How Job Data is Processed
+
+1. **Initial Scraping**: Basic job information is scraped from LinkedIn search results
+2. **Deep Scanning**: The system visits each job page to extract the full job description
+3. **LLM Processing**: The job description is processed by an LLM to:
+   - Extract key requirements as discrete points
+   - Identify salary information when available
+   - Determine job type (full-time, part-time, contract)
+   - Assess experience level (entry, mid, senior)
+   - Identify remote work status (remote, hybrid, on-site)
+   - Extract company information (size, industry, founding year)
+   - Identify benefits mentioned in the job posting
+   - Extract technologies and tools mentioned in the description
+   - Generate a match score against the candidate profile
+   - Provide a detailed explanation of the match
+
+This structured approach allows for more effective filtering, sorting, and matching of job opportunities based on multiple dimensions of job characteristics.
+
+### Raw Job Content Extraction
+
+For development and testing purposes, the system includes a dedicated function to extract and save raw job page content:
+
+```javascript
+export async function extractRawJobContent(jobUrl, jobId)
+```
+
+This function:
+1. Visits the job page using Playwright
+2. Extracts the raw HTML and text content
+3. Takes a screenshot of the page
+4. Saves the following files to help with LLM component development:
+   - `data/raw-job-content/{jobId}.json` - Structured raw text content
+   - `data/raw-job-content/{jobId}.html` - Complete HTML of the page
+   - `data/raw-job-screenshots/{jobId}.png` - Screenshot of the job page
+
+The raw content JSON includes:
+```json
+{
+  "title": "Job title as displayed",
+  "company": "Company name",
+  "location": "Job location",
+  "fullDescription": "Complete job description text",
+  "aboutCompany": "Company information if available",
+  "timestamp": "2025-07-06T21:03:22.853Z",
+  "url": "https://linkedin.com/jobs/..."
+}
+```
+
+This raw data is invaluable for iterating on and improving the LLM extraction components.

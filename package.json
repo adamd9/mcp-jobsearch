@@ -18,7 +18,8 @@
     "test:job": "curl -X GET http://localhost:8000/job/$ID | json_pp",
     "test:latest": "curl -X GET http://localhost:8000/latest_matches | json_pp",
     "test:digest": "curl -X POST -H 'Content-Type: application/json' -d '{\"email\":\"your-email@example.com\"}' http://localhost:8000/send_digest",
-    "test:digest:mock": "MOCK_DATA=true curl -X POST -H 'Content-Type: application/json' -d '{\"email\":\"your-email@example.com\"}' http://localhost:8000/send_digest"
+    "test:digest:mock": "MOCK_DATA=true curl -X POST -H 'Content-Type: application/json' -d '{\"email\":\"your-email@example.com\"}' http://localhost:8000/send_digest",
+    "extract-job": "node scripts/extract-raw-job.js"
   },
   "keywords": [],
   "author": "",

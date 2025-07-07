@@ -168,19 +168,21 @@ async function extractJobDetails(page) {
     const location = await getTextFromSelectors(selectors.location);
     const description = await getTextFromSelectors(selectors.description);
     
-    // Extract requirements (skills, experience, etc.)
-    const requirements = await extractRequirements(description);
-    
-    // Extract salary information if available
-    const salary = await extractSalary(description);
-    
-    return {
+    // Create basic job details object
+    const basicJobDetails = {
       title: title?.trim(),
       company: company?.trim(),
       location: location?.trim(),
-      description: description?.trim(),
-      requirements,
-      salary
+      description: description?.trim()
+    };
+    
+    // Use LLM to extract structured data from the job description
+    const structuredData = await extractStructuredJobData(basicJobDetails);
+    
+    // Return combined data
+    return {
+      ...basicJobDetails,
+      ...structuredData
     };
   } catch (error) {
     console.error(`Error extracting job details: ${error.message}`);
@@ -189,68 +191,219 @@ async function extractJobDetails(page) {
 }
 
 /**
- * Extract requirements from job description
- * @param {string} description - Job description
- * @returns {Array} - List of requirements
+ * Extract structured job data from job description using LLM
+ * @param {Object} jobDetails - Basic job details
+ * @returns {Promise<Object>} - Structured job data
  */
-function extractRequirements(description) {
-  if (!description) return [];
-  
-  // Look for common patterns in job descriptions
-  const requirements = [];
-  
-  // Look for bullet points
-  const bulletPoints = description.match(/[•\-\*]\s*([^\n•\-\*]+)/g);
-  if (bulletPoints) {
-    bulletPoints.forEach(point => {
-      const cleaned = point.replace(/[•\-\*]\s*/, '').trim();
-      if (cleaned) requirements.push(cleaned);
-    });
-  }
-  
-  // Look for "Requirements:", "Qualifications:", etc.
-  const sections = [
-    'Requirements', 'Qualifications', 'Skills', 'Experience',
-    'What You\'ll Need', 'What You Need', 'Must Have'
-  ];
-  
-  sections.forEach(section => {
-    const regex = new RegExp(`${section}[:\\s]([\\s\\S]*?)(?:(?:${sections.join('|')})[:\\s]|$)`, 'i');
-    const match = description.match(regex);
-    if (match && match[1]) {
-      const sectionText = match[1].trim();
-      const sectionPoints = sectionText.split(/\n+/).map(p => p.trim()).filter(p => p);
-      requirements.push(...sectionPoints);
+async function extractStructuredJobData(jobDetails) {
+  try {
+    const { title, company, location, description } = jobDetails;
+    
+    // Skip if we don't have enough information
+    if (!description) {
+      return { requirements: [], salary: null };
     }
-  });
-  
-  // Remove duplicates
-  return [...new Set(requirements)];
+    
+    // Prepare the prompt for OpenAI
+    const prompt = `
+Analyze the following job description and extract key information in a structured format.
+
+JOB DETAILS:
+Title: ${title || 'N/A'}
+Company: ${company || 'N/A'}
+Location: ${location || 'N/A'}
+
+Description:
+${description || 'N/A'}
+
+Please extract and provide the following information in JSON format:
+1. A list of key requirements/qualifications (as an array of strings)
+2. Salary information if mentioned (as a string, or null if not found)
+3. Job type (full-time, part-time, contract, etc.)
+4. Experience level (entry, mid, senior, etc.)
+5. Remote status (remote, hybrid, on-site)
+6. Company information (size, industry, founding year if mentioned)
+7. Benefits mentioned (as an array of strings)
+8. Technologies/tools mentioned (as an array of strings)
+
+Provide your analysis in the following JSON format:
+{
+  "requirements": ["requirement 1", "requirement 2", ...],
+  "salary": "salary information or null",
+  "jobType": "job type or null",
+  "experienceLevel": "experience level or null",
+  "remoteStatus": "remote status or null",
+  "companyInfo": {
+    "size": "company size or null",
+    "industry": "company industry or null",
+    "founded": "founding year or null",
+    "description": "brief company description or null"
+  },
+  "benefits": ["benefit 1", "benefit 2", ...],
+  "technologies": ["technology 1", "technology 2", ...]
+}
+`;
+
+    // Call OpenAI API
+    const response = await openai.chat.completions.create({
+      model: process.env.OPENAI_MODEL || "gpt-4o",
+      messages: [
+        { role: "system", content: "You are a job analysis expert that extracts structured information from job descriptions." },
+        { role: "user", content: prompt }
+      ],
+      temperature: 0.1,
+      max_tokens: 1000
+    });
+    
+    // Parse the response
+    const content = response.choices[0].message.content;
+    const jsonMatch = content.match(/\{[\s\S]*\}/);
+    
+    if (jsonMatch) {
+      try {
+        const result = JSON.parse(jsonMatch[0]);
+        return {
+          requirements: Array.isArray(result.requirements) ? result.requirements : [],
+          salary: result.salary || null,
+          jobType: result.jobType || null,
+          experienceLevel: result.experienceLevel || null,
+          remoteStatus: result.remoteStatus || null,
+          companyInfo: result.companyInfo || {
+            size: null,
+            industry: null,
+            founded: null,
+            description: null
+          },
+          benefits: Array.isArray(result.benefits) ? result.benefits : [],
+          technologies: Array.isArray(result.technologies) ? result.technologies : []
+        };
+      } catch (e) {
+        console.error("Error parsing OpenAI structured data response:", e);
+      }
+    }
+    
+    // Fallback if parsing fails
+    return { 
+      requirements: [], 
+      salary: null,
+      jobType: null,
+      experienceLevel: null,
+      remoteStatus: null,
+      companyInfo: {
+        size: null,
+        industry: null,
+        founded: null,
+        description: null
+      },
+      benefits: [],
+      technologies: []
+    };
+  } catch (error) {
+    console.error(`Error extracting structured job data: ${error.message}`);
+    return { 
+      requirements: [], 
+      salary: null,
+      jobType: null,
+      experienceLevel: null,
+      remoteStatus: null,
+      companyInfo: {
+        size: null,
+        industry: null,
+        founded: null,
+        description: null
+      },
+      benefits: [],
+      technologies: []
+    };
+  }
 }
 
 /**
- * Extract salary information from job description
- * @param {string} description - Job description
- * @returns {string|null} - Salary information
+ * Extract and save raw job page content for development purposes
+ * This function is meant to be used during development to capture real LinkedIn job page content
+ * for testing and improving the LLM extraction components
+ * @param {string} jobUrl - URL of the job posting
+ * @param {string} jobId - ID of the job
+ * @returns {Promise<Object>} - Raw job page content
  */
-function extractSalary(description) {
-  if (!description) return null;
+export async function extractRawJobContent(jobUrl, jobId) {
+  console.log(`Extracting raw content from job: ${jobUrl}`);
   
-  // Common salary patterns
-  const salaryPatterns = [
-    /\$\s*\d{1,3}(?:,\d{3})*(?:\s*-\s*\$\s*\d{1,3}(?:,\d{3})*)?(?:\s*(?:k|thousand|million|m|per year|\/year|annual|annually|p\.a\.|pa))?/gi,
-    /(?:salary|compensation|pay)(?:\s*range)?(?:\s*:)?\s*\$\s*\d{1,3}(?:,\d{3})*(?:\s*-\s*\$\s*\d{1,3}(?:,\d{3})*)?/gi,
-    /(?:salary|compensation|pay)(?:\s*range)?(?:\s*:)?\s*\d{1,3}(?:,\d{3})*(?:\s*-\s*\d{1,3}(?:,\d{3})*)?(?:\s*(?:k|thousand|million|m))/gi
-  ];
+  const browser = await chromium.launch({ 
+    headless: true
+  });
   
-  for (const pattern of salaryPatterns) {
-    const match = description.match(pattern);
-    if (match) {
-      return match[0].trim();
-    }
+  try {
+    const page = await browser.newPage();
+    
+    // Navigate to the job page
+    await page.goto(jobUrl, { 
+      timeout: 30000,
+      waitUntil: "domcontentloaded"
+    });
+    
+    // Wait for job details to load
+    await page.waitForSelector('.job-details, .jobs-description, .jobs-description-content', { 
+      timeout: 10000 
+    }).catch(() => console.log('Could not find job details container, continuing anyway...'));
+    
+    // Take screenshot
+    const screenshotBuffer = await page.screenshot();
+    
+    // Ensure directories exist
+    await fs.mkdir('data/raw-job-content', { recursive: true });
+    await fs.mkdir('data/raw-job-screenshots', { recursive: true });
+    
+    // Extract HTML content
+    const htmlContent = await page.content();
+    
+    // Extract text content from different sections
+    const rawContent = {
+      title: await page.evaluate(() => {
+        const titleEl = document.querySelector('.jobs-unified-top-card__job-title, .job-details-jobs-unified-top-card__job-title, h1.topcard__title');
+        return titleEl ? titleEl.innerText : null;
+      }),
+      company: await page.evaluate(() => {
+        const companyEl = document.querySelector('.jobs-unified-top-card__company-name, .job-details-jobs-unified-top-card__company-name, a.topcard__org-name-link');
+        return companyEl ? companyEl.innerText : null;
+      }),
+      location: await page.evaluate(() => {
+        const locationEl = document.querySelector('.jobs-unified-top-card__bullet, .job-details-jobs-unified-top-card__bullet, .topcard__flavor--bullet');
+        return locationEl ? locationEl.innerText : null;
+      }),
+      fullDescription: await page.evaluate(() => {
+        const descEl = document.querySelector('.jobs-description-content, .job-details-jobs-unified-top-card__description-container, .description__text');
+        return descEl ? descEl.innerText : null;
+      }),
+      aboutCompany: await page.evaluate(() => {
+        const aboutEl = document.querySelector('.jobs-company__box, .company-panel, .topcard__org-info-data');
+        return aboutEl ? aboutEl.innerText : null;
+      }),
+      timestamp: new Date().toISOString(),
+      url: jobUrl
+    };
+    
+    // Save raw content to file
+    await fs.writeFile(
+      `data/raw-job-content/${jobId}.json`, 
+      JSON.stringify(rawContent, null, 2)
+    );
+    
+    // Save screenshot
+    await fs.writeFile(`data/raw-job-screenshots/${jobId}.png`, screenshotBuffer);
+    
+    // Save full HTML for reference
+    await fs.writeFile(`data/raw-job-content/${jobId}.html`, htmlContent);
+    
+    console.log(`Raw job content saved for ${jobId}`);
+    
+    await browser.close();
+    return rawContent;
+  } catch (error) {
+    console.error(`Error extracting raw job content: ${error.message}`);
+    await browser.close();
+    return { error: error.message };
   }
-  
-  return null;
 }
 
 /**
