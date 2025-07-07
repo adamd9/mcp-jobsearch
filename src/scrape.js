@@ -82,8 +82,6 @@ export async function scrapeLinkedIn(url, options = {}) {
     console.log('Taking screenshot for debugging...');
     const screenshotBuffer = await page.screenshot();
     
-    // Save locally for debugging
-    await fs.writeFile('debug-linkedin.png', screenshotBuffer);
     
     // Log screenshot to audit log
     await auditLogger.logScreenshot(`search-${searchTerm.replace(/\s+/g, '-')}`, screenshotBuffer);
