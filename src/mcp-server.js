@@ -472,7 +472,7 @@ export function createServer() {
   // Get a specific job
   mcpServer.tool(
     "job",
-    "Get details for a specific job by ID",
+    "Get details for a specific job by ID. The ID parameter should be the 'id' attribute of a job object from the jobs array returned by the 'jobs' tool.",
     {
       id: z.string().describe("Job ID to retrieve")
     },
