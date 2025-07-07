@@ -1,6 +1,6 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
-import { getPlan, savePlan, createPlanFromDescription } from "./plan.js";
+import { getPlan, savePlan, createPlanFromDescription, updatePlanFromDescription } from "./plan.js";
 import { loadConfig } from "./config.js";
 import { scrapeLinkedIn } from "./scrape.js";
 import { deepScanJobs } from "./deep-scan.js";
@@ -87,11 +87,25 @@ export function createServer() {
   mcpServer.tool(
     "update_plan",
     "Update the existing job search plan with new values",
-    z.record(z.any()).describe("Fields to update in the job search plan"),
-    async (updates) => {
-      const current = await getPlan();
-      const updated = { ...current, ...updates };
-      await savePlan(updated);
+    z.union([
+      z.object({
+        description: z.string().describe("Natural language description of the changes to make to the plan")
+      }),
+      z.record(z.any()).describe("Fields to update in the job search plan")
+    ]),
+    async (input) => {
+      let updated;
+      
+      // Check if input contains a description field for natural language updates
+      if (input.description) {
+        updated = await updatePlanFromDescription(input.description);
+      } else {
+        // Original direct field update approach
+        const current = await getPlan();
+        updated = { ...current, ...input };
+        await savePlan(updated);
+      }
+      
       return {
         content: [{ type: "text", text: JSON.stringify(updated, null, 2) }],
         structuredContent: updated,
