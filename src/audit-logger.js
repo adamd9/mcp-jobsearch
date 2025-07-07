@@ -1,7 +1,7 @@
 import fs from 'fs/promises';
 import path from 'path';
 import { format } from 'date-fns';
-import { utcToZonedTime } from 'date-fns-tz';
+import { toZonedTime } from 'date-fns-tz';
 
 /**
  * Audit logger for capturing data during scraping and deep scanning
@@ -217,7 +217,7 @@ export class AuditLogger {
 AuditLogger.prototype.formatTimestamp = function(date) {
   try {
     // Convert the UTC date to the specified timezone
-    const zonedDate = utcToZonedTime(date, this.timezone);
+    const zonedDate = toZonedTime(date, this.timezone);
     
     // Format the date in ISO format but in the correct timezone
     return format(zonedDate, "yyyy-MM-dd'T'HH:mm:ss.SSSxxx", { timeZone: this.timezone });
