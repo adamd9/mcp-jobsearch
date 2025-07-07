@@ -123,67 +123,40 @@ export async function deepScanJob(jobUrl, jobId, profile, scanPrompt = '', audit
  */
 async function extractJobDetails(page) {
   try {
-    // Try different selectors for job details
-    const selectors = {
-      title: [
-        '.jobs-unified-top-card__job-title',
-        '.job-details-jobs-unified-top-card__job-title',
-        'h1.topcard__title'
-      ],
-      company: [
-        '.jobs-unified-top-card__company-name',
-        '.job-details-jobs-unified-top-card__company-name',
-        'a.topcard__org-name-link'
-      ],
-      location: [
-        '.jobs-unified-top-card__bullet',
-        '.job-details-jobs-unified-top-card__bullet',
-        '.topcard__flavor--bullet'
-      ],
-      description: [
-        '.jobs-description-content',
-        '.job-details-jobs-unified-top-card__description-container',
-        '.description__text'
-      ]
+    // Extract the full page content
+    const htmlContent = await page.content();
+    
+    // Extract basic visible text content for fallback and debugging
+    const basicVisibleContent = await page.evaluate(() => {
+      // Get the main content area, or body if no specific container is found
+      const mainContent = document.querySelector(
+        '.jobs-description-content, .job-details, .job-view-layout, .description, main, article'
+      ) || document.body;
+      
+      // Return the text content
+      return mainContent.innerText;
+    });
+    
+    // Get the current URL
+    const currentUrl = page.url();
+    
+    // Get the page title
+    const pageTitle = await page.title();
+    
+    // Create raw job data object
+    const rawJobData = {
+      url: currentUrl,
+      pageTitle: pageTitle,
+      htmlContent: htmlContent,
+      textContent: basicVisibleContent,
+      timestamp: new Date().toISOString()
     };
     
-    // Helper function to try multiple selectors
-    const getTextFromSelectors = async (selectorList) => {
-      for (const selector of selectorList) {
-        try {
-          const element = await page.$(selector);
-          if (element) {
-            return await element.innerText();
-          }
-        } catch (e) {
-          // Continue to next selector
-        }
-      }
-      return null;
-    };
+    // Use LLM to extract structured data from the raw job content
+    const structuredData = await extractStructuredJobData(rawJobData);
     
-    // Extract job details
-    const title = await getTextFromSelectors(selectors.title);
-    const company = await getTextFromSelectors(selectors.company);
-    const location = await getTextFromSelectors(selectors.location);
-    const description = await getTextFromSelectors(selectors.description);
-    
-    // Create basic job details object
-    const basicJobDetails = {
-      title: title?.trim(),
-      company: company?.trim(),
-      location: location?.trim(),
-      description: description?.trim()
-    };
-    
-    // Use LLM to extract structured data from the job description
-    const structuredData = await extractStructuredJobData(basicJobDetails);
-    
-    // Return combined data
-    return {
-      ...basicJobDetails,
-      ...structuredData
-    };
+    // Return the structured data
+    return structuredData;
   } catch (error) {
     console.error(`Error extracting job details: ${error.message}`);
     return {};
@@ -191,43 +164,67 @@ async function extractJobDetails(page) {
 }
 
 /**
- * Extract structured job data from job description using LLM
- * @param {Object} jobDetails - Basic job details
+ * Extract structured job data from raw job content using LLM
+ * @param {Object} rawJobData - Raw job data including HTML and text content
  * @returns {Promise<Object>} - Structured job data
  */
-async function extractStructuredJobData(jobDetails) {
+async function extractStructuredJobData(rawJobData) {
   try {
-    const { title, company, location, description } = jobDetails;
+    const { url, pageTitle, textContent } = rawJobData;
     
     // Skip if we don't have enough information
-    if (!description) {
-      return { requirements: [], salary: null };
+    if (!textContent) {
+      return { 
+        title: pageTitle || null,
+        company: null,
+        location: null,
+        description: null,
+        requirements: [], 
+        salary: null,
+        jobType: null,
+        experienceLevel: null,
+        remoteStatus: null,
+        companyInfo: {
+          size: null,
+          industry: null,
+          founded: null,
+          description: null
+        },
+        benefits: [],
+        technologies: []
+      };
     }
     
     // Prepare the prompt for OpenAI
     const prompt = `
-Analyze the following job description and extract key information in a structured format.
+You are a job analysis expert. Extract structured information from this job posting.
 
-JOB DETAILS:
-Title: ${title || 'N/A'}
-Company: ${company || 'N/A'}
-Location: ${location || 'N/A'}
+JOB PAGE URL: ${url}
+PAGE TITLE: ${pageTitle || 'N/A'}
 
-Description:
-${description || 'N/A'}
+RAW JOB CONTENT:
+${textContent.substring(0, 15000)}
 
-Please extract and provide the following information in JSON format:
-1. A list of key requirements/qualifications (as an array of strings)
-2. Salary information if mentioned (as a string, or null if not found)
-3. Job type (full-time, part-time, contract, etc.)
-4. Experience level (entry, mid, senior, etc.)
-5. Remote status (remote, hybrid, on-site)
-6. Company information (size, industry, founding year if mentioned)
-7. Benefits mentioned (as an array of strings)
-8. Technologies/tools mentioned (as an array of strings)
+Extract and provide the following information in JSON format:
+1. Job title (as a string)
+2. Company name (as a string)
+3. Job location (as a string)
+4. Job description summary (as a string, max 200 words)
+5. A list of key requirements/qualifications (as an array of strings)
+6. Salary information if mentioned (as a string, or null if not found)
+7. Job type (full-time, part-time, contract, etc.)
+8. Experience level (entry, mid, senior, etc.)
+9. Remote status (remote, hybrid, on-site)
+10. Company information (size, industry, founding year if mentioned)
+11. Benefits mentioned (as an array of strings)
+12. Technologies/tools mentioned (as an array of strings)
 
 Provide your analysis in the following JSON format:
 {
+  "title": "job title",
+  "company": "company name",
+  "location": "job location",
+  "description": "job description summary",
   "requirements": ["requirement 1", "requirement 2", ...],
   "salary": "salary information or null",
   "jobType": "job type or null",
@@ -263,6 +260,10 @@ Provide your analysis in the following JSON format:
       try {
         const result = JSON.parse(jsonMatch[0]);
         return {
+          title: result.title || pageTitle || null,
+          company: result.company || null,
+          location: result.location || null,
+          description: result.description || null,
           requirements: Array.isArray(result.requirements) ? result.requirements : [],
           salary: result.salary || null,
           jobType: result.jobType || null,
@@ -284,6 +285,10 @@ Provide your analysis in the following JSON format:
     
     // Fallback if parsing fails
     return { 
+      title: pageTitle || null,
+      company: null,
+      location: null,
+      description: null,
       requirements: [], 
       salary: null,
       jobType: null,
@@ -301,6 +306,10 @@ Provide your analysis in the following JSON format:
   } catch (error) {
     console.error(`Error extracting structured job data: ${error.message}`);
     return { 
+      title: pageTitle || null,
+      company: null,
+      location: null,
+      description: null,
       requirements: [], 
       salary: null,
       jobType: null,

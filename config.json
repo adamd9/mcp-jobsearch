@@ -1,5 +1,5 @@
 {
-  "mockMode": true,
+  "mockMode": false,
   "openaiModel": "gpt-4o",
   "deepScanConcurrency": 2,
   "timezone": "Australia/Sydney",

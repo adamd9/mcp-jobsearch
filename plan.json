@@ -1,5 +1,11 @@
 {
-  "profile": "Senior full-stack engineer with TS, Node, AWS, big-data experience",
-  "searchTerms": ["full stack engineer", "node aws"],
-  "scanPrompt": "Match roles that emphasise TypeScript and cloud architecture"
+  "profile": "Engineering",
+  "searchTerms": [
+    "engineering jobs",
+    "engineering positions",
+    "engineering careers",
+    "engineering opportunities",
+    "engineering vacancies"
+  ],
+  "scanPrompt": "Search for engineering jobs in Australia, focusing on various engineering disciplines and industries. Consider roles in both urban and regional areas, and explore opportunities in sectors such as civil, mechanical, electrical, and software engineering."
 }
