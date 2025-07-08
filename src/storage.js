@@ -1,21 +1,73 @@
 import fs from 'fs/promises';
 import path from 'path';
 import crypto from 'crypto';
+import { existsSync } from 'fs';
 
 // Default path for job index
 const DEFAULT_JOB_INDEX_PATH = path.join(process.cwd(), 'data', 'job-index.json');
 
+// Lock file path
+const LOCK_FILE_PATH = path.join(process.env.DATA_DIR || './data', '.index.lock');
+
+// Track active operations in memory
+let activeOperation = false;
+
 /**
  * Ensure the data directory exists
  */
-async function ensureDataDir() {
+export async function ensureDataDir() {
   const dataDir = path.dirname(process.env.JOB_INDEX_PATH || DEFAULT_JOB_INDEX_PATH);
+  await fs.mkdir(dataDir, { recursive: true });
+}
+
+/**
+ * Check if an operation is in progress
+ * @returns {boolean} - Whether an operation is in progress
+ */
+export function isOperationInProgress() {
+  // Check in-memory flag
+  if (activeOperation) {
+    return true;
+  }
+  
+  // Also check for lock file (in case of multiple processes)
+  return existsSync(LOCK_FILE_PATH);
+}
+
+/**
+ * Try to acquire lock for file operations
+ * @returns {Promise<boolean>} - Whether the lock was acquired
+ */
+async function tryAcquireLock() {
+  // If operation is already in progress in this process, fail immediately
+  if (activeOperation) {
+    return false;
+  }
+  
   try {
-    await fs.mkdir(dataDir, { recursive: true });
+    // Try to create the lock file - non-blocking, fails immediately if file exists
+    await fs.writeFile(LOCK_FILE_PATH, String(process.pid), { flag: 'wx' });
+    activeOperation = true;
+    return true;
   } catch (error) {
-    if (error.code !== 'EEXIST') {
-      throw error;
+    if (error.code === 'EEXIST') {
+      // Lock already exists, operation in progress
+      return false;
     }
+    throw error; // Unexpected error
+  }
+}
+
+/**
+ * Release the lock
+ * @returns {Promise<void>}
+ */
+async function releaseLock() {
+  activeOperation = false;
+  try {
+    await fs.unlink(LOCK_FILE_PATH);
+  } catch (error) {
+    // Ignore errors from unlink
   }
 }
 
@@ -74,7 +126,34 @@ export async function getJobIndex() {
 export async function saveJobIndex(jobIndex) {
   await ensureDataDir();
   const indexPath = process.env.JOB_INDEX_PATH || DEFAULT_JOB_INDEX_PATH;
-  await fs.writeFile(indexPath, JSON.stringify(jobIndex, null, 2), 'utf8');
+  const tempPath = `${indexPath}.tmp`;
+  
+  // Try to acquire lock - non-blocking
+  const lockAcquired = await tryAcquireLock();
+  if (!lockAcquired) {
+    throw new Error('Operation in progress: Another process is currently writing to the job index. Please try again later.');
+  }
+  
+  try {
+    // Write to temporary file first
+    await fs.writeFile(tempPath, JSON.stringify(jobIndex, null, 2), 'utf8');
+    
+    // Atomically rename the temporary file to the target file
+    await fs.rename(tempPath, indexPath);
+  } catch (error) {
+    // Clean up temporary file if there was an error
+    try {
+      if (existsSync(tempPath)) {
+        await fs.unlink(tempPath);
+      }
+    } catch (unlinkError) {
+      // Ignore errors from unlink
+    }
+    throw error;
+  } finally {
+    // Always release the lock
+    await releaseLock();
+  }
 }
 
 /**
