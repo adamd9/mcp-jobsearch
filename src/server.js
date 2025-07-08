@@ -30,9 +30,9 @@ const start = async () => {
     start: true,
     onTick: async () => {
       const plan = await getPlan();
-      for (const term of plan.searchTerms) {
-        const url = `https://www.linkedin.com/jobs/search/?keywords=${encodeURIComponent(term)}`;
-        await scrapeLinkedIn(url, { deepScan: true, profileText: plan.profile, scanPrompt: plan.scanPrompt });
+      // Use the search URLs from the plan which include location parameters
+      for (const searchUrlObj of plan.searchUrls) {
+        await scrapeLinkedIn(searchUrlObj.url, { deepScan: true, profileText: plan.profile, scanPrompt: plan.scanPrompt });
       }
       const matches = await getMatchedJobs(0.7);
       await saveMatches(matches);
@@ -138,9 +138,9 @@ app.post("/send_digest", async (req, reply) => {
     
     // Use real scraping and deep scan based on plan
     const plan = await getPlan();
-    for (const term of plan.searchTerms) {
-      const url = `https://www.linkedin.com/jobs/search/?keywords=${encodeURIComponent(term)}`;
-      await scrapeLinkedIn(url, { deepScan: true, profileText: plan.profile, scanPrompt: plan.scanPrompt });
+    // Use the search URLs from the plan which include location parameters
+    for (const searchUrlObj of plan.searchUrls) {
+      await scrapeLinkedIn(searchUrlObj.url, { deepScan: true, profileText: plan.profile, scanPrompt: plan.scanPrompt });
     }
     
     // Get matched jobs from index
@@ -183,9 +183,9 @@ app.get("/scan", async (req, reply) => {
     // Use real scraping based on plan
     const plan = await getPlan();
     let total = 0;
-    for (const term of plan.searchTerms) {
-      const url = `https://www.linkedin.com/jobs/search/?keywords=${encodeURIComponent(term)}`;
-      const { jobs } = await scrapeLinkedIn(url);
+    // Use the search URLs from the plan which include location parameters
+    for (const searchUrlObj of plan.searchUrls) {
+      const { jobs } = await scrapeLinkedIn(searchUrlObj.url);
       total += jobs.length;
     }
 
