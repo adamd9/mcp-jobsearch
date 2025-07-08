@@ -1,168 +1,2380 @@
 [
   {
-    "jobId": "consultant-mission-systems-engineer-at-deloitte-4250896481",
-    "timestamp": "2025-07-08T22:00:13.326+10:00",
-    "title": "Consultant, Mission Systems Engineer",
-    "company": "Deloitte",
-    "location": "Canberra, Australian Capital Territory, Australia",
-    "description": "We are looking for a detail-oriented and collaborative Mission Engineering Analyst to support business analysis and requirements engineering efforts within the Mission Engineering team. Reporting to the Senior Mission Engineering Manager, this role focuses on capturing stakeholder needs, defining system requirements, and supporting traceability across complex Defence projects. The ideal candidate will have strong analytical and interpersonal skills, with a keen interest in systems thinking and mission-focused capability development.",
+    "jobId": "machine-learning-sales-engineer-at-pivotal-partners-4252575571",
+    "timestamp": "2025-07-08T22:55:18.444+10:00",
+    "title": "Machine Learning Sales Engineer",
+    "company": "Pivotal Partners",
+    "location": "United States",
+    "description": "In this role, you will work closely with our federal & Enterprise clients in a pre-sales capacity to deploy and optimise machine learning models using the platform. You will be instrumental in ensuring our customers' success by delivering technical expertise, building custom ML solutions, and providing ongoing support. Provide technical guidance and training to customers, enabling them to maximize the value of their solutions. Develop and deploy machine learning models using Python and industry-standard ML frameworks. Hands-on integration, customisation, and deployment of ML models into customer environments. Provide technical support throughout the entire sales journey.",
     "requirements": [
-      "Bachelor’s degree in Engineering, Systems Engineering, Business Analysis, or a related technical field.",
-      "Experience in requirements engineering or business analysis roles desirable.",
-      "Strong analytical thinking and structured problem-solving abilities.",
-      "Familiarity with requirements management tools (e.g., DOORS, Jama, or similar) is desirable.",
-      "Good communication and facilitation skills, with an ability to interact with a range of stakeholders.",
-      "Awareness of the systems engineering lifecycle and requirements best practices.",
-      "Awareness of MBSE tools or approaches (e.g., SysML, Cameo, Enterprise Architect).",
-      "Experience working in Defence, aerospace, or similarly complex domains will be highly considered.",
-      "Basic understanding of Defence capability development frameworks and acquisition processes.",
-      "Able to obtain a security clearance up to a NV1 level, and desirably an active clearance."
+      "Experience working in a SaaS company.",
+      "Must have security clearance.",
+      "Must have customer-facing experience, preferably in a pre-sales or sales engineering role.",
+      "Proven experience in developing and deploying machine learning models using Python.",
+      "Strong knowledge of machine learning frameworks: TensorFlow, PyTorch, Scikit-learn, or similar.",
+      "Experience in end-to-end model building, from data preprocessing to deployment and monitoring.",
+      "Ability to work in a fast-paced, client-facing environment."
+    ],
+    "salary": "$180,000.00/yr - $270,000.00/yr",
+    "jobType": "Full-time",
+    "experienceLevel": "Mid-Senior level",
+    "remoteStatus": "Remote",
+    "companyInfo": {
+      "size": null,
+      "industry": "Information Services, Technology, Information and Media, and Software Development",
+      "founded": null,
+      "description": "Pivotal Partners is exclusively partnered to scale a Series C ($350 Million) Accel & Lightspeed Ventures backed data AI platform. They are at the forefront of transforming how organisations leverage data with cutting-edge machine learning."
+    },
+    "benefits": [],
+    "technologies": [
+      "Python",
+      "TensorFlow",
+      "PyTorch",
+      "Scikit-learn"
+    ],
+    "matchScore": 0.3,
+    "matchReason": "The job title 'Machine Learning Sales Engineer' aligns with the candidate's expertise in presales roles focused on artificial intelligence, as it involves working in a pre-sales capacity with machine learning models. The job requirements also match the candidate's skills, such as experience in developing and deploying machine learning models using Python and working in a client-facing environment. However, the job is located in the United States, which does not meet the candidate's location preference for Canberra, Sydney, or remote work within Australia. Additionally, the requirement for security clearance may not align with the candidate's qualifications if they are not already cleared. Due to the significant location mismatch and potential clearance issue, the match score is reduced.",
+    "scanned": true,
+    "scanDate": "2025-07-08T12:55:18.435Z",
+    "jobUrl": "https://www.linkedin.com/jobs/view/machine-learning-sales-engineer-at-pivotal-partners-4252575571"
+  },
+  {
+    "jobId": "pre-post-sales-engineer-at-flam-4248648090",
+    "timestamp": "2025-07-08T22:55:44.375+10:00",
+    "title": "Pre Post Sales Engineer",
+    "company": "Flam",
+    "location": "United States",
+    "description": "We’re looking for a Founding Presales Executive to work closely with the sales, product, and customer success teams to turn prospects into delighted customers. You’ll help translate brand needs into customized, technically sound, and visually impactful mixed reality solutions. Key responsibilities include solution design, demo ownership, proposal development, and cross-functional coordination.",
+    "requirements": [
+      "2–5 years of experience in presales, solutions consulting, brand strategy, or technical sales support—preferably in adtech, martech, SaaS, or creative tech.",
+      "Strong storytelling skills with the ability to connect creative ideas to business impact.",
+      "Comfort with pitching to marketers, brand managers, and digital decision-makers.",
+      "Basic familiarity with digital campaign workflows, AR/VR/WebAR, and CRM tools is a plus.",
+      "Excellent communication and presentation skills—visual + verbal.",
+      "Curious, adaptable, and eager to work at the intersection of technology and creativity."
+    ],
+    "salary": "$140,000.00/yr - $175,000.00/yr",
+    "jobType": "Full-time",
+    "experienceLevel": "Mid-Senior level",
+    "remoteStatus": "Hybrid/remote flexibility",
+    "companyInfo": {
+      "size": null,
+      "industry": "Software Development, Marketing Services, and Advertising Services",
+      "founded": null,
+      "description": "Flam is building AI Infrastructure for Brands in Immersive Advertising, spanning across all channels viz. Digital, Broadcast TV, Retail, Communications, Print, OOH, etc."
+    },
+    "benefits": [
+      "Competitive salary + bonus",
+      "Fast-paced startup environment with a flat hierarchy",
+      "Hybrid/remote flexibility with global exposure",
+      "Career growth into sales strategy, product marketing, or solutions leadership"
+    ],
+    "technologies": [
+      "AR/VR/WebAR",
+      "CRM tools"
+    ],
+    "matchScore": 0.2,
+    "matchReason": "The job posting for a Pre Post Sales Engineer at Flam is not a strong match for the candidate's profile or search criteria. Firstly, the job is located in the United States, which does not align with the candidate's preference for positions in Canberra, Sydney, or remote work within Australia. Secondly, while the role involves presales responsibilities, it focuses on mixed reality solutions in adtech, martech, SaaS, or creative tech, rather than artificial intelligence, which is the candidate's area of expertise. Additionally, the job emphasizes skills in storytelling, brand strategy, and familiarity with AR/VR/WebAR, which may not directly align with the candidate's AI-focused presales experience. Therefore, due to the mismatch in location and the specific focus of the role, the match score is low.",
+    "scanned": true,
+    "scanDate": "2025-07-08T12:55:44.368Z",
+    "jobUrl": "https://www.linkedin.com/jobs/view/pre-post-sales-engineer-at-flam-4248648090"
+  },
+  {
+    "jobId": "pre-sales-engineer-at-growthloop-4248520991",
+    "timestamp": "2025-07-08T22:52:25.598+10:00",
+    "title": "Pre-Sales Engineer",
+    "company": "GrowthLoop",
+    "location": "New York, NY",
+    "description": "GrowthLoop is seeking a Pre-Sales Engineer to partner with the sales team in driving the expansion of its AI-powered marketing solutions. The role involves bridging the gap between product and customer, helping marketers and technical stakeholders realize the power of activating data from platforms like Snowflake and BigQuery. The candidate will lead demos, answer product-related questions, and tailor solutions to meet customer needs, while staying informed on industry trends and providing feedback to the product team.",
+    "requirements": [
+      "3+ years in a sales engineering or technical pre-sales role",
+      "Familiarity with cloud data platforms like Snowflake and BigQuery",
+      "Experience in marketing operations, customer segmentation, and campaign execution",
+      "Ability to translate technical capabilities into business value",
+      "Strong communication and persuasion skills",
+      "Comfort with pricing discussions and deal structuring",
+      "Detail-oriented with excellent organizational skills",
+      "Collaborative and proactive mindset",
+      "Passion for solving marketing challenges with data"
+    ],
+    "salary": "$140,000.00/yr - $160,000.00/yr",
+    "jobType": "Full-time",
+    "experienceLevel": "Associate",
+    "remoteStatus": "Remote-First Culture",
+    "companyInfo": {
+      "size": null,
+      "industry": "Software Development",
+      "founded": null,
+      "description": "GrowthLoop is a pioneer in AI-powered marketing on the data cloud, founded by former Google executives. It helps companies transform marketing strategies using its Compound Marketing Engine."
+    },
+    "benefits": [
+      "Equity incentives",
+      "Remote-First Culture",
+      "Flexible schedules",
+      "Unbounded PTO",
+      "Monthly Recharge Days",
+      "Free Platinum Health Insurance with Aetna",
+      "401(k) Program with Generous Company Match",
+      "Education Stipend",
+      "Quarterly Hackathons"
+    ],
+    "technologies": [
+      "Snowflake",
+      "BigQuery",
+      "Agentic AI",
+      "Composable CDPs",
+      "Data Warehouses"
+    ],
+    "matchScore": 0.3,
+    "matchReason": "The job role of Pre-Sales Engineer at GrowthLoop aligns well with the candidate's expertise in presales roles focused on artificial intelligence. The responsibilities and key requirements, such as experience in sales engineering, familiarity with cloud data platforms, and the ability to translate technical capabilities into business value, are relevant to the candidate's skills and experience. However, the job location is a significant mismatch. The position is based in New York, NY, and does not offer remote work within Australia, nor is it located in Canberra or Sydney, which are the preferred locations for the candidate. This geographical mismatch significantly reduces the overall match score, despite the role's relevance to the candidate's expertise.",
+    "scanned": true,
+    "scanDate": "2025-07-08T12:52:25.593Z",
+    "jobUrl": "https://www.linkedin.com/jobs/view/pre-sales-engineer-at-growthloop-4248520991"
+  },
+  {
+    "jobId": "pre-sales-solutions-engineer-at-ibase-t-4260898141",
+    "timestamp": "2025-07-08T22:48:44.918+10:00",
+    "title": "Pre-Sales Solutions Engineer",
+    "company": "iBase-t",
+    "location": "United States",
+    "description": "As a Solution Engineer at iBase-t, you'll partner closely with Sales Account Executives to drive revenue growth by articulating the business value of our cloud MES/MRO software for Aerospace & Defense customers. You'll be the technical expert and trusted advisor, running tailored product demos, proof of concepts, and technical workshops that resonate with A&D's unique challenges. This role involves shaping deal strategy, collaborating with CxO-level stakeholders, and ensuring technical wins at every stage of the sales cycle.",
+    "requirements": [
+      "4+ yrs experience with complex discrete manufacturing (e.g., aerospace, defense, medical devices) and regulatory requirements.",
+      "3+ years hands-on with electronic execution systems (e.g., MES, MoM, PLM).",
+      "Proven ability to present, demo, and communicate complex technical solutions clearly to all levels, including CxO audiences.",
+      "Strong problem-solving and solution-scoping skills.",
+      "Bachelor's degree in Engineering, Computer Science, Business, or a related field (or equivalent experience).",
+      "Familiarity with AI, MBE, cloud-based architectures, and Lean manufacturing is a plus.",
+      "Willingness to travel up to 50%; working remotely when not traveling."
     ],
     "salary": null,
     "jobType": "Full-time",
-    "experienceLevel": "Associate",
-    "remoteStatus": "On-site",
+    "experienceLevel": "Mid-Senior level",
+    "remoteStatus": "Remote",
+    "companyInfo": {
+      "size": null,
+      "industry": "IT Services and IT Consulting",
+      "founded": null,
+      "description": null
+    },
+    "benefits": [
+      "Yearly Performance Bonuses",
+      "Referral Bonuses",
+      "Comprehensive Medical/Dental/Vision Plans",
+      "Company Paid LTD/STD",
+      "Company Paid Life Insurance",
+      "HSA/FSA",
+      "Unlimited Vacation",
+      "40 hours of sick time per year",
+      "Paid Holidays (11 per year)",
+      "WFH Equipment Stipend",
+      "Internet/WIFI stipend",
+      "401K - company match",
+      "Educational Assistance Program"
+    ],
+    "technologies": [
+      "MES",
+      "MRO",
+      "Model-Based Enterprise (MBE)",
+      "AI",
+      "Cloud-based architectures",
+      "Lean manufacturing"
+    ],
+    "matchScore": 0.2,
+    "matchReason": "The job title 'Pre-Sales Solutions Engineer' aligns with the candidate's expertise in presales roles. However, the job is located in the United States and does not offer remote work within Australia, which is a critical factor based on the candidate's location preference for Canberra, Sydney, or remote within Australia. Additionally, the job focuses on cloud MES/MRO software for Aerospace & Defense customers, whereas the candidate's search query specifies a focus on artificial intelligence. While there is a mention of familiarity with AI as a plus, it is not a primary focus of the role. Therefore, the job does not sufficiently match the candidate's location and AI focus criteria, resulting in a low match score.",
+    "scanned": true,
+    "scanDate": "2025-07-08T12:48:44.912Z",
+    "jobUrl": "https://www.linkedin.com/jobs/view/pre-sales-solutions-engineer-at-ibase-t-4260898141"
+  },
+  {
+    "jobId": "presales-consultant-servicenow-at-genpact-4149141892",
+    "timestamp": "2025-07-08T22:55:17.217+10:00",
+    "title": "PreSales Consultant (ServiceNow)",
+    "company": "Genpact",
+    "location": "New York, United States",
+    "description": "In this role, you need to lead the design and governance of enterprise-scale ServiceNow implementations. As a key technical authority, you will define platform architecture, set development standards, and ensure technical alignment with business objectives. You will work closely with stakeholders, delivery teams, and enterprise architects to maximize the value of the Now Platform.",
+    "requirements": [
+      "Hands on experience in ServiceNow and experience in a technical architect role.",
+      "Deep understanding of ServiceNow platform capabilities and architecture (ITSM, ITOM, HRSD, CSM, SecOps, Finance and Supply Chain etc.).",
+      "Quick learner to adapt to new technologies being released with every major version of SN (GenAI, AI Agents, Workflow Data Fabric, Raptor Db).",
+      "Demonstrate expertise in core ServiceNow modules such as ITSM, Request, Incident, Problem, Change, CMDB.",
+      "Experience with ServiceNow integrations using REST, SOAP, MID Server, etc.",
+      "Proficient in JavaScript, Glide APIs, and ServiceNow client/server-side scripting.",
+      "Experience with Flow Designer, IntegrationHub, and Service Portal customization.",
+      "Understanding of ServiceNow data models, ACLs, UI Policies, and Notifications.",
+      "Define and own the ServiceNow architecture strategy and roadmap across multiple modules and implementations.",
+      "Lead architectural reviews, solution design, and technical governance across ServiceNow programs.",
+      "Translate complex business requirements into scalable, secure, and performant technical solutions.",
+      "Establish and enforce platform design standards, coding practices, and integration frameworks.",
+      "Lead the creation of custom demos to be showcased to various clients.",
+      "Review and validate custom development and configurations for quality and alignment to best practices.",
+      "Provide technical leadership during client workshops, discovery sessions, and stakeholder presentations.",
+      "Collaborate with enterprise architecture and security teams to ensure compliance with IT and business policies.",
+      "Provide architectural oversight for integrations with third-party systems (REST, SOAP, JDBC, MID Server, etc.).",
+      "Support DevOps initiatives with CI/CD pipelines and testing automation (ATF).",
+      "Mentor development teams and conduct knowledge sharing to uplift technical capability.",
+      "Experience with Agile/Scrum delivery methodologies.",
+      "Excellent communication and leadership skills."
+    ],
+    "salary": null,
+    "jobType": "Full-time",
+    "experienceLevel": "Mid-Senior level",
+    "remoteStatus": "Remote",
+    "companyInfo": {
+      "size": "125,000+ employees",
+      "industry": "IT Services and IT Consulting",
+      "founded": null,
+      "description": "Genpact is a global professional services and solutions firm delivering outcomes that shape the future. Our 125,000+ people across 30+ countries are driven by our innate curiosity, entrepreneurial agility, and desire to create lasting value for clients."
+    },
+    "benefits": [
+      "Medical insurance",
+      "Vision insurance",
+      "Dental insurance",
+      "401(k)"
+    ],
+    "technologies": [
+      "ServiceNow",
+      "JavaScript",
+      "Glide APIs",
+      "REST",
+      "SOAP",
+      "MID Server",
+      "Flow Designer",
+      "IntegrationHub",
+      "Service Portal",
+      "CI/CD pipelines",
+      "ATF"
+    ],
+    "matchScore": 0.2,
+    "matchReason": "The job title 'PreSales Consultant (ServiceNow)' suggests a presales role, which aligns with the candidate's expertise in presales. However, the focus of this role is on ServiceNow implementations rather than artificial intelligence, which is the candidate's area of interest. Additionally, the job location is New York, United States, which does not meet the candidate's location preference of Canberra, Sydney, or remote work within Australia. The technical requirements and responsibilities are heavily centered around ServiceNow platform capabilities, architecture, and integrations, with no mention of artificial intelligence technologies or solutions. Therefore, while there is a slight alignment in the presales aspect, the lack of AI focus and the unsuitable location significantly reduce the match score.",
+    "scanned": true,
+    "scanDate": "2025-07-08T12:55:17.208Z",
+    "jobUrl": "https://www.linkedin.com/jobs/view/presales-consultant-servicenow-at-genpact-4149141892"
+  },
+  {
+    "jobId": "presales-engineer-at-neva-recruiting-4251182956",
+    "timestamp": "2025-07-08T22:48:41.345+10:00",
+    "title": "Presales Engineer",
+    "company": "Neva Recruiting",
+    "location": "United States",
+    "description": "Our client, a leading GenAI innovator, is embarking on their 2.0 journey and expanding their sales team. The company is profitable, public, and on an upward trajectory in GenAI. Looking for several pre-sales professionals in the US to support a couple of Account Executives with strong pre-sales skills, technical acumen, and business acumen.",
+    "requirements": [
+      "7+ years in a SaaS Pre Sales capacity – presales, solution engineer, solution architect, senior solution engineer, professional services, consultant or similar",
+      "Domain expertise with B2B and B2C Solutions – SaaS CX, Customer Service, e-Commerce, content management, Search or similar",
+      "Passion for the latest technologies including AI/ML and ideally Generative AI",
+      "Basic programming skills with Python, JavaScript and APIs (Postman) – do deep discovery, data wrangling and custom product demonstrations",
+      "Formal sales training - e.g., Challenger, MEDDIC, BANT, Force Management, Solution Selling or similar",
+      "Sold at the 'Enterprise' level a platform not a point solution – large complex deals",
+      "Tenure in positions",
+      "Bachelor’s degree in computer science, math or science preferred"
+    ],
+    "salary": "commensurate with experience – base + bonus + RSUs",
+    "jobType": "Full-time",
+    "experienceLevel": "Mid-Senior level",
+    "remoteStatus": "Remote",
+    "companyInfo": {
+      "size": null,
+      "industry": "Software Development, Technology, Information and Media, and IT Services and IT Consulting",
+      "founded": null,
+      "description": "Company is publicly traded, profitable, an 8-time Gartner Magic Quadrant leader with global Enterprise customers, strategic partnerships and alliances with Tier 1 companies like SAP, Genesys, Salesforce, Shopify, and ServiceNow."
+    },
+    "benefits": [],
+    "technologies": [
+      "Python",
+      "JavaScript",
+      "APIs",
+      "Postman",
+      "AI/ML",
+      "Generative AI"
+    ],
+    "matchScore": 0.2,
+    "matchReason": "The job posting for a Presales Engineer at Neva Recruiting does not align well with the candidate's location preferences or the original search query. The position is based in the United States, while the candidate is seeking opportunities in Canberra, Sydney, or remote within Australia. This significant location mismatch greatly reduces the relevance of the job to the candidate's search criteria. However, the role does match the candidate's expertise in presales roles with a focus on artificial intelligence, as it involves working with GenAI and requires strong presales skills and technical acumen. Despite this alignment in job function and industry, the location mismatch is a critical factor, resulting in a low match score.",
+    "scanned": true,
+    "scanDate": "2025-07-08T12:48:41.340Z",
+    "jobUrl": "https://www.linkedin.com/jobs/view/presales-engineer-at-neva-recruiting-4251182956"
+  },
+  {
+    "jobId": "sales-engineer-at-armada-4235794432",
+    "timestamp": "2025-07-08T22:51:20.223+10:00",
+    "title": "Sales Engineer",
+    "company": "Armada",
+    "location": "United States",
+    "description": "The Sales Engineer at Armada plays a pivotal role in bridging the gap between technical expertise and sales acumen. This position requires a blend of technical knowledge and interpersonal skills to effectively communicate the value of complex technical solutions to potential clients. The Sales Engineer collaborates closely with the sales team to understand customer needs, provide technical demonstrations, and offer tailored solutions that address client requirements. This role is instrumental in driving revenue growth by effectively positioning the company's products or services within the marketplace.",
+    "requirements": [
+      "Bachelor’s degree in Computer Science, Engineering, or related field; advanced degree is a plus.",
+      "5+ years proven experience in a pre-sales, sales engineering, or solution architecture role supporting technical products.",
+      "Conceptual understanding of networking and connectivity fundamentals, including IP addressing, firewalls, SD-WAN, and satellite or cellular-based communication systems.",
+      "Familiarity with cloud platforms, virtualization or containerization technologies, and modern enterprise infrastructure.",
+      "Proficiency in at least one core technical domain such as AI/ML infrastructure, connected devices, or data center systems.",
+      "Excellent communication and presentation skills.",
+      "Strong problem-solving mindset.",
+      "Self-starter who thrives in dynamic environments.",
+      "Must be willing and able to travel, including potential international travel."
+    ],
+    "salary": "$150,000—$230,000 USD",
+    "jobType": "Full-time",
+    "experienceLevel": "Mid-Senior level",
+    "remoteStatus": "Remote",
+    "companyInfo": {
+      "size": null,
+      "industry": "Software Development",
+      "founded": null,
+      "description": "Armada is an edge computing startup that provides computing infrastructure to remote areas where connectivity and cloud infrastructure is limited, as well as areas where data needs to be processed locally for real-time analytics and AI at the edge."
+    },
+    "benefits": [
+      "Medical, dental, and vision (subsidized cost)",
+      "Health savings accounts (HSA), flexible spending accounts (FSA), and dependent care FSAs (DCFSA)",
+      "Retirement plan options, including 401(k) and Roth 401(k)",
+      "Unlimited paid time off (PTO)",
+      "15 paid company holidays per year"
+    ],
+    "technologies": [
+      "IP addressing",
+      "Firewalls",
+      "SD-WAN",
+      "Satellite or cellular-based communication systems",
+      "Cloud platforms",
+      "Virtualization",
+      "Containerization",
+      "AI/ML infrastructure",
+      "Connected devices",
+      "Data center systems",
+      "TensorFlow",
+      "PyTorch",
+      "ONNX",
+      "VMware",
+      "Docker",
+      "Kubernetes",
+      "RESTful APIs",
+      "WebSockets",
+      "SNMP"
+    ],
+    "matchScore": 0.2,
+    "matchReason": "The job title 'Sales Engineer' at Armada involves responsibilities that align with presales roles, such as bridging technical expertise with sales and providing technical demonstrations. However, the job is located in the United States, which does not match the candidate's location preference of Canberra, Sydney, or remote work within Australia. Additionally, while the role requires proficiency in a core technical domain such as AI/ML infrastructure, the job description does not explicitly focus on artificial intelligence, which is a key aspect of the candidate's expertise and original search query. The requirement for potential international travel further reduces the match, as it suggests a need for physical presence rather than remote work. Overall, the mismatch in location and the lack of a specific focus on AI in the job description significantly lower the match score.",
+    "scanned": true,
+    "scanDate": "2025-07-08T12:51:20.215Z",
+    "jobUrl": "https://www.linkedin.com/jobs/view/sales-engineer-at-armada-4235794432"
+  },
+  {
+    "jobId": "sales-engineer-at-enterpret-4226479152",
+    "timestamp": "2025-07-08T22:50:27.813+10:00",
+    "title": "Sales Engineer",
+    "company": "Enterpret",
+    "location": "New York, NY",
+    "description": "As a Sales Engineer at Enterpret, you will partner with Account Executives to qualify and drive technical sales opportunities, lead technical discovery, tailor demos, and own the product evaluation process. You will act as the technical point of contact during sales cycles and collaborate closely with Product, Engineering, and Post-Sales teams to ensure seamless handoffs.",
+    "requirements": [
+      "3–6 years of experience in Sales Engineering, Solutions Consulting, or another technical pre-sales role at a SaaS company.",
+      "Strong grasp of APIs, data modeling, and web architecture.",
+      "Comfortable running tailored demos and resolving technical questions across the sales cycle.",
+      "Bonus points for experience with AI/ML products or in the Voice of Customer (VoC) space.",
+      "Ownership of problems and outcomes, thriving in ambiguity.",
+      "Humble, collaborative mindset with eagerness to learn."
+    ],
+    "salary": null,
+    "jobType": "Full-time",
+    "experienceLevel": "Mid-Senior level",
+    "remoteStatus": "Remote Pacific or Mountain Time, or In-Person NYC",
+    "companyInfo": {
+      "size": null,
+      "industry": "Software Development",
+      "founded": null,
+      "description": "Enterpret centralizes customer feedback across various sources to build custom ML models for analysis. Backed by Kleiner Perkins, Sequoia Capital India, and Unusual Ventures."
+    },
+    "benefits": [
+      "Autonomy and ownership of an early-stage startup",
+      "Competitive equity options with a friendly vesting period",
+      "Medical, Dental, and Vision Insurance",
+      "Comprehensive benefits package, including 401(k)",
+      "Generous vacation policy",
+      "Maternity and Paternity leaves"
+    ],
+    "technologies": [
+      "APIs",
+      "Data modeling",
+      "Web architecture",
+      "AI/ML products"
+    ],
+    "matchScore": 0.3,
+    "matchReason": "The job title 'Sales Engineer' at Enterpret aligns with the candidate's expertise in presales roles, as it involves technical sales and collaboration with sales teams. The role requires experience in Sales Engineering or Solutions Consulting, which matches the candidate's background. Additionally, the job mentions a bonus for experience with AI/ML products, which is relevant to the candidate's focus on artificial intelligence. However, the job location is in New York, NY, which does not align with the candidate's preference for positions in Canberra, Sydney, or remote work within Australia. This significant location mismatch reduces the overall match score. Furthermore, while the role involves technical sales, it does not explicitly focus on AI, which is a key aspect of the candidate's search query. Therefore, the job only partially matches the candidate's profile and search criteria.",
+    "scanned": true,
+    "scanDate": "2025-07-08T12:50:27.807Z",
+    "jobUrl": "https://www.linkedin.com/jobs/view/sales-engineer-at-enterpret-4226479152"
+  },
+  {
+    "jobId": "sales-engineer-at-mercor-4261780296",
+    "timestamp": "2025-07-08T22:57:21.602+10:00",
+    "title": "Sales Engineer",
+    "company": "Mercor",
+    "location": "United States",
+    "description": "We are looking for a Sales Engineer to write, review, and validate prompt-based questions designed to train AI. Your expertise in technical solution design, customer engagement, product demos, and sales enablement will ensure each prompt and response is both technically accurate and commercially realistic. We welcome professionals from SaaS, hardware, manufacturing, or enterprise software backgrounds to help create training material that reflects real-world sales engineering workflows. You get an opportunity to apply your technical sales experience to shape the next generation of intelligent systems.",
+    "requirements": [
+      "Over 3+ years of industry experience as a sales engineer or in a technical pre-sales role",
+      "Bachelor's degree in engineering, computer science, or a related field",
+      "Strong background in pre-sales technical support and product demonstrations",
+      "Experience in writing proposals, technical specs, and solution documentation",
+      "Customer discovery and requirements analysis",
+      "Ability to communicate complex technology to both technical and non-technical audiences",
+      "Excellent verbal and written communication skills",
+      "Strong attention to details"
+    ],
+    "salary": "$65.00/hr - $85.00/hr",
+    "jobType": "Contract",
+    "experienceLevel": "Not Applicable",
+    "remoteStatus": "Remote",
     "companyInfo": {
       "size": null,
       "industry": "Business Consulting and Services",
       "founded": null,
-      "description": "Deloitte Canberra predominantly focuses on the Defence Sector, Federal Government and the various Intelligence Communities and local private enterprises."
+      "description": "Mercor connects elite creative and technical talent with leading AI research labs, headquartered in San Francisco, CA. Our distinguished investors include Benchmark, General Catalyst, Peter Thiel, Adam D’Angelo, Larry Summers, and Jack Dorsey."
     },
     "benefits": [
-      "Deloitte Flex - We recognise the importance of balance and embrace agility",
-      "Buy and sell leave - purchase up to 6 weeks of extra annual leave",
-      "Mentoring and development programs – receive support and coaching to progress your career",
-      "Retail discounts",
-      "Wellbeing leave",
-      "Paid volunteering days",
-      "Twelve flexible working options",
-      "Market-leading parental leave and return to work support package"
+      "Flexible workload: 10–20 hours per week, with potential to increase to 40 hours",
+      "Fully remote and asynchronous—work on your own schedule",
+      "Minimum duration: 1–2 months, with potential for extension"
     ],
     "technologies": [
-      "DOORS",
-      "Jama",
-      "SysML",
-      "Cameo",
-      "Enterprise Architect"
+      "CRM tools (e.g. Salesforce)",
+      "Proposal software",
+      "Demo platforms"
     ],
-    "matchScore": 0.2,
-    "matchReason": "The job title 'Consultant, Mission Systems Engineer' at Deloitte in Canberra does not align well with the candidate's expertise in presales roles focused on artificial intelligence. The job description emphasizes skills in systems engineering, business analysis, and experience in Defence projects, which are not directly related to presales or AI. While the location in Canberra matches the candidate's preferred location, the role's focus on mission engineering and Defence capability development is significantly different from a presales AI role. Additionally, the requirement for a security clearance in Defence further distances the job from the candidate's profile. Therefore, the match score is low due to the lack of relevance to the candidate's search query and expertise.",
+    "matchScore": 0.3,
+    "matchReason": "The job role of Sales Engineer at Mercor aligns with the candidate's expertise in presales roles focused on artificial intelligence, as it involves technical solution design, customer engagement, and product demos, which are relevant to presales activities. However, the job is located in the United States and does not offer remote work within Australia, which is a critical mismatch with the candidate's location preference for Canberra, Sydney, or remote work within Australia. Additionally, while the role involves AI-related tasks, the job description does not explicitly emphasize a focus on artificial intelligence, which is a key aspect of the candidate's search query. These location and focus mismatches significantly reduce the overall match score.",
     "scanned": true,
-    "scanDate": "2025-07-08T12:00:13.323Z",
-    "jobUrl": "https://au.linkedin.com/jobs/view/consultant-mission-systems-engineer-at-deloitte-4250896481"
+    "scanDate": "2025-07-08T12:57:21.594Z",
+    "jobUrl": "https://www.linkedin.com/jobs/view/sales-engineer-at-mercor-4261780296"
   },
   {
-    "jobId": "software-engineer-solutions-engineering-at-canonical-4219118115",
-    "timestamp": "2025-07-08T21:59:45.614+10:00",
-    "title": "Software Engineer - Solutions Engineering",
-    "company": "Canonical",
-    "location": "Canberra, Australian Capital Territory, Australia",
-    "description": "Canonical is seeking a Software Engineer for its Solutions Engineering team. The role involves working with Python and Golang to design and deliver open source software operations code, working with the entire Linux stack, and shaping high-quality open source monitoring and alerting infrastructure. The position is ideal for those passionate about distributed systems, cloud computing, and the Linux stack. The role requires global travel up to 10% of the time for internal and external events.",
+    "jobId": "sales-engineer-at-modern-treasury-4250267582",
+    "timestamp": "2025-07-08T22:58:03.608+10:00",
+    "title": "Sales Engineer",
+    "company": "Modern Treasury",
+    "location": "New York, NY",
+    "description": "We’re looking for a Sales Engineer to join our growing Sales Engineering team. In this role you’ll architect complex solutions for our prospects & customers, build and deliver compelling demos, collaborate closely with the product team on roadmap and product design, and weave together business and technical value for executive audiences. You will be the technical voice of the customer and should be constantly learning AND teaching about our products. You’ll develop a broad understanding of our customers’ cross product needs and use this unique perspective to provide feedback to the Product team on roadmap planning and product design.",
     "requirements": [
-      "Passionate Python developer",
-      "Organized and timely delivery of high-quality software",
-      "Understanding of reliable operations in an agile world",
-      "Sound knowledge of cloud computing concepts & technologies",
-      "Practical knowledge of Linux and networking",
-      "Lifelong learner"
+      "4+ years of customer facing technical roles",
+      "Excellent at presenting, storytelling, and demoing",
+      "Experience with REST API based solution design",
+      "Good at executive communication",
+      "Self driven learner",
+      "Finance and/or accounting knowledge is a nice to have"
     ],
-    "salary": null,
+    "salary": "$155,000.00/yr - $195,000.00/yr",
     "jobType": "Full-time",
-    "experienceLevel": "Entry level",
+    "experienceLevel": "Mid-Senior level",
     "remoteStatus": "Remote",
     "companyInfo": {
-      "size": "1200+ colleagues in 75+ countries",
-      "industry": "Software Development",
-      "founded": "2004",
-      "description": "Canonical is a leading provider of open source software and operating systems, known for Ubuntu. The company is founder-led, profitable, and growing, with a focus on global distributed collaboration."
+      "size": null,
+      "industry": "Technology, Information and Internet",
+      "founded": "2018",
+      "description": "Modern Treasury is the leading payment operations platform built for the Instant Economy. It helps customers build their best business with faster payments, smarter workflows, and real-time visibility—all powered by AI."
     },
-    "benefits": [
-      "Distributed work environment with twice-yearly team sprints in person",
-      "Personal learning and development budget of USD 2,000 per year",
-      "Annual compensation review",
-      "Recognition rewards",
-      "Annual holiday leave",
-      "Maternity and paternity leave",
-      "Team Member Assistance Program & Wellness Platform",
-      "Opportunity to travel to new locations to meet colleagues",
-      "Priority Pass and travel upgrades for long-haul company events"
-    ],
+    "benefits": [],
     "technologies": [
-      "Python",
-      "Golang",
-      "Linux",
-      "OpenStack",
-      "Kubernetes",
-      "Containers",
-      "Networking",
-      "Virtualization"
+      "REST API"
     ],
     "matchScore": 0.2,
-    "matchReason": "The job title 'Software Engineer - Solutions Engineering' at Canonical is primarily focused on software development, specifically involving Python and Golang for open source software operations, and does not align with the candidate's expertise in presales roles focused on artificial intelligence. While the location in Canberra is a match, the role's responsibilities are centered around software engineering, cloud computing, and Linux systems, which are not directly related to presales or AI. Additionally, the job requires global travel, which may not align with the candidate's preference for roles focused on AI presales. Given these discrepancies, the match score is low.",
+    "matchReason": "The job title 'Sales Engineer' aligns with the candidate's expertise in presales roles, and the responsibilities of architecting solutions, delivering demos, and collaborating with product teams are relevant to presales activities. However, the job is located in New York, NY, which does not match the candidate's location preference of Canberra, Sydney, or remote work within Australia. Additionally, the job description does not specifically mention a focus on artificial intelligence, which is a key aspect of the candidate's search query. The role's emphasis on finance and accounting knowledge further diverges from the candidate's AI focus. These factors significantly reduce the match score.",
     "scanned": true,
-    "scanDate": "2025-07-08T11:59:45.612Z",
-    "jobUrl": "https://au.linkedin.com/jobs/view/software-engineer-solutions-engineering-at-canonical-4219118115"
+    "scanDate": "2025-07-08T12:58:03.600Z",
+    "jobUrl": "https://www.linkedin.com/jobs/view/sales-engineer-at-modern-treasury-4250267582"
   },
   {
-    "jobId": "ubuntu-sales-engineer-entry-level-at-canonical-4251314801",
-    "timestamp": "2025-07-08T21:59:48.931+10:00",
-    "title": "Ubuntu Sales Engineer (Entry-Level)",
-    "company": "Canonical",
-    "location": "Canberra, Australian Capital Territory, Australia",
-    "description": "We are hiring an Ubuntu Pro Sales Engineer to help global companies embrace the latest and greatest Linux and open source applications. This role involves applying expert insights to real-world customer problems, enabling enterprise adoption of Ubuntu Pro, OpenStack, Canonical Microcloud, Kubernetes, and associated technologies. The role is suited for candidates with a technical background who are business-minded and driven by commercial success. It involves working closely with enterprise sales leads and requires global travel up to 25% of the time.",
+    "jobId": "sales-engineer-at-reviva-deorganising-crime-%E2%84%A2-4259440111",
+    "timestamp": "2025-07-08T22:51:42.775+10:00",
+    "title": "Sales Engineer",
+    "company": "Reviva | Deorganising Crime ™",
+    "location": "New York, United States",
+    "description": "Reviva is seeking a Founding Sales Engineer to spearhead and define the Sales Engineering function within their AI integrated GRC SaaS Solutions. The role involves reporting to the CEO and Head of Sales, defining and implementing sales execution and strategy, conducting technical product demonstrations, and providing product feedback. The position is remote but requires the candidate to be in the US Eastern Time zone.",
     "requirements": [
-      "Exceptional academic track record from both high school and university",
-      "Undergraduate degree in a technical subject or a compelling narrative about your alternative chosen path",
-      "Confidence to respectfully speak up, exchange feedback, and share ideas without hesitation",
-      "Track record of going above-and-beyond expectations to achieve outstanding results",
-      "Demonstrated personal interest in continuous learning and development",
-      "Practical knowledge of Linux, virtualisation, containers and networking",
-      "Business-minded technology thinker and problem solver",
-      "Knowledge of cloud computing concepts & leaders, such as Kubernetes, AWS, Azure, GCP",
-      "Interest in large-scale enterprise open source - private clouds, machine learning and AI, data and analytics",
-      "Intermediate level Python programming skills",
-      "Passion for technology evidenced by personal projects and initiatives",
-      "Professional written and spoken English with excellent presentation skills",
-      "Experience with Linux (Debian or Ubuntu preferred)",
-      "Excellent interpersonal skills, curiosity, flexibility, and accountability",
-      "Ability to travel internationally, for company events up to two weeks long, and customer or industry meetings"
+      "Minimum of 3 years of Sales/Solution Engineering experience within a SaaS business",
+      "Experience working on Enterprise B2B sales processes",
+      "Experience working with a product/solution that has integrated AI",
+      "Exceptional attention to detail",
+      "A strong blend of Sales and technical acumen/understanding",
+      "Experience working in the GRC/Risk Management SaaS vendor space (DESIRABLE)"
     ],
-    "salary": null,
+    "salary": "$110,000.00/yr - $120,000.00/yr",
     "jobType": "Full-time",
-    "experienceLevel": "Entry level",
+    "experienceLevel": "Mid-Senior level",
     "remoteStatus": "Remote",
     "companyInfo": {
-      "size": "1000+ colleagues in 70+ countries",
+      "size": null,
       "industry": "Software Development",
       "founded": null,
-      "description": "Canonical is a leading provider of open source software and operating systems to the global enterprise and technology markets. The company is a pioneer of global distributed collaboration, with most colleagues working from home."
+      "description": "Reviva is a Private Equity backed Start-up creating AI integrated GRC SaaS Solutions with offices in the UK, Europe, and the US."
     },
     "benefits": [
-      "Distributed work environment with twice-yearly team sprints in person",
-      "Personal learning and development budget of USD 2,000 per year",
-      "Annual compensation review",
-      "Recognition rewards",
-      "Annual holiday leave",
-      "Maternity and paternity leave",
-      "Employee Assistance Programme",
-      "Opportunity to travel to new locations to meet colleagues",
-      "Priority Pass, and travel upgrades for long haul company events"
+      "Up to $60K on target commission",
+      "Unlimited holiday allowance",
+      "Medical Insurance"
     ],
     "technologies": [
-      "Linux",
-      "Ubuntu",
-      "OpenStack",
-      "Canonical Microcloud",
-      "Kubernetes",
+      "AI",
+      "GRC SaaS Solutions"
+    ],
+    "matchScore": 0.2,
+    "matchReason": "The job role of Sales Engineer at Reviva involves responsibilities and requirements that align with the candidate's expertise in presales roles focused on artificial intelligence, such as experience with AI-integrated solutions and a blend of sales and technical acumen. However, the job's location requirement is a significant mismatch. The position requires the candidate to be in the US Eastern Time zone, which does not align with the candidate's preference for opportunities in Canberra, Sydney, or remote work within Australia. Additionally, while the role involves AI, it is more focused on GRC SaaS solutions, which may not fully align with the candidate's specific interest in presales roles centered on AI. Therefore, despite some alignment in skills and experience, the location and specific focus of the role significantly reduce the match score.",
+    "scanned": true,
+    "scanDate": "2025-07-08T12:51:42.770Z",
+    "jobUrl": "https://www.linkedin.com/jobs/view/sales-engineer-at-reviva-deorganising-crime-%E2%84%A2-4259440111"
+  },
+  {
+    "jobId": "sales-engineer-at-revmo-4260307585",
+    "timestamp": "2025-07-08T22:52:46.587+10:00",
+    "title": "Sales Engineer",
+    "company": "Revmo",
+    "location": "Austin, TX",
+    "description": "As a Sales Engineer at Revmo, you'll play a critical role in the pre- and post-sales lifecycle. You’ll help bring our AI agents to life by crafting compelling demos, owning technical discovery, overseeing agent implementation and integrations, and continually optimizing agent performance. You’ll serve as the technical backbone of our sales motion and the frontline engineer for client success.",
+    "requirements": [
+      "2–4 years in a Sales Engineering, Solutions Engineering, or Technical Customer Success role, ideally in SaaS or AI/automation",
+      "Hands-on experience with API integrations, low-code tools, or configuring conversational AI/chatbots/IVRs",
+      "1-2 years leveraging modern LLM technologies (ChatGPT, Claude, etc), especially in conversational applications for business clients",
+      "Strong communicator who can translate technical concepts to non-technical audiences",
+      "Data- and outcome-oriented mindset with a bias toward action",
+      "Familiarity with telephony concepts (e.g. call routing, SIP, porting) is a bonus",
+      "Comfort navigating tools like HubSpot, Postman, Zapier, Google Sheets, or Python"
+    ],
+    "salary": null,
+    "jobType": "Full-time",
+    "experienceLevel": "Mid-Senior level",
+    "remoteStatus": null,
+    "companyInfo": {
+      "size": null,
+      "industry": "Technology, Information and Internet",
+      "founded": null,
+      "description": "Revmo.ai is redefining voice automation. We power conversations that answer phones, impress customers, and boost revenue — at scale."
+    },
+    "benefits": [
+      "Medical insurance",
+      "Vision insurance",
+      "Dental insurance",
+      "401(k)"
+    ],
+    "technologies": [
+      "API integrations",
+      "low-code tools",
+      "conversational AI/chatbots/IVRs",
+      "LLM technologies (ChatGPT, Claude, etc)",
+      "HubSpot",
+      "Postman",
+      "Zapier",
+      "Google Sheets",
+      "Python"
+    ],
+    "matchScore": 0.3,
+    "matchReason": "The job role of Sales Engineer at Revmo aligns well with the candidate's expertise in presales roles focused on artificial intelligence. The responsibilities and requirements, such as experience with AI/automation, API integrations, and modern LLM technologies, are relevant to the candidate's skills. However, the job location is a significant mismatch, as it is based in Austin, TX, and does not offer remote work within Australia, which is a critical criterion for the candidate. The original search query specifies opportunities in Canberra, Sydney, or remote within Australia, and this job does not meet that geographic requirement. Therefore, despite the role's relevance to the candidate's skills, the location mismatch significantly reduces the overall match score.",
+    "scanned": true,
+    "scanDate": "2025-07-08T12:52:46.581Z",
+    "jobUrl": "https://www.linkedin.com/jobs/view/sales-engineer-at-revmo-4260307585"
+  },
+  {
+    "jobId": "sales-engineer-at-shelf-4253260507",
+    "timestamp": "2025-07-08T22:58:31.430+10:00",
+    "title": "Sales Engineer",
+    "company": "Shelf",
+    "location": "New York City Metropolitan Area",
+    "description": "As a Sales Engineer at Shelf, you will support sales efforts and internal data initiatives by designing demo environments, integrating and analyzing sales data, and collaborating across teams. This role is ideal for someone who thrives in fluid situations, enjoys learning new technical skills quickly, and is motivated by turning high-level direction into real-world solutions. It offers a path toward Solutions Consulting.",
+    "requirements": [
+      "2–5 years in a technical, sales engineering, or analytics role",
+      "Proficient in Python and/or JavaScript for automation or data manipulation",
+      "Experience working with REST APIs, data pipelines, and system integrations",
+      "Familiarity with data modeling and concepts related to unstructured or semi-structured data",
+      "Strong communication and collaboration skills with both technical and business teams",
+      "Able to operate independently and effectively in ambiguous or evolving situations",
+      "Demonstrated ability to learn and apply new technical concepts quickly",
+      "Eager to grow into a Solutions Consultant role with increasing customer-facing responsibility"
+    ],
+    "salary": null,
+    "jobType": "Full-time",
+    "experienceLevel": "Entry level",
+    "remoteStatus": "Remote",
+    "companyInfo": {
+      "size": "Over 100 employees",
+      "industry": "Software Development",
+      "founded": null,
+      "description": "Shelf provides core infrastructure that enables GenAI to be deployed at scale, helping companies deliver more accurate GenAI answers by eliminating bad data in documents and files."
+    },
+    "benefits": [
+      "Competitive starting salary",
+      "Generous equity grant in the form of company stock options",
+      "Open PTO",
+      "Comprehensive health and wellness packages"
+    ],
+    "technologies": [
       "Python",
+      "JavaScript",
+      "REST APIs",
+      "CRM",
+      "Data pipelines"
+    ],
+    "matchScore": 0.3,
+    "matchReason": "The job title 'Sales Engineer' at Shelf involves responsibilities that align with presales roles, such as supporting sales efforts and designing demo environments. However, the job is located in the New York City Metropolitan Area, which does not match the candidate's preferred locations of Canberra, Sydney, or remote work within Australia. Additionally, while the role involves technical skills and a path toward Solutions Consulting, it does not specifically focus on artificial intelligence, which is a key aspect of the candidate's expertise and search query. The lack of AI focus and the location mismatch significantly reduce the relevance of this job to the candidate's profile and search criteria.",
+    "scanned": true,
+    "scanDate": "2025-07-08T12:58:31.423Z",
+    "jobUrl": "https://www.linkedin.com/jobs/view/sales-engineer-at-shelf-4253260507"
+  },
+  {
+    "jobId": "sales-engineer-at-simon-data-4253329753",
+    "timestamp": "2025-07-08T22:57:24.348+10:00",
+    "title": "Sales Engineer",
+    "company": "Simon Data",
+    "location": "United States",
+    "description": "We are seeking a highly motivated and results-oriented Sales Engineer to join our pre-sales team. As a Sales Engineer at Simon Data, you will be responsible for driving revenue growth by working closely with potential clients, understanding their needs, their architecture and driving the technical solutioning. This role requires a strong work ethic, excellent technical solutioning and demoing skills, teamwork, and the ability to build and maintain relationships with key technical stakeholders.",
+    "requirements": [
+      "3+ years of professional sales engineering or solutions engineering experience",
+      "Experience working for a B2B SaaS company; MarTech (specifically CDP) and high-growth startup experience strongly preferred",
+      "Bachelor's degree (technical degree a plus)",
+      "Cross-functional solutioning: Ability to partner with marketing, data, and engineering teams to align on business goals and design scalable, consensus-driven solutions",
+      "Alignment to marketing KPIs: Experience mapping marketing objectives to technical solutions and articulating how those solutions support channel performance and revenue growth",
+      "Data model design: Ability to work with data teams to design and adapt complex data models that support business requirements and power marketing use cases",
+      "Technical skills: Proficiency in SQL strongly preferred; experience with other database technologies or programming languages a plus",
+      "Partner collaboration (nice to have): Experience working with partner teams to align on joint value propositions and co-selling strategies that drive revenue and customer impact",
+      "Curious, driven self-starter who is excited to implement a newly defined sales engineering motion, balancing great execution with thoughtful feedback and iteration",
+      "A strategic problem solver who is outcome-driven and is able to succeed in an unstructured and fast-paced environment",
+      "Experience as a top performer in previous roles",
+      "Superior emotional intelligence and interpersonal skills",
+      "Ability to work independently to deliver outcomes, and collaborate with and across teams",
+      "Strong presentation skills and the ability to think on your feet"
+    ],
+    "salary": "$100,000.00/yr - $125,000.00/yr",
+    "jobType": "Full-time",
+    "experienceLevel": "Associate",
+    "remoteStatus": null,
+    "companyInfo": {
+      "size": null,
+      "industry": "Software Development",
+      "founded": "2015",
+      "description": "Simon Data is a complete solution that empowers marketers with the data, technology, and expert resources they need to stop guessing and start delivering what customers want. Our revolutionary Simon AI puts 100x more data at marketers’ fingertips, helping them uncover their best audiences, launch higher-performing campaigns, and double their output without doubling the workload."
+    },
+    "benefits": [
+      "Medical insurance",
+      "Vision insurance",
+      "Dental insurance",
+      "401(k)",
+      "Paid paternity leave",
+      "Commuter benefits"
+    ],
+    "technologies": [
+      "SQL"
+    ],
+    "matchScore": 0.2,
+    "matchReason": "The job position of Sales Engineer at Simon Data does not align well with the candidate's search criteria. Firstly, the location is a significant mismatch as the job is based in the United States, whereas the candidate is seeking opportunities in Canberra, Sydney, or remote work within Australia. This alone significantly reduces the match score. Secondly, while the role is a presales position, it is focused on MarTech and CDP solutions rather than artificial intelligence, which is the candidate's area of expertise. Although the candidate's experience in presales roles is relevant, the specific industry focus and location requirements are not met, resulting in a low match score.",
+    "scanned": true,
+    "scanDate": "2025-07-08T12:57:24.340Z",
+    "jobUrl": "https://www.linkedin.com/jobs/view/sales-engineer-at-simon-data-4253329753"
+  },
+  {
+    "jobId": "sales-engineer-at-strategic-employment-partners-sep-4256562008",
+    "timestamp": "2025-07-08T22:53:09.933+10:00",
+    "title": "Sales Engineer",
+    "company": "Strategic Employment Partners (SEP)",
+    "location": "New York, United States",
+    "description": "Our client, a well-funded, early-stage company experiencing rapid growth with big-name clients already on board, is on the lookout for a highly driven Sales Engineer looking to make a significant impact at a fast-growing, mission-driven tech company. They're revolutionizing information security compliance by providing a powerful, no-code configurable platform powered by configurability, integrations, and agentic AI. This is a unique opportunity to shape the trajectory of a company that's helping enterprises keep customer data safe with a next-generation GRC platform.",
+    "requirements": [
+      "At least 2 years of Sales Engineering experience in Enterprise B2B SaaS.",
+      "Strong understanding of Enterprise B2B SaaS platform basics, including cloud infrastructure, APIs, and information security.",
+      "A baseline understanding of agentic AI is essential.",
+      "Articulate complex technical concepts clearly to both technical and non-technical audiences.",
+      "Proven ability to deliver with excellence in a fast-paced environment, managing multiple projects and prioritizing effectively."
+    ],
+    "salary": "Base 100-110k, OTE 140-170k +potential equity",
+    "jobType": "Full-time",
+    "experienceLevel": "Not Applicable",
+    "remoteStatus": "Remote- NY preferred - Open to all EST",
+    "companyInfo": {
+      "size": null,
+      "industry": "Technology, Information and Media and IT Services and IT Consulting",
+      "founded": null,
+      "description": null
+    },
+    "benefits": [
+      "Unlimited Vacation Days",
+      "Flexible Work: Hybrid working",
+      "Training for career progression",
+      "Choice of Laptop",
+      "Medical insurance",
+      "Vision insurance",
+      "Dental insurance"
+    ],
+    "technologies": [
+      "cloud infrastructure",
+      "APIs",
+      "agentic AI"
+    ],
+    "matchScore": 0.2,
+    "matchReason": "The job title 'Sales Engineer' aligns with the candidate's expertise in presales roles, particularly with a focus on AI, as the job involves agentic AI and requires articulating complex technical concepts. However, the job location is a significant mismatch, as it is based in New York, United States, whereas the candidate is seeking opportunities in Canberra, Sydney, or remote within Australia. Additionally, the job is centered around information security compliance rather than a direct focus on AI, which slightly diverges from the candidate's original search query of 'Presales Engineer AI'. Due to the location mismatch and the partial relevance to the candidate's AI focus, the match score is significantly reduced.",
+    "scanned": true,
+    "scanDate": "2025-07-08T12:53:09.927Z",
+    "jobUrl": "https://www.linkedin.com/jobs/view/sales-engineer-at-strategic-employment-partners-sep-4256562008"
+  },
+  {
+    "jobId": "sales-engineer-at-thoughtful-ai-4222329688",
+    "timestamp": "2025-07-08T22:54:49.866+10:00",
+    "title": "Sales Engineer",
+    "company": "Thoughtful AI",
+    "location": "United States",
+    "description": "We are seeking a Sales Engineer who is passionate about helping healthcare organizations transform their revenue cycle operations through cutting-edge AI technologies. As a Sales Engineer, you will partner closely with our sales, marketing, and engineering teams to engage prospects, understand their technical environments and challenges, and reveal compelling AI solutions that showcase the value of our platform. This is a fast-paced, customer-facing role for someone who loves solving complex problems, communicating technical solutions with clarity, and influencing strategic buying decisions.",
+    "requirements": [
+      "3-6+ years of experience in sales engineering, solutions consulting, technical pre-sales, product management, or a similar customer-facing technical role.",
+      "1-2 years of experience in healthcare, especially in RCM or similar health tech.",
+      "Strong technical background with a deep understanding of APIs, integrations, data models, automation, and security considerations.",
+      "Outstanding problem-solving skills and ability to architect creative solutions that align to customer needs.",
+      "Excellent verbal and written communication skills, with an ability to simplify complex topics for diverse audiences.",
+      "Comfortable engaging with both business and technical stakeholders in a consultative selling motion.",
+      "Self-starter who thrives in a fast-paced, high-growth environment with a high degree of ownership."
+    ],
+    "salary": null,
+    "jobType": "Full-time",
+    "experienceLevel": "Mid-Senior level",
+    "remoteStatus": null,
+    "companyInfo": {
+      "size": null,
+      "industry": "Software Development",
+      "founded": null,
+      "description": null
+    },
+    "benefits": [
+      "Market-leading base salary and bonus",
+      "Employee stock options",
+      "Medical, dental, and vision insurance for you and your dependents",
+      "Three weeks paid vacation"
+    ],
+    "technologies": [
+      "APIs",
+      "Integrations",
+      "Data models",
+      "Automation",
+      "Security considerations"
+    ],
+    "matchScore": 0.3,
+    "matchReason": "The job title 'Sales Engineer' at Thoughtful AI aligns with the candidate's expertise in presales roles focused on artificial intelligence, as the role involves engaging with prospects and showcasing AI solutions. However, the job is located in the United States, which does not match the candidate's location preference of Canberra, Sydney, or remote work within Australia. Additionally, the job requires specific experience in healthcare, particularly in revenue cycle management (RCM), which may not align with the candidate's background unless they have relevant healthcare experience. The mismatch in location and potential industry experience reduces the overall match score significantly.",
+    "scanned": true,
+    "scanDate": "2025-07-08T12:54:49.859Z",
+    "jobUrl": "https://www.linkedin.com/jobs/view/sales-engineer-at-thoughtful-ai-4222329688"
+  },
+  {
+    "jobId": "sales-engineer-at-topsort-4245545748",
+    "timestamp": "2025-07-08T22:49:33.376+10:00",
+    "title": "Sales Engineer",
+    "company": "Topsort",
+    "location": "Boston, MA",
+    "description": "We are looking for a hands-on and client-facing Software Engineer focused on integrations to join our team at Topsort. In this role, you will translate real-world business needs into scalable product solutions, collaborating with sales, product, and engineering teams. You will engage with prospects and clients, own technical discovery and demos, design solutions, support RFPs, and lead the entire integration process. You will act as a bridge between tech and customer success, ensuring seamless API integrations.",
+    "requirements": [
+      "3+ years in software development, managing integrations, APIs, system interoperability, or ad tech",
+      "Strong experience with RESTful APIs, authentication methods (OAuth), and data formats (JSON, XML)",
+      "Proven ability to communicate complex technical ideas clearly to both technical and non-technical audiences",
+      "Demonstrated success working directly with enterprise clients",
+      "Comfortable navigating ambiguity and making decisions with incomplete information",
+      "Clear sense of ownership from pre-sales design through implementation and post-sale success",
+      "Experience collaborating with product and engineering teams",
+      "Bachelor's degree and above in Computer Science, Engineering, or related field",
+      "Familiarity with CRM tools and integration platforms",
+      "Strong ability to interact with both technical and non-technical audiences"
+    ],
+    "salary": null,
+    "jobType": "Full-time",
+    "experienceLevel": "Mid-Senior level",
+    "remoteStatus": null,
+    "companyInfo": {
+      "size": null,
+      "industry": "Technology, Information and Internet",
+      "founded": "2021",
+      "description": "Topsort is a global company focused on democratizing advertising technologies, creating a privacy-first, cookie-free world of clean advertising with modern tech and AI. Founded in 2021, it has rapidly grown with hubs worldwide and customers in 40+ countries."
+    },
+    "benefits": [],
+    "technologies": [
+      "RESTful APIs",
+      "OAuth",
+      "JSON",
+      "XML",
+      "CRM tools"
+    ],
+    "matchScore": 0.2,
+    "matchReason": "The job title 'Sales Engineer' at Topsort in Boston, MA, does not align with the candidate's location preference of Canberra, Sydney, or remote work within Australia. The role is focused on software engineering and integrations, which involves translating business needs into product solutions, managing API integrations, and working with enterprise clients. While there is some overlap with presales activities, such as technical discovery and demos, the job does not specifically focus on artificial intelligence, which is a key area of interest for the candidate. Additionally, the location requirement is a significant mismatch, as the job is based in Boston, MA, with no indication of remote work options within Australia. Therefore, the match score is low due to the location and focus misalignment with the candidate's profile and search query.",
+    "scanned": true,
+    "scanDate": "2025-07-08T12:49:33.370Z",
+    "jobUrl": "https://www.linkedin.com/jobs/view/sales-engineer-at-topsort-4245545748"
+  },
+  {
+    "jobId": "sales-engineer-at-you-com-4206597358",
+    "timestamp": "2025-07-08T22:56:07.086+10:00",
+    "title": "Sales Engineer",
+    "company": "You.com",
+    "location": "New York, NY",
+    "description": "We are seeking a Sales Engineer to join our dynamic team and play a pivotal role in driving the technical aspects of the enterprise sales cycle. This role is ideal for a seasoned professional with a strong technical background, exceptional communication skills, and a passion for solving complex business challenges. As a trusted advisor to prospects and customers, you will help shape the future of enterprise solutions by showcasing the value of our SaaS platform and ensuring seamless transitions to post-sales teams.",
+    "requirements": [
+      "Proficiency in cloud platforms, APIs, Generative AI, and workflow solutions.",
+      "Strong understanding of enterprise business processes and how technology can drive efficiency and innovation.",
+      "Exceptional communication and presentation skills, with the ability to engage both technical and non-technical audiences.",
+      "Proven ability to build trust and credibility with enterprise customers.",
+      "Experience in presales or solution engineering roles, with a track record of contributing to license deal wins.",
+      "Ability to identify customer pain points and articulate the value of tailored solutions."
+    ],
+    "salary": "$195,000—$225,000 USD",
+    "jobType": "Full-time",
+    "experienceLevel": "Mid-Senior level",
+    "remoteStatus": "On-site",
+    "companyInfo": {
+      "size": null,
+      "industry": "Software Development",
+      "founded": null,
+      "description": "You.com is an AI-powered search and productivity platform designed to empower users with personalized, efficient, and trustworthy search experiences."
+    },
+    "benefits": [
+      "Hubs in San Francisco and New York City offering regular in-person gatherings and co-working sessions",
+      "Flexible PTO with 11 U.S. holidays observed and a week shutdown in December to rest and recharge",
+      "A competitive health insurance plan covers 100% of the policyholder and 75% for dependents",
+      "12 weeks of paid parental leave in the US",
+      "401k program, 3% match - vested immediately",
+      "$500 work-from-home stipend to be used up to a year of your start date",
+      "$1,200 per year Health & Wellness Allowance to support your personal goals",
+      "Chance to collaborate with a team at the forefront of AI research"
+    ],
+    "technologies": [
+      "cloud platforms",
+      "APIs",
+      "Generative AI",
+      "workflow solutions"
+    ],
+    "matchScore": 0.3,
+    "matchReason": "The job title 'Sales Engineer' at You.com aligns with the candidate's expertise in presales roles, particularly with a focus on artificial intelligence, as the role involves showcasing the value of a SaaS platform and engaging with enterprise customers. The key requirements, such as proficiency in cloud platforms, APIs, Generative AI, and workflow solutions, match the candidate's skills in AI-focused presales roles. However, the job location is a significant mismatch, as it is based in New York, NY, and does not offer remote work within Australia, nor is it located in Canberra or Sydney. This location discrepancy significantly reduces the match score, as the candidate is specifically seeking opportunities in Australia. Additionally, the original search query emphasizes a focus on AI, which is somewhat addressed in the job description, but the location mismatch is a critical factor in the reduced score.",
+    "scanned": true,
+    "scanDate": "2025-07-08T12:56:07.079Z",
+    "jobUrl": "https://www.linkedin.com/jobs/view/sales-engineer-at-you-com-4206597358"
+  },
+  {
+    "jobId": "sales-engineer-at-you-com-4206599067",
+    "timestamp": "2025-07-08T22:58:26.345+10:00",
+    "title": "Sales Engineer",
+    "company": "You.com",
+    "location": "San Francisco, CA",
+    "description": "We are seeking a Sales Engineer to join our dynamic team and play a pivotal role in driving the technical aspects of the enterprise sales cycle. This role is ideal for a seasoned professional with a strong technical background, exceptional communication skills, and a passion for solving complex business challenges. As a trusted advisor to prospects and customers, you will help shape the future of enterprise solutions by showcasing the value of our SaaS platform and ensuring seamless transitions to post-sales teams.",
+    "requirements": [
+      "Proficiency in cloud platforms, APIs, Generative AI, and workflow solutions.",
+      "Strong understanding of enterprise business processes and how technology can drive efficiency and innovation.",
+      "Exceptional communication and presentation skills, with the ability to engage both technical and non-technical audiences.",
+      "Proven ability to build trust and credibility with enterprise customers.",
+      "Experience in presales or solution engineering roles, with a track record of contributing to license deal wins.",
+      "Ability to identify customer pain points and articulate the value of tailored solutions."
+    ],
+    "salary": "$195,000—$225,000 USD",
+    "jobType": "Full-time",
+    "experienceLevel": "Mid-Senior level",
+    "remoteStatus": "On-site",
+    "companyInfo": {
+      "size": null,
+      "industry": "Software Development",
+      "founded": null,
+      "description": "You.com is an AI-powered search and productivity platform designed to empower users with personalized, efficient, and trustworthy search experiences."
+    },
+    "benefits": [
+      "Hubs in San Francisco and New York City offering regular in-person gatherings and co-working sessions",
+      "Flexible PTO with 11 U.S. holidays observed and a week shutdown in December",
+      "A competitive health insurance plan covers 100% of the policyholder and 75% for dependents",
+      "12 weeks of paid parental leave in the US",
+      "401k program, 3% match - vested immediately",
+      "$500 work-from-home stipend",
+      "$1,200 per year Health & Wellness Allowance",
+      "Chance to collaborate with a team at the forefront of AI research"
+    ],
+    "technologies": [
+      "cloud platforms",
+      "APIs",
+      "Generative AI",
+      "workflow solutions"
+    ],
+    "matchScore": 0.3,
+    "matchReason": "The job role of Sales Engineer at You.com aligns well with the candidate's expertise in presales roles focused on artificial intelligence, as it requires experience in presales or solution engineering and proficiency in Generative AI. However, the job location is a significant mismatch, as it is based in San Francisco, CA, and does not offer remote work within Australia, which is a key criterion for the candidate who is seeking opportunities in Canberra, Sydney, or remote within Australia. Additionally, the job does not explicitly mention a focus on artificial intelligence, which is a primary interest of the candidate. These location and focus discrepancies significantly reduce the match score.",
+    "scanned": true,
+    "scanDate": "2025-07-08T12:58:26.339Z",
+    "jobUrl": "https://www.linkedin.com/jobs/view/sales-engineer-at-you-com-4206599067"
+  },
+  {
+    "jobId": "sales-engineer-central-at-atlan-4216310840",
+    "timestamp": "2025-07-08T22:50:49.251+10:00",
+    "title": "Sales Engineer - Central",
+    "company": "Atlan",
+    "location": "United States",
+    "description": "As a Sales Engineer at Atlan, you will build strong relationships with stakeholders, understand their data challenges, and act as a trusted advisor. You will evangelize Atlan's platform, assist in decision-making processes, and provide feedback to the product team. The role involves working with enterprise customers and requires a strong data background and technical expertise.",
+    "requirements": [
+      "Prior experience as a Sales Engineer or Technical Data Practitioner in customer-facing roles (minimum 7 years)",
+      "Experience working with data technology",
+      "Proficiency in SQL and RestAPI's",
+      "Programming skills in Python, Java, Go, or another language",
+      "Experience with Enterprise/Strategic customers",
+      "Strong communication and stakeholder management skills",
+      "Entrepreneurial mindset"
+    ],
+    "salary": null,
+    "jobType": "Full-time",
+    "experienceLevel": "Mid-Senior level",
+    "remoteStatus": "Remote",
+    "companyInfo": {
+      "size": null,
+      "industry": "Software Development",
+      "founded": null,
+      "description": "Atlan is a company focused on transforming data chaos into clarity with its active metadata platform, empowering teams across industries to unlock the full potential of their data."
+    },
+    "benefits": [
+      "Ownership from Day One",
+      "Limitless Opportunities",
+      "A Global Data Community"
+    ],
+    "technologies": [
+      "SQL",
+      "RestAPI",
+      "Python",
+      "Java",
+      "Go"
+    ],
+    "matchScore": 0.2,
+    "matchReason": "The job title 'Sales Engineer' at Atlan does align with the candidate's expertise in presales roles. However, the job is located in the United States, which does not meet the candidate's location preference of Canberra, Sydney, or remote work within Australia. Additionally, the job description emphasizes a strong data background and technical expertise, which may overlap with the candidate's focus on artificial intelligence, but it does not specifically mention AI as a core component of the role. The original search query was for a 'Presales Engineer AI,' and while there is some overlap in the presales aspect, the lack of AI focus and the location mismatch significantly reduce the relevance of this job to the candidate's profile and search criteria.",
+    "scanned": true,
+    "scanDate": "2025-07-08T12:50:49.245Z",
+    "jobUrl": "https://www.linkedin.com/jobs/view/sales-engineer-central-at-atlan-4216310840"
+  },
+  {
+    "jobId": "sales-engineer-central-at-atlan-4216315116",
+    "timestamp": "2025-07-08T22:50:52.109+10:00",
+    "title": "Sales Engineer - Central",
+    "company": "Atlan",
+    "location": "United States",
+    "description": "As a Sales Engineer at Atlan, you will build strong relationships with stakeholders, understand their data challenges, and act as a trusted advisor. You will evangelize Atlan's platform and agile data culture, assist in decision-making processes, and provide customer feedback to the product team. This role is crucial in helping customers solve problems and building a modern data platform.",
+    "requirements": [
+      "Prior experience as a Sales Engineer or Technical Data Practitioner in customer-facing roles (minimum 7 years)",
+      "Experience working with data technology",
+      "Proficiency in SQL and RestAPI's",
+      "Programming skills in Python, Java, Go, or another language",
+      "Experience with Enterprise/Strategic customers and complex sales cycles",
+      "Strong communication and stakeholder management skills",
+      "Entrepreneurial mindset"
+    ],
+    "salary": null,
+    "jobType": "Full-time",
+    "experienceLevel": "Mid-Senior level",
+    "remoteStatus": "Remote",
+    "companyInfo": {
+      "size": null,
+      "industry": "Software Development",
+      "founded": null,
+      "description": "Atlan is a leading active metadata platform helping organizations transform data chaos into clarity. Recognized by Gartner and Forrester, Atlan empowers teams across industries to unlock the full potential of their data."
+    },
+    "benefits": [
+      "Ownership from Day One",
+      "Limitless Opportunities",
+      "A Global Data Community"
+    ],
+    "technologies": [
+      "SQL",
+      "RestAPI",
+      "Python",
+      "Java",
+      "Go"
+    ],
+    "matchScore": 0.2,
+    "matchReason": "The job title 'Sales Engineer' at Atlan does not align well with the candidate's focus on presales roles specifically centered around artificial intelligence. While the role involves customer-facing activities similar to presales, it is more oriented towards data technology rather than AI. Furthermore, the job location is in the United States, which does not meet the candidate's location preference of Canberra, Sydney, or remote work within Australia. The role's requirements, such as experience with data technology and programming skills, might be relevant to the candidate's technical background, but the mismatch in location and specific AI focus significantly reduces the overall match score.",
+    "scanned": true,
+    "scanDate": "2025-07-08T12:50:52.103Z",
+    "jobUrl": "https://www.linkedin.com/jobs/view/sales-engineer-central-at-atlan-4216315116"
+  },
+  {
+    "jobId": "sales-engineer-east-coast-us-at-hiddenlayer-4256759948",
+    "timestamp": "2025-07-08T22:51:17.874+10:00",
+    "title": "Sales Engineer, East Coast US",
+    "company": "HiddenLayer",
+    "location": "East coast, NYC/Boston",
+    "description": "We are seeking a motivated Sales Engineer to join our sales team, specializing in the AI security space. As a Sales Engineer, you will be instrumental in driving the adoption of our innovative AI security solutions, working closely with our sales representatives and prospective clients to understand their security needs, demonstrate the capabilities of our products, and architect tailored solutions that address their unique requirements. Your technical expertise, combined with strong communication and interpersonal skills, will be essential in building and maintaining relationships with clients and effectively articulating the value proposition of our AI security offerings.",
+    "requirements": [
+      "Proven experience in a technical sales or sales engineering role within the cybersecurity industry, preferably in the AI security space.",
+      "Exposure to 2 technologies required: Docker, Kubernetes, API Integration, Python/other scripting languages, Cloud networking",
+      "Strong understanding of cybersecurity principles, methodologies, and technologies, with a focus on AI-driven security solutions.",
+      "Proven comfort with cloud devops, cloud security, command line and leveraging APIs",
+      "Proficiency in articulating technical concepts and value propositions to both technical and non-technical audiences.",
+      "Experience with conducting product demonstrations, proof of concepts (PoCs), and technical presentations.",
+      "Excellent interpersonal and communication skills, with the ability to build and maintain relationships with clients and internal stakeholders.",
+      "Self-motivated with a passion for technology and a drive for continuous learning and development.",
+      "Willingness to travel as needed to client sites and industry events."
+    ],
+    "salary": null,
+    "jobType": "Full-time",
+    "experienceLevel": "Mid-Senior level",
+    "remoteStatus": "Remote",
+    "companyInfo": {
+      "size": null,
+      "industry": "Computer and Network Security",
+      "founded": null,
+      "description": "HiddenLayer protects the world’s most valuable technologies from adversarial AI attacks. We were founded by AI professionals and security specialists with first-hand experience of how insidious adversarial AI attacks can be to detect and defend against. Determined to prove that these attacks were preventable, the team developed a unique, patent-pending, productized solution to support organizations in accelerating their adoption of AI securely."
+    },
+    "benefits": [
+      "Fully Remote: We are a completely remote global team.",
+      "Flexible Time Off: Enjoy unlimited and flexible time off for all salaried employees, in addition to 15 paid company holidays.",
+      "Commitment to Learning and Development: We support personal growth and education through a dedicated L&D fund.",
+      "Diversity, Equity, and Inclusion: We are committed to building a diverse team."
+    ],
+    "technologies": [
+      "Docker",
+      "Kubernetes",
+      "API Integration",
+      "Python",
+      "Cloud networking"
+    ],
+    "matchScore": 0.2,
+    "matchReason": "The job title 'Sales Engineer' aligns with the candidate's expertise in presales roles, and the focus on AI security solutions is relevant to the candidate's interest in artificial intelligence. However, the job location is on the East Coast of the US (NYC/Boston), which does not match the candidate's preference for positions in Canberra, Sydney, or remote work within Australia. Additionally, while the role involves AI, it is specifically within the cybersecurity domain, which may not fully align with the candidate's broader AI presales focus unless they have specific experience in AI-driven security solutions. The requirement for willingness to travel to client sites and industry events further reduces the match, as it implies a US-based presence. Therefore, due to the significant location mismatch and potential domain specificity, the match score is low.",
+    "scanned": true,
+    "scanDate": "2025-07-08T12:51:17.867Z",
+    "jobUrl": "https://www.linkedin.com/jobs/view/sales-engineer-east-coast-us-at-hiddenlayer-4256759948"
+  },
+  {
+    "jobId": "sales-engineer-enterprise-select-tola-at-samsara-4248468705",
+    "timestamp": "2025-07-08T22:49:29.433+10:00",
+    "title": "Sales Engineer, Enterprise Select - TOLA",
+    "company": "Samsara",
+    "location": "United States",
+    "description": "Samsara is seeking a Sales Engineer for the Enterprise Select - TOLA region. The role involves becoming an expert on Samsara products, articulating their benefits to prospects, and delivering work that closes deals. Responsibilities include writing proof-of-concept scripts, acting as a liaison between product and sales teams, and embedding Samsara’s cultural principles. The position requires a Bachelor's degree, 5 years of relevant experience, and the ability to explain complex technical concepts to non-technical audiences.",
+    "requirements": [
+      "Bachelor's of Science degree from a 4-year accredited university",
+      "5 years experience in pre-sales, customer success, or customer/product support",
+      "Ability to influence stakeholders with technical sales acumen",
+      "Ability to explain complex technical concepts to non-technical audiences",
+      "Experience managing hardware and/or software product evaluations",
+      "Basic understanding of electronics and electrical systems",
+      "Experience with technical consulting, cloud software, cloud-connected hardware, computer networking, business systems integration, automation and control systems"
+    ],
+    "salary": "$163,030—$191,800 USD",
+    "jobType": "Full-time",
+    "experienceLevel": "Mid-Senior level",
+    "remoteStatus": "Flexible",
+    "companyInfo": {
+      "size": null,
+      "industry": "Software Development",
+      "founded": null,
+      "description": "Samsara is the pioneer of the Connected Operations™ Cloud, enabling organizations to harness IoT data to improve operations across industries like agriculture, construction, and transportation."
+    },
+    "benefits": [
+      "Competitive total compensation package",
+      "Employee-led remote and flexible working",
+      "Health benefits",
+      "Samsara for Good charity fund"
+    ],
+    "technologies": [
+      "IoT",
+      "AI",
+      "Computer vision",
+      "Open APIs",
+      "Bash",
+      "Python",
+      "JavaScript"
+    ],
+    "matchScore": 0.2,
+    "matchReason": "The job title 'Sales Engineer, Enterprise Select - TOLA' at Samsara is primarily focused on technical sales and pre-sales activities, which aligns with the candidate's expertise in presales roles. However, the job is located in the United States, specifically for the TOLA region, which does not match the candidate's location preference of Canberra, Sydney, or remote work within Australia. Additionally, while the candidate is focused on artificial intelligence, the job description does not explicitly mention AI, instead focusing on cloud software, cloud-connected hardware, and other technical areas. This lack of alignment with the candidate's focus on AI further reduces the match score. Therefore, due to the location mismatch and the absence of a specific focus on artificial intelligence, the match score is low.",
+    "scanned": true,
+    "scanDate": "2025-07-08T12:49:29.427Z",
+    "jobUrl": "https://www.linkedin.com/jobs/view/sales-engineer-enterprise-select-tola-at-samsara-4248468705"
+  },
+  {
+    "jobId": "sales-engineer-google-workspace-with-gemini-at-suitebriar-4249239197",
+    "timestamp": "2025-07-08T22:54:52.399+10:00",
+    "title": "Sales Engineer (Google Workspace with Gemini)",
+    "company": "Suitebriar",
+    "location": "United States",
+    "description": "We’re seeking a Sales Engineer who’s excited about enabling customer success at the intersection of collaboration and AI. This role supports the sales process by providing technical expertise in Google Workspace and Gemini for Workspace, which enhances tools like Gmail, Docs, Sheets, Slides, and Meet with generative AI capabilities. As a key customer-facing team member, you’ll collaborate with engineering, sales, and customer stakeholders to qualify opportunities, shape technical solutions, and demonstrate how Google Workspace and Gemini can solve real business problems.",
+    "requirements": [
+      "Bachelor’s degree or equivalent practical experience",
+      "Google Professional Collaboration Engineer Certification (or ability to complete within 30 days)",
+      "Google Sales Credentials (to be completed within 30 days)",
+      "3+ years of experience in a customer-facing technical role (sales engineering, consulting, or architecture)",
+      "Strong written and verbal communication skills",
+      "Experience developing technical documentation and architecture designs",
+      "Hands-on experience with Google Workspace and the Gemini AI features",
+      "Understanding of email infrastructure (MX/DNS records), routing, and migration from Exchange/O365",
+      "Familiarity with identity and access management solutions (Okta, Azure AD, ADFS)",
+      "Experience with Active Directory provisioning and lifecycle management",
+      "Awareness of AI adoption strategies and data security best practices in enterprise environments"
+    ],
+    "salary": null,
+    "jobType": "Full-time",
+    "experienceLevel": "Mid-Senior level",
+    "remoteStatus": "Remote",
+    "companyInfo": {
+      "size": null,
+      "industry": "IT Services and IT Consulting",
+      "founded": null,
+      "description": "Suitebriar is a Google Cloud Premier Partner that has helped organizations modernize with Google Workspace since its inception as a G Suite launch partner in 2010. Our expertise now spans the full Google Cloud portfolio, with a growing focus on AI and automation."
+    },
+    "benefits": [
+      "Remote-first team with flexible working hours",
+      "100% covered employee health insurance (medical, dental, and vision)",
+      "Generous PTO and company holidays",
+      "Paid parental leave",
+      "401(k) with employer match",
+      "Certification and training reimbursement",
+      "Opportunities for advancement in a fast-growing, AI-forward cloud partner"
+    ],
+    "technologies": [
+      "Google Workspace",
+      "Gemini AI",
+      "Gmail",
+      "Docs",
+      "Sheets",
+      "Slides",
+      "Meet",
+      "Okta",
+      "Azure AD",
+      "ADFS",
+      "Active Directory"
+    ],
+    "matchScore": 0.2,
+    "matchReason": "The job title 'Sales Engineer (Google Workspace with Gemini)' at Suitebriar is a presales role that involves AI, which aligns with the candidate's expertise in presales roles focused on artificial intelligence. However, the job is located in the United States, which does not match the candidate's location preference of Canberra, Sydney, or remote work within Australia. Additionally, the job's primary focus is on Google Workspace and Gemini AI features, which may not fully align with the candidate's specific AI expertise unless they have experience with these tools. The location mismatch significantly reduces the match score, as the candidate is specifically seeking opportunities in Australia or remote work within the country.",
+    "scanned": true,
+    "scanDate": "2025-07-08T12:54:52.393Z",
+    "jobUrl": "https://www.linkedin.com/jobs/view/sales-engineer-google-workspace-with-gemini-at-suitebriar-4249239197"
+  },
+  {
+    "jobId": "sales-engineer-location-intelligence-at-precisely-4233107825",
+    "timestamp": "2025-07-08T22:54:26.354+10:00",
+    "title": "Sales Engineer (Location Intelligence)",
+    "company": "Precisely",
+    "location": "United States",
+    "description": "Precisely is seeking a Sales Engineer specializing in Location Intelligence. The role involves architecting technology solutions, supporting enterprise sales, providing technical leadership, and collaborating with various teams to meet client needs. The candidate will engage with customers to understand their goals and articulate how Precisely's solutions can be integrated into their operations. The position requires staying informed about industry trends and identifying opportunities to implement new technologies.",
+    "requirements": [
+      "3+ years of experience in technology domain areas such as sales engineering, software architecture, cloud computing, data & analytics",
+      "Design, implementation, or consulting experience in application architecture",
+      "Infrastructure architecture, database architecture, and analytics experience",
+      "Experience with data management domains like data integration, data quality, data governance, master data management",
+      "Experience in location intelligence and data enrichment is a plus",
+      "Expertise with AI/ML technologies is a plus",
+      "Ability to formulate solution storylines and collaborate in creating client value propositions",
+      "Technical communication skills",
+      "Experience in industries such as Financial Services, Telecommunications, Manufacturing, Retail, Healthcare, Utilities, Prop Tech"
+    ],
+    "salary": null,
+    "jobType": "Full-time",
+    "experienceLevel": "Mid-Senior level",
+    "remoteStatus": "Remote",
+    "companyInfo": {
+      "size": "2500 employees",
+      "industry": "Software Development",
+      "founded": null,
+      "description": "Precisely is a leader in data integrity, empowering businesses with trusted data through software, data enrichment products, and strategic services. The company serves over 12,000 global organizations, including 93 of the Fortune 100, and operates with core values of Openness, Determination, Individuality, and Collaboration."
+    },
+    "benefits": [
+      "Career development opportunities",
+      "Work from anywhere culture",
+      "Diversity in a distributed environment"
+    ],
+    "technologies": [
+      "Cloud computing",
+      "Data & analytics",
+      "Data integration",
+      "Data quality",
+      "Data governance",
+      "Master data management",
+      "AI/ML technologies"
+    ],
+    "matchScore": 0.2,
+    "matchReason": "The job title 'Sales Engineer (Location Intelligence)' at Precisely does not align well with the candidate's focus on presales roles specifically centered around artificial intelligence. While the role involves some relevant skills such as technical communication and experience with AI/ML technologies, these are only listed as a plus rather than core requirements. Additionally, the job is located in the United States, which does not meet the candidate's location preference of Canberra, Sydney, or remote work within Australia. The mismatch in both the job's primary focus and location significantly reduces the relevance to the candidate's search criteria.",
+    "scanned": true,
+    "scanDate": "2025-07-08T12:54:26.348Z",
+    "jobUrl": "https://www.linkedin.com/jobs/view/sales-engineer-location-intelligence-at-precisely-4233107825"
+  },
+  {
+    "jobId": "sales-engineer-remote-at-anvilogic-4253817380",
+    "timestamp": "2025-07-08T22:49:10.593+10:00",
+    "title": "Sales Engineer (Remote)",
+    "company": "Anvilogic",
+    "location": "United States",
+    "description": "Anvilogic is seeking a Sales Engineer to join their team remotely. The role involves helping customers articulate their problems and fitting Anvilogic's platform to solve them. The ideal candidate should have a strong technical background in SIEM and Security Operations, with experience in Splunk, Snowflake, and/or Azure. Anvilogic is a Palo Alto-based AI cybersecurity startup founded in 2019, focused on democratizing threat detection and hunting for SOC teams.",
+    "requirements": [
+      "Experienced pre-sales engineer",
+      "Strong technical background in SIEM + Security Operations",
+      "Experience with Splunk, Snowflake, and/or Azure",
+      "Experience with SPL, SQL, and/or KQL",
+      "Security experience and domain expertise",
+      "Ready to lead in a dynamic start-up",
+      "Passionate and humble team player"
+    ],
+    "salary": "$190,000.00/yr - $255,000.00/yr",
+    "jobType": "Full-time",
+    "experienceLevel": "Mid-Senior level",
+    "remoteStatus": "Remote",
+    "companyInfo": {
+      "size": null,
+      "industry": "IT Services and IT Consulting",
+      "founded": "2019",
+      "description": "Anvilogic is a Palo Alto-based AI cybersecurity startup focused on democratizing threat detection and hunting for SOC teams."
+    },
+    "benefits": [
+      "Competitive salary range with equity in the company",
+      "Comprehensive medical, dental, and vision insurance",
+      "Unlimited paid time off policy",
+      "401(k) retirement plan with company match",
+      "Monthly stipend for home internet and cell phone expenses"
+    ],
+    "technologies": [
+      "SIEM",
+      "Splunk",
+      "Snowflake",
+      "Azure",
+      "SPL",
+      "SQL",
+      "KQL"
+    ],
+    "matchScore": 0.3,
+    "matchReason": "The job title 'Sales Engineer' aligns with the candidate's expertise in presales roles. However, the focus of the job is on cybersecurity and SIEM (Security Information and Event Management) rather than artificial intelligence, which is the candidate's primary area of interest. Additionally, the job is located in the United States and does not offer remote work within Australia, which does not meet the candidate's location preference for Canberra, Sydney, or remote work within Australia. The technical requirements, such as experience with Splunk, Snowflake, and Azure, do not directly relate to AI, further reducing the relevance to the candidate's search query for a 'Presales Engineer AI' role. Therefore, while there is some overlap in the presales aspect, the job does not sufficiently align with the candidate's specific focus and location requirements.",
+    "scanned": true,
+    "scanDate": "2025-07-08T12:49:10.586Z",
+    "jobUrl": "https://www.linkedin.com/jobs/view/sales-engineer-remote-at-anvilogic-4253817380"
+  },
+  {
+    "jobId": "sales-engineer-remote-us-at-jobgether-4208157212",
+    "timestamp": "2025-07-08T22:52:48.957+10:00",
+    "title": "Sales Engineer - (Remote - US)",
+    "company": "Jobgether",
+    "location": "United States",
+    "description": "This role is ideal for a technically skilled and client-focused individual with a passion for cybersecurity. As a Sales Engineer, you will play a critical part in showcasing how cutting-edge threat detection and response solutions can proactively protect organizations. Working alongside sales and product teams, you'll bridge the gap between complex technical capabilities and real-world business needs. This role involves engaging with prospective clients, delivering compelling product demos, and helping guide prospects through evaluations. It's a hands-on, high-impact position in a rapidly growing company, where your expertise directly supports the mission of stopping cyber threats before they start.",
+    "requirements": [
+      "4-6 years in a Sales Engineering, Pre-Sales, or client-facing technical role, ideally within the cybersecurity space",
+      "Technical background in cybersecurity tools such as EDR, firewalls, IDS/IPS, antivirus, and Windows network administration",
+      "Experience with SaaS platforms and familiarity working with Managed Service Providers (MSPs)",
+      "Solid understanding of networking principles (IP addressing, DNS, DHCP) and security compliance standards",
+      "Ability to script and automate workflows to streamline product demonstrations or deployments",
+      "Exceptional communication and presentation skills, capable of engaging a wide range of stakeholders",
+      "Strong time management, organizational skills, and the ability to handle multiple client engagements simultaneously"
+    ],
+    "salary": null,
+    "jobType": "Full-time",
+    "experienceLevel": "Mid-Senior level",
+    "remoteStatus": "Remote",
+    "companyInfo": {
+      "size": null,
+      "industry": "Non-profit Organizations and Primary and Secondary Education",
+      "founded": null,
+      "description": "Jobgether is a Talent Matching Platform that partners with companies worldwide to efficiently connect top talent with the right opportunities through AI-driven job matching."
+    },
+    "benefits": [
+      "Competitive compensation package",
+      "Discretionary Time Off (DTO) policy for flexible paid leave",
+      "Comprehensive health, vision, and dental insurance plans",
+      "Life insurance coverage",
+      "401(k) retirement plan with company match",
+      "Fully remote-friendly work culture",
+      "Equal opportunity workplace committed to diversity and inclusion"
+    ],
+    "technologies": [
+      "EDR",
+      "firewalls",
+      "IDS/IPS",
+      "antivirus",
+      "Windows network administration",
+      "SaaS platforms"
+    ],
+    "matchScore": 0.2,
+    "matchReason": "The job posting for a Sales Engineer at Jobgether is primarily focused on cybersecurity, which does not align with the candidate's expertise in presales roles focused on artificial intelligence. Additionally, the job is located in the United States and does not offer remote work within Australia, which does not meet the candidate's location preference of Canberra, Sydney, or remote within Australia. While the role involves presales activities, the specific industry focus and location requirements significantly reduce the match score. The candidate's original search query for a 'Presales Engineer AI' does not align with the cybersecurity focus of this job, further lowering the relevance.",
+    "scanned": true,
+    "scanDate": "2025-07-08T12:52:48.950Z",
+    "jobUrl": "https://www.linkedin.com/jobs/view/sales-engineer-remote-us-at-jobgether-4208157212"
+  },
+  {
+    "jobId": "sales-engineer-remote-us-at-jobgether-4217873536",
+    "timestamp": "2025-07-08T22:49:59.317+10:00",
+    "title": "Sales Engineer - (Remote - US)",
+    "company": "Jobgether",
+    "location": "United States",
+    "description": "This is a dynamic opportunity for a Sales Engineer to play a pivotal role in bridging the gap between sales, product, and delivery teams. In this position, you'll work closely with sales representatives and clients, providing technical and operational support to ensure that solutions are effectively scoped and tailored to customer needs. You will also support the development of proposals, pricing models, and hand-off documentation to implementation teams. Your ability to translate complex product capabilities into practical, client-specific solutions will be key to your success. This is a high-impact, cross-functional role ideal for a proactive and detail-oriented professional passionate about improving healthcare through technology.",
+    "requirements": [
+      "7+ years of experience in sales engineering, solutions consulting, or similar customer-facing roles—ideally within healthcare or technology sectors",
+      "Proven ability to understand technical product features and translate them into customer-centric value propositions",
+      "Skilled in managing complex sales cycles and multi-stakeholder coordination",
+      "Strong communication skills with both technical and non-technical audiences",
+      "Proficiency with Salesforce or similar CRM tools; experience with RFP management is a plus",
+      "Exceptional organizational and analytical skills, with the ability to juggle multiple projects under tight deadlines",
+      "Comfortable working in a fast-paced, remote-first environment with occasional travel"
+    ],
+    "salary": null,
+    "jobType": "Full-time",
+    "experienceLevel": "Mid-Senior level",
+    "remoteStatus": "Remote",
+    "companyInfo": {
+      "size": null,
+      "industry": "Non-profit Organizations and Primary and Secondary Education",
+      "founded": null,
+      "description": "Jobgether is a Talent Matching Platform that partners with companies worldwide to efficiently connect top talent with the right opportunities through AI-driven job matching."
+    },
+    "benefits": [
+      "Competitive compensation package with health, dental, and vision insurance",
+      "Autonomy and flexibility in a remote-first work environment",
+      "Opportunity to work at the intersection of healthcare and technology",
+      "Exposure to strategic projects and collaboration with executive leadership",
+      "Professional growth in a high-impact, mission-driven company",
+      "Inclusive culture committed to learning, belonging, and continuous improvement"
+    ],
+    "technologies": [
+      "Salesforce"
+    ],
+    "matchScore": 0.2,
+    "matchReason": "The job title 'Sales Engineer' aligns with the candidate's expertise in presales roles, and the job involves technical and operational support, which is relevant to presales activities. However, the job is located in the United States and is not remote within Australia, which does not meet the candidate's location preference of Canberra, Sydney, or remote work within Australia. Additionally, the job focuses on healthcare technology rather than artificial intelligence, which is the candidate's area of focus. These discrepancies in location and industry focus significantly reduce the match score.",
+    "scanned": true,
+    "scanDate": "2025-07-08T12:49:59.311Z",
+    "jobUrl": "https://www.linkedin.com/jobs/view/sales-engineer-remote-us-at-jobgether-4217873536"
+  },
+  {
+    "jobId": "sales-engineer-se-desk-at-samsara-4253976308",
+    "timestamp": "2025-07-08T22:50:00.121+10:00",
+    "title": "Sales Engineer, SE Desk",
+    "company": "Samsara",
+    "location": "United States",
+    "description": "This is an exciting entry level role that will allow you to come into Samsara, and build a career as a Sales Engineer. As a Sales Engineer (SE) at Samsara, you’d be part of a diverse group of technically-minded folks working together to bring our unique connected operations technology to customers. Our daily customer engagements include conversations around logistics/supply chain management, fleet maintenance strategies, global asset management, machine control systems/diagnostics, system integration, and regulatory compliance. This means a successful SE at Samsara will develop a thorough understanding of IoT hardware and sensors, hands-on installation/deployment scenarios, carrier networks, cloud infrastructure, and third-party system integrations (via our open API) to ensure the proper technical solution is presented to our customers.",
+    "requirements": [
+      "Ability to explain complex technical concepts to non-technical audiences",
+      "Basic understanding of electronics and electrical systems",
+      "Experience with technical consulting, cloud software, cloud-connected hardware, computer networking, business systems integration, automation and control systems",
+      "Must be located within and authorized to work in the United States"
+    ],
+    "salary": "$69,317.50—$93,200 USD",
+    "jobType": "Full-time",
+    "experienceLevel": "Entry level",
+    "remoteStatus": "Remote",
+    "companyInfo": {
+      "size": null,
+      "industry": "Software Development",
+      "founded": null,
+      "description": "Samsara is the pioneer of the Connected Operations™ Cloud, enabling organizations to harness IoT data to improve operations in industries like agriculture, construction, field services, transportation, and manufacturing."
+    },
+    "benefits": [
+      "Competitive total compensation package",
+      "Employee-led remote and flexible working",
+      "Health benefits",
+      "Samsara for Good charity fund"
+    ],
+    "technologies": [
+      "IoT",
+      "AI",
+      "Computer vision",
+      "APIs",
+      "Bash",
+      "Python",
+      "JavaScript",
+      "Controller Area Networks (CAN bus)",
+      "Power Take Off (PTO)"
+    ],
+    "matchScore": 0.2,
+    "matchReason": "The job at Samsara is for a Sales Engineer role, which is somewhat related to presales roles. However, the focus of this position is on IoT hardware, logistics, and supply chain management rather than artificial intelligence, which is the candidate's area of expertise. Additionally, the job is located in the United States and requires candidates to be authorized to work there, which does not align with the candidate's preference for opportunities in Canberra, Sydney, or remote work within Australia. These significant location and domain mismatches result in a low match score.",
+    "scanned": true,
+    "scanDate": "2025-07-08T12:50:00.112Z",
+    "jobUrl": "https://www.linkedin.com/jobs/view/sales-engineer-se-desk-at-samsara-4253976308"
+  },
+  {
+    "jobId": "sales-engineer-usa-west-at-atlan-4216315119",
+    "timestamp": "2025-07-08T22:53:14.852+10:00",
+    "title": "Sales Engineer, USA West",
+    "company": "Atlan",
+    "location": "United States",
+    "description": "As a Sales Engineer at Atlan, you will build strong relationships with stakeholders, understand their data challenges, and act as a trusted advisor. You'll evangelize Atlan's agile data culture, provide customized demos, run trials, and gather customer feedback to improve the product. This role is crucial in helping customers solve problems and make informed decisions about integrating Atlan into their workflows.",
+    "requirements": [
+      "Prior experience as a Sales Engineer or Technical Data Practitioner in customer-facing roles (minimum 7 years)",
+      "Experience working with data technology",
+      "Proficiency in SQL and RestAPI's",
+      "Programming skills in Python, Java, Go, or another language",
+      "Experience with Enterprise/Strategic customers and complex sales cycles",
+      "Strong communication and stakeholder management skills",
+      "Entrepreneurial mindset"
+    ],
+    "salary": null,
+    "jobType": "Full-time",
+    "experienceLevel": "Mid-Senior level",
+    "remoteStatus": "Remote",
+    "companyInfo": {
+      "size": null,
+      "industry": "Software Development",
+      "founded": null,
+      "description": "Atlan is a leader in active metadata platforms, helping organizations transform data chaos into clarity. Recognized by Gartner and Forrester, Atlan empowers teams across industries to unlock the full potential of their data."
+    },
+    "benefits": [
+      "Ownership from Day One",
+      "Limitless Opportunities",
+      "A Global Data Community"
+    ],
+    "technologies": [
+      "SQL",
+      "RestAPI",
+      "Python",
+      "Java",
+      "Go"
+    ],
+    "matchScore": 0.2,
+    "matchReason": "The job title 'Sales Engineer, USA West' at Atlan does not align with the candidate's location preference, as it is based in the United States and not in Canberra, Sydney, or offering remote work within Australia. While the role involves presales activities and requires experience with data technology, which could be relevant to the candidate's expertise in presales roles focused on artificial intelligence, the location mismatch significantly reduces the match score. Additionally, the job description does not explicitly mention artificial intelligence, which is a key focus of the candidate's search query. Therefore, the relevance to the candidate's profile and original search parameters is limited.",
+    "scanned": true,
+    "scanDate": "2025-07-08T12:53:14.846Z",
+    "jobUrl": "https://www.linkedin.com/jobs/view/sales-engineer-usa-west-at-atlan-4216315119"
+  },
+  {
+    "jobId": "sales-engineer-west-at-sentra-4133081215",
+    "timestamp": "2025-07-08T22:53:33.988+10:00",
+    "title": "Sales Engineer - West",
+    "company": "Sentra",
+    "location": "New York, NY",
+    "description": "Sentra is seeking a dynamic and experienced Sales Engineer to join their team. The role involves acting as a bridge between sales and technical teams, showcasing the value of Sentra's solutions to prospective clients, and ensuring successful implementations. Responsibilities include providing technical expertise throughout the sales cycle, demonstrating product capabilities, collaborating with product and sales teams, and staying current on industry trends.",
+    "requirements": [
+      "5+ years of experience in sales engineering or technical sales roles, in the cybersecurity or data management industry.",
+      "Experience with public cloud providers (AWS, GCP and Azure), as well as DevOps tools such as CloudFormation and Terraform.",
+      "Proven track record of exceeding sales targets and driving revenue growth.",
+      "Excellent communication and presentation skills.",
+      "Deep understanding of data security principles and technologies.",
+      "Familiarity with regulatory compliance frameworks and data security/privacy requirements - an advantage."
+    ],
+    "salary": null,
+    "jobType": "Full-time",
+    "experienceLevel": "Not Applicable",
+    "remoteStatus": null,
+    "companyInfo": {
+      "size": null,
+      "industry": "Computer and Network Security",
+      "founded": null,
+      "description": "Sentra is the global leader in cloud-native data security for the AI era, empowering organizations to scale their data operations across multi-cloud and on-premises environments while leveraging AI without compromising security."
+    },
+    "benefits": [],
+    "technologies": [
+      "AWS",
+      "GCP",
+      "Azure",
+      "CloudFormation",
+      "Terraform"
+    ],
+    "matchScore": 0.2,
+    "matchReason": "The job title 'Sales Engineer' at Sentra does not align with the candidate's focus on presales roles specifically related to artificial intelligence. The job is centered on sales engineering within the cybersecurity or data management industry, which differs from the candidate's expertise in AI. Additionally, the job location is New York, NY, which does not match the candidate's preference for positions in Canberra, Sydney, or remote work within Australia. While the candidate may have relevant skills in technical sales and communication, the industry focus and location significantly reduce the match score.",
+    "scanned": true,
+    "scanDate": "2025-07-08T12:53:33.979Z",
+    "jobUrl": "https://www.linkedin.com/jobs/view/sales-engineer-west-at-sentra-4133081215"
+  },
+  {
+    "jobId": "sales-engineer-west-or-central-at-hyperscience-4251974884",
+    "timestamp": "2025-07-08T22:56:04.591+10:00",
+    "title": "Sales Engineer - (West or Central)",
+    "company": "Hyperscience",
+    "location": "Central, UT",
+    "description": "We are looking for a Sales Engineer based in the Western or Central United States to help support our growing Sales team in achieving revenue targets. You’ll partner with Account Executives to build and execute on custom demos and presentations. You will serve as the technical liaison between Sales and other parts of the organization, especially Product and Engineering, to help articulate uniquely valuable Enterprise solutions that drive revenue growth. Responsibilities include conveying customer needs, managing customer POCs, developing internal solutions, and educating technical concepts to various audiences.",
+    "requirements": [
+      "5–7 years+ of a strong background in a pre-sales, sales engineering, or related role within enterprise SaaS software",
+      "BSc in a technical field (Computer Science, Engineering, or Mathematics) or equivalent practical background",
+      "Strong comprehension of modern cloud architecture, SaaS, and on-premises deployments",
+      "Familiarity with scripting languages and API requests",
+      "Background scoping and selling integrations and implementations",
+      "Savvy presentation and demonstration skills",
+      "Curiosity to learn and assimilate technical information quickly",
+      "Experience influencing and building customer advocates",
+      "Keen analytical and problem-solving skills",
+      "Advocate for team selling",
+      "Ability to travel"
+    ],
+    "salary": "$129,000.00/yr - $194,000.00/yr",
+    "jobType": "Full-time",
+    "experienceLevel": "Not Applicable",
+    "remoteStatus": null,
+    "companyInfo": {
+      "size": null,
+      "industry": "Software Development",
+      "founded": null,
+      "description": "Hyperscience is a market leader in hyperautomation and a provider of enterprise AI infrastructure software. The Hyperscience Hypercell platform unlocks the value of an organization’s back office data through the automation of end-to-end processes."
+    },
+    "benefits": [
+      "Top-notch healthcare for you and your family",
+      "A 100% 401(k) match for up to 6% of your annual salary",
+      "Flexible PTO with the approval of your manager",
+      "12 weeks of parental leave and an additional 4 weeks for birthing parents",
+      "Stock options"
+    ],
+    "technologies": [
+      "RPA",
+      "OCR",
+      "document management systems",
+      "intelligent document processing",
+      "FSBI",
+      "Logistics & Transportation",
+      "Medical Technology"
+    ],
+    "matchScore": 0.2,
+    "matchReason": "The job title 'Sales Engineer' aligns with the candidate's expertise in presales roles, and the responsibilities such as building demos, managing POCs, and technical liaison work are relevant to presales activities. However, the job location is a significant mismatch as it is based in the Western or Central United States, whereas the candidate is seeking opportunities in Canberra, Sydney, or remote within Australia. Additionally, while the job involves enterprise SaaS software, there is no specific mention of a focus on artificial intelligence, which is a key aspect of the candidate's search query. Therefore, due to the location mismatch and lack of specific AI focus, the match score is significantly reduced.",
+    "scanned": true,
+    "scanDate": "2025-07-08T12:56:04.581Z",
+    "jobUrl": "https://www.linkedin.com/jobs/view/sales-engineer-west-or-central-at-hyperscience-4251974884"
+  },
+  {
+    "jobId": "sales-engineer-west-or-central-at-hyperscience-4251976478",
+    "timestamp": "2025-07-08T22:52:26.923+10:00",
+    "title": "Sales Engineer - (West or Central)",
+    "company": "Hyperscience",
+    "location": "Miami-Fort Lauderdale Area",
+    "description": "We are looking for a Sales Engineer based in the Western or Central United States to help support our growing Sales team in achieving revenue targets. You’ll partner with Account Executives to build and execute on custom demos and presentations. You will serve as the technical liaison between Sales and other parts of the organization, especially Product and Engineering, to help articulate uniquely valuable Enterprise solutions that drive revenue growth. Responsibilities include conveying customer needs, managing customer POCs, developing internal solutions, and educating technical concepts to various audiences.",
+    "requirements": [
+      "5–7 years+ of a strong background in a pre-sales, sales engineering, or related role within enterprise SaaS software",
+      "BSc in a technical field (Computer Science, Engineering, or Mathematics) or equivalent practical background",
+      "Strong comprehension of modern cloud architecture, SaaS, and on-premises deployments",
+      "Familiarity with scripting languages and API requests",
+      "Background scoping and selling integrations and implementations",
+      "Savvy presentation and demonstration skills",
+      "Curiosity to learn and assimilate technical information quickly",
+      "Experience influencing and building customer advocates",
+      "Keen analytical and problem-solving skills",
+      "Ability to travel"
+    ],
+    "salary": "$129,000.00/yr - $194,000.00/yr + Bonus",
+    "jobType": "Full-time",
+    "experienceLevel": "Not Applicable",
+    "remoteStatus": "Remote",
+    "companyInfo": {
+      "size": null,
+      "industry": "Software Development",
+      "founded": null,
+      "description": "Hyperscience is a market leader in hyperautomation and a provider of enterprise AI infrastructure software. The Hyperscience Hypercell platform unlocks the value of an organization’s back office data through the automation of end-to-end processes."
+    },
+    "benefits": [
+      "Top-notch healthcare for you and your family",
+      "A 100% 401(k) match for up to 6% of your annual salary",
+      "Flexible PTO with the approval of your manager",
+      "12 weeks of parental leave and an additional 4 weeks for birthing parents",
+      "Stock options"
+    ],
+    "technologies": [
+      "RPA",
+      "OCR",
+      "document management systems",
+      "intelligent document processing"
+    ],
+    "matchScore": 0.2,
+    "matchReason": "The job title 'Sales Engineer' aligns with the candidate's expertise in presales roles, and the responsibilities such as building demos, managing POCs, and conveying customer needs are relevant to presales activities. However, the job location is a significant mismatch as it is based in the Western or Central United States, specifically the Miami-Fort Lauderdale area, which does not align with the candidate's preference for Canberra, Sydney, or remote work within Australia. Additionally, while the candidate is focused on artificial intelligence, the job description does not explicitly mention a focus on AI, which is a key aspect of the candidate's search query. Therefore, despite some alignment in role responsibilities, the location and lack of AI focus significantly reduce the match score.",
+    "scanned": true,
+    "scanDate": "2025-07-08T12:52:26.915Z",
+    "jobUrl": "https://www.linkedin.com/jobs/view/sales-engineer-west-or-central-at-hyperscience-4251976478"
+  },
+  {
+    "jobId": "sales-engineer-west-or-central-at-hyperscience-4251981202",
+    "timestamp": "2025-07-08T22:51:43.472+10:00",
+    "title": "Sales Engineer - (West or Central)",
+    "company": "Hyperscience",
+    "location": "United States",
+    "description": "We are looking for a Sales Engineer based in the Western or Central United States to help support our growing Sales team in achieving revenue targets. You’ll partner with Account Executives to build and execute on custom demos and presentations. You will serve as the technical liaison between Sales and other parts of the organization, especially Product and Engineering, to help articulate uniquely valuable Enterprise solutions that drive revenue growth. Responsibilities include managing customer POCs, developing internal solutions to increase sales efficiency, and educating technical concepts to various audiences.",
+    "requirements": [
+      "5–7 years+ of a strong background in a pre-sales, sales engineering, or related role within enterprise SaaS software",
+      "BSc in a technical field (Computer Science, Engineering, or Mathematics) or equivalent practical background",
+      "Strong comprehension of modern cloud architecture, SaaS, and on-premises deployments",
+      "Familiarity with scripting languages and API requests",
+      "Background scoping and selling integrations and implementations",
+      "Savvy presentation and demonstration skills",
+      "Curiosity to learn and assimilate technical information quickly",
+      "Experience influencing and building customer advocates",
+      "Keen analytical and problem-solving skills",
+      "Ability to travel"
+    ],
+    "salary": "$129,000.00/yr - $194,000.00/yr",
+    "jobType": "Full-time",
+    "experienceLevel": "Not Applicable",
+    "remoteStatus": "Remote",
+    "companyInfo": {
+      "size": null,
+      "industry": "Software Development",
+      "founded": null,
+      "description": "Hyperscience is a market leader in hyperautomation and a provider of enterprise AI infrastructure software. The Hyperscience Hypercell platform unlocks the value of an organization’s back office data through the automation of end-to-end processes."
+    },
+    "benefits": [
+      "Top-notch healthcare for you and your family",
+      "A 100% 401(k) match for up to 6% of your annual salary",
+      "Flexible PTO with the approval of your manager",
+      "12 weeks of parental leave and an additional 4 weeks for birthing parents",
+      "Stock options"
+    ],
+    "technologies": [
+      "RPA",
+      "OCR",
+      "document management systems",
+      "intelligent document processing"
+    ],
+    "matchScore": 0.2,
+    "matchReason": "The job title 'Sales Engineer' aligns with the candidate's expertise in presales roles, and the responsibilities such as building demos, serving as a technical liaison, and managing POCs are relevant to presales functions. However, the job is located in the United States, specifically requiring a candidate based in the Western or Central regions, which does not align with the candidate's location preference of Canberra, Sydney, or remote work within Australia. Additionally, while the job involves enterprise SaaS software, there is no specific mention of a focus on artificial intelligence, which is a key aspect of the candidate's search query. Due to the significant mismatch in location and the lack of explicit AI focus, the match score is reduced significantly.",
+    "scanned": true,
+    "scanDate": "2025-07-08T12:51:43.465Z",
+    "jobUrl": "https://www.linkedin.com/jobs/view/sales-engineer-west-or-central-at-hyperscience-4251981202"
+  },
+  {
+    "jobId": "sales-engineer-with-warehouse-automation-experience-at-prime-robotics-4258154155",
+    "timestamp": "2025-07-08T22:50:26.882+10:00",
+    "title": "Sales Engineer with Warehouse Automation Experience",
+    "company": "Prime Robotics",
+    "location": "United States",
+    "description": "We are looking for a dynamic Sales Engineer to join Prime Robotics. In this role, you will work directly with customers to understand their distribution operations challenges and design tailored robotic automation solutions that address their specific needs. You will lead the end-to-end solution development process, ranging from data analysis and ROI modeling to simulation and concept design.",
+    "requirements": [
+      "3-5 years of warehouse automation and/or distribution center operations experience",
+      "BS/MS in Industrial Engineering (preferred), Operations Research, other engineering disciplines or equivalent by experience",
+      "MBA/MS preferred",
+      "Leverage generative AI tools and agents to drive solution development process",
+      "Data analytics experience using python/R preferred or willingness to learn",
+      "Proficiency in AutoCAD and 3D CAD software (SketchUP 3D, CET Configura etc)",
+      "Familiarity with discrete event simulation and/or digital twin software packages (Anylogic, FlexSim, AutoMod, Simio, SimPy etc)",
+      "Knowledge of WMS/WES systems and software integrations",
+      "Strong project management skills",
+      "Ability to empathize with various client/buyer personas",
+      "Ability to travel to client sites (30%)"
+    ],
+    "salary": null,
+    "jobType": "Full-time",
+    "experienceLevel": "Mid-Senior level",
+    "remoteStatus": "Remote",
+    "companyInfo": {
+      "size": null,
+      "industry": "Non-profit Organizations and Primary and Secondary Education",
+      "founded": null,
+      "description": null
+    },
+    "benefits": [
+      "Employer-subsidized medical, dental, and vision insurance plans",
+      "Dedicated vacation and sick leave",
+      "Invaluable hands-on experience with cutting-edge robotics technology",
+      "A collaborative culture where innovation thrives",
+      "The excitement of contributing to transformative technology in a fast-growing industry"
+    ],
+    "technologies": [
+      "AutoCAD",
+      "3D CAD software",
+      "SketchUP 3D",
+      "CET Configura",
+      "Anylogic",
+      "FlexSim",
+      "AutoMod",
+      "Simio",
+      "SimPy",
+      "WMS/WES systems",
+      "Python",
+      "R"
+    ],
+    "matchScore": 0.2,
+    "matchReason": "The job title 'Sales Engineer with Warehouse Automation Experience' at Prime Robotics does not align well with the candidate's expertise in presales roles focused on artificial intelligence. The job is heavily centered around warehouse automation and distribution center operations, requiring specific experience in these areas, which is not indicated in the candidate's profile. Additionally, the job is located in the United States, which does not meet the candidate's location preference of Canberra, Sydney, or remote work within Australia. While the job does mention leveraging generative AI tools, this is a minor aspect compared to the overall focus on warehouse automation, which further reduces the relevance to the candidate's search query for 'Presales Engineer AI'. Therefore, the match score is low due to both the location mismatch and the lack of alignment with the candidate's AI-focused presales expertise.",
+    "scanned": true,
+    "scanDate": "2025-07-08T12:50:26.877Z",
+    "jobUrl": "https://www.linkedin.com/jobs/view/sales-engineer-with-warehouse-automation-experience-at-prime-robotics-4258154155"
+  },
+  {
+    "jobId": "sales-engineering-applications-engineer-western-usa-remote-at-march-networks-4258968531",
+    "timestamp": "2025-07-08T22:49:08.267+10:00",
+    "title": "Sales Engineering - Applications Engineer - Western, USA (remote)",
+    "company": "March Networks",
+    "location": "California, United States",
+    "description": "The Applications Engineer will work with enterprise customers to shorten the sales cycle by overcoming technical hurdles within these accounts. They will also work closely internally with product management and R&D to aid in software design. This position requires relationship building with customers and internal departments, participation in the R&D agile process, and communication of technical material to customers.",
+    "requirements": [
+      "College or University Degree in a business or technical discipline",
+      "Minimum 4 years of experience in networks and deployment of client/server software",
+      "Skills in Azure, AWS, Active Directory, SAML, SSL/TLS, SQL, Linux, and CCTV/video surveillance equipment",
+      "Understanding of software development complexities",
+      "Understanding of Agile processes",
+      "Experience with large IT organizations",
+      "Excellent communication skills",
+      "Proven track record in providing customer satisfaction",
+      "Understanding of manufacturing organization operations",
+      "Results-driven with initiative and resilience",
+      "Some project management experience"
+    ],
+    "salary": null,
+    "jobType": "Full-time",
+    "experienceLevel": "Mid-Senior level",
+    "remoteStatus": "Remote",
+    "companyInfo": {
+      "size": null,
+      "industry": "IT Services and IT Consulting",
+      "founded": null,
+      "description": "March Networks is a global technology company that encourages teamwork and innovation, valuing hard work, creativity, and a desire to deliver the best to customers and partners."
+    },
+    "benefits": [
+      "Flexibility and support for a healthy work-life balance",
+      "Professional development opportunities"
+    ],
+    "technologies": [
+      "Azure",
+      "AWS",
+      "Active Directory",
+      "SAML",
+      "SSL/TLS",
+      "SQL",
+      "Linux",
+      "CCTV/video surveillance equipment",
+      "Jira"
+    ],
+    "matchScore": 0.2,
+    "matchReason": "The job title 'Sales Engineering - Applications Engineer' and the responsibilities align with a presales role, which is relevant to the candidate's expertise. However, the focus of the job is not on artificial intelligence, which is a key aspect of the candidate's search query. Additionally, the job is located in California, USA, and does not offer remote work within Australia, which is a critical requirement for the candidate. The technical skills required, such as experience with networks, client/server software, and various IT systems, could be relevant to a presales role, but the lack of focus on AI and the unsuitable location significantly reduce the match score.",
+    "scanned": true,
+    "scanDate": "2025-07-08T12:49:08.260Z",
+    "jobUrl": "https://www.linkedin.com/jobs/view/sales-engineering-applications-engineer-western-usa-remote-at-march-networks-4258968531"
+  },
+  {
+    "jobId": "senior-pre-sales-solutions-engineer-at-deepgram-4244722337",
+    "timestamp": "2025-07-08T22:57:43.347+10:00",
+    "title": "Senior Pre-Sales Solutions Engineer",
+    "company": "Deepgram",
+    "location": "United States",
+    "description": "Deepgram is seeking a Senior Pre-Sales Solutions Engineer to join our Applied Engineering team. The role involves driving technical pre-sales engagements, crafting technical solutions, providing technical validation, and demonstrating the value of Deepgram's platform. The candidate will collaborate with the sales team, influence product strategy, and contribute to the evolution of pre-sales methodology.",
+    "requirements": [
+      "5+ years of experience in technical pre-sales, solutions architecture, or similar customer-facing technical roles",
+      "Strong software engineering background with professional development experience in at least one modern programming language, such as Python, JavaScript/TypeScript",
+      "Proven track record of successfully navigating complex technical sales cycles",
+      "Experience building and demonstrating proof-of-concepts or technical solutions to diverse audiences",
+      "Excellent verbal and written communication skills"
+    ],
+    "salary": null,
+    "jobType": "Full-time",
+    "experienceLevel": "Mid-Senior level",
+    "remoteStatus": null,
+    "companyInfo": {
+      "size": "400+ enterprise customers",
+      "industry": "Software Development",
+      "founded": null,
+      "description": "Deepgram is the leading voice AI platform for developers building speech-to-text, text-to-speech, and full speech-to-speech offerings."
+    },
+    "benefits": [],
+    "technologies": [
+      "Python",
+      "JavaScript",
+      "TypeScript",
+      "AWS",
+      "GCP",
+      "Azure",
+      "Docker",
+      "Kubernetes",
+      "API integration"
+    ],
+    "matchScore": 0.3,
+    "matchReason": "The job title 'Senior Pre-Sales Solutions Engineer' aligns well with the candidate's expertise in presales roles, particularly with a focus on technical pre-sales engagements and crafting technical solutions. The requirement for experience in technical pre-sales, solutions architecture, and a strong software engineering background is a good fit for the candidate's skills. However, the job is located in the United States, which does not align with the candidate's location preference of Canberra, Sydney, or remote work within Australia. Additionally, while the role involves technical solutions and pre-sales, there is no explicit mention of a focus on artificial intelligence, which is a key aspect of the candidate's search query. Due to the mismatch in location and the lack of specific emphasis on AI, the match score is significantly reduced.",
+    "scanned": true,
+    "scanDate": "2025-07-08T12:57:43.338Z",
+    "jobUrl": "https://www.linkedin.com/jobs/view/senior-pre-sales-solutions-engineer-at-deepgram-4244722337"
+  },
+  {
+    "jobId": "senior-sales-engineer-at-sgnl-4081600523",
+    "timestamp": "2025-07-08T22:52:06.453+10:00",
+    "title": "Senior Sales Engineer",
+    "company": "SGNL",
+    "location": "Palo Alto, CA",
+    "description": "The Senior Sales Engineer at SGNL is a critical function within the sales team, working closely with account managers to win deals and drive business forward. The role involves being a trusted technical advisor to customers, primarily within the Fortune 1000, and requires excellent technical, communication, and organizational skills. The position demands experience with Identity and Access Management (IAM) architectures and involves explaining technical features and solving potential roadblocks for prospective customers and partners.",
+    "requirements": [
+      "8+ years sales engineering or related experience in an Identity and Access Management context",
+      "7+ years of integration software development experience with at least one modern language (Python, Go, Java, C#, etc.)",
+      "5+ years experience implementing cloud-based infrastructure for sales engineering purposes (AWS, Azure, and/or GCP)",
+      "Advanced project management, team leadership, and interpersonal communication skills",
+      "Deep understanding of best practices regarding Identity and Access Management and system security measures",
+      "Extensive knowledge of computer systems, operating systems, system security, networking, and web platforms",
+      "Comfort presenting and delivering technical demonstrations to executives, architects, and technical staff",
+      "Ability to quickly understand complex enterprise architectures, especially as relates to Identity and Access Management",
+      "Ability to quickly learn, understand, and work with new emerging technologies, methodologies and solutions in the cloud/IT technology space"
+    ],
+    "salary": "$150,000.00/yr - $250,000.00/yr",
+    "jobType": "Full-time",
+    "experienceLevel": "Mid-Senior level",
+    "remoteStatus": "Remote, hybrid, or in-person friendly",
+    "companyInfo": {
+      "size": null,
+      "industry": "Software Development",
+      "founded": "2021",
+      "description": "SGNL provides a modern Privileged Identity Management system that eliminates standing access to critical systems by granting and revoking contextual access in real time, reducing the potential impact of a breach."
+    },
+    "benefits": [
+      "Health benefits (medical, dental, and vision)",
+      "Paid Time Off",
+      "Paid Sick Leave",
+      "Latest Apple equipment",
+      "Customizable home office package",
+      "Amazon Kindle and books covered by SGNL",
+      "Professional development programs"
+    ],
+    "technologies": [
+      "Python",
+      "Go",
+      "Java",
+      "C#",
       "AWS",
       "Azure",
-      "GCP"
+      "GCP",
+      "MySQL",
+      "Postgres",
+      "Docker",
+      "Kubernetes",
+      "Istio"
     ],
-    "matchScore": 0.6,
-    "matchReason": "The job title 'Ubuntu Sales Engineer (Entry-Level)' at Canonical in Canberra aligns partially with the candidate's profile and search criteria. The role is located in Canberra, which matches the candidate's location preference. However, the job is focused on Linux and open source technologies rather than specifically on artificial intelligence, which is the candidate's area of expertise in presales roles. While the job does mention an interest in machine learning and AI, it is not the primary focus, which reduces the relevance to the candidate's search query 'Presales Engineer AI'. The role requires a technical background and business acumen, which aligns with presales skills, but the emphasis on Linux, containers, and cloud computing diverges from a strict AI focus. Additionally, the job requires global travel, which may not align with the candidate's preference if they are seeking a more localized or remote role. Overall, while there are some overlaps in skills and location, the core focus of the job does not fully align with the candidate's AI presales expertise.",
+    "matchScore": 0.2,
+    "matchReason": "The job title 'Senior Sales Engineer' at SGNL involves a sales engineering role, which aligns with the candidate's expertise in presales roles. However, the focus of this position is on Identity and Access Management (IAM) rather than artificial intelligence, which is the candidate's area of interest. Additionally, the job is located in Palo Alto, CA, and does not mention remote work options within Australia, which does not meet the candidate's location preference for Canberra, Sydney, or remote work within Australia. The technical requirements and responsibilities, such as experience with IAM, cloud infrastructure, and integration software development, do not align with the candidate's focus on AI. Therefore, the job does not sufficiently match the candidate's profile or the original search query terms.",
     "scanned": true,
-    "scanDate": "2025-07-08T11:59:48.929Z",
-    "jobUrl": "https://au.linkedin.com/jobs/view/ubuntu-sales-engineer-entry-level-at-canonical-4251314801"
+    "scanDate": "2025-07-08T12:52:06.447Z",
+    "jobUrl": "https://www.linkedin.com/jobs/view/senior-sales-engineer-at-sgnl-4081600523"
+  },
+  {
+    "jobId": "senior-sales-engineer-at-zerofox-4239723721",
+    "timestamp": "2025-07-08T22:58:05.153+10:00",
+    "title": "Senior Sales Engineer",
+    "company": "ZeroFox",
+    "location": "Utah, United States",
+    "description": "ZeroFox is looking for a Senior Sales Engineer to join our dynamic sales team. The ideal candidate will leverage their technical expertise and strong interpersonal skills to understand customer needs, deliver compelling product demonstrations, and assist in closing sales deals across various industry verticals. You will collaborate closely with sales representatives and customers, guiding them through the integration of our digital risk protection solutions, while conducting product training and creating tailored solutions to meet specific business requirements. This role provides an exciting opportunity to be at the forefront of cutting-edge cybersecurity technology and contribute directly to our customers' success.",
+    "requirements": [
+      "Proven experience as a Sales Engineer or similar role in the cybersecurity or tech industry, typically obtained in 5+ years",
+      "Strong technical background with a deep understanding of cybersecurity concepts, digital risk protection technologies, and relevant market trends",
+      "Excellent presentation and communication skills",
+      "Experience with solution selling approaches and a consultative sales methodology",
+      "Strong problem-solving skills",
+      "Ability to work collaboratively in a team environment",
+      "Willingness to travel as needed",
+      "Bachelor's degree in a relevant field (e.g., Computer Science, Information Technology, Engineering) is preferred"
+    ],
+    "salary": "$192,000.00/yr - $272,000.00/yr",
+    "jobType": "Full-time",
+    "experienceLevel": "Senior",
+    "remoteStatus": "On-site",
+    "companyInfo": {
+      "size": null,
+      "industry": "IT Services and IT Consulting",
+      "founded": null,
+      "description": "ZeroFox offers the only unified cybersecurity platform combining advanced AI analytics, digital risk and privacy protection, full-spectrum threat intelligence, and a robust portfolio of breach, incident and takedown response capabilities to protect customers from growing threats across the external attack surface."
+    },
+    "benefits": [
+      "Competitive compensation",
+      "Community-driven culture with employee events",
+      "Regular catered lunches for in-office work; snacks, drinks available daily",
+      "Generous time off",
+      "Comprehensive health benefits & 401(k) plan",
+      "Fun, modern workspace",
+      "Respectful and nourishing work environment"
+    ],
+    "technologies": [
+      "CRM software (e.g., Salesforce)"
+    ],
+    "matchScore": 0.2,
+    "matchReason": "The job title 'Senior Sales Engineer' at ZeroFox does not align well with the candidate's focus on presales roles specifically related to artificial intelligence. While the candidate has expertise in presales, the job is centered around cybersecurity and digital risk protection, which are not directly related to AI. Additionally, the job location is in Utah, United States, which does not match the candidate's preference for positions in Canberra, Sydney, or remote work within Australia. These factors significantly reduce the relevance of this job to the candidate's profile and original search query.",
+    "scanned": true,
+    "scanDate": "2025-07-08T12:58:05.145Z",
+    "jobUrl": "https://www.linkedin.com/jobs/view/senior-sales-engineer-at-zerofox-4239723721"
+  },
+  {
+    "jobId": "senior-sales-engineer-at-zerofox-4239726561",
+    "timestamp": "2025-07-08T22:56:31.782+10:00",
+    "title": "Senior Sales Engineer",
+    "company": "ZeroFox",
+    "location": "Arizona, United States",
+    "description": "ZeroFox is looking for a Senior Sales Engineer to join our dynamic sales team. The ideal candidate will leverage their technical expertise and strong interpersonal skills to understand customer needs, deliver compelling product demonstrations, and assist in closing sales deals across various industry verticals. You will collaborate closely with sales representatives and customers, guiding them through the integration of our digital risk protection solutions, while conducting product training and creating tailored solutions to meet specific business requirements.",
+    "requirements": [
+      "Proven experience as a Sales Engineer or similar role in the cybersecurity or tech industry, typically obtained in 5+ years",
+      "Strong technical background with a deep understanding of cybersecurity concepts, digital risk protection technologies, and relevant market trends",
+      "Excellent presentation and communication skills, with the ability to effectively articulate complex technical concepts to both technical and non-technical audiences",
+      "Experience with solution selling approaches and a consultative sales methodology",
+      "Strong problem-solving skills and the ability to think critically to deliver effective, tailored solutions",
+      "Ability to work collaboratively in a team environment, building relationships with customers and internal stakeholders",
+      "Willingness to travel as needed to meet with clients and attend industry events",
+      "Bachelor's degree in a relevant field (e.g., Computer Science, Information Technology, Engineering) is preferred"
+    ],
+    "salary": "$192,000.00/yr - $272,000.00/yr",
+    "jobType": "Full-time",
+    "experienceLevel": "Senior",
+    "remoteStatus": null,
+    "companyInfo": {
+      "size": null,
+      "industry": "IT Services and IT Consulting",
+      "founded": null,
+      "description": "ZeroFox offers the only unified cybersecurity platform combining advanced AI analytics, digital risk and privacy protection, full-spectrum threat intelligence, and a robust portfolio of breach, incident and takedown response capabilities to protect customers from growing threats across the external attack surface."
+    },
+    "benefits": [
+      "Competitive compensation",
+      "Community-driven culture with employee events",
+      "Regular catered lunches for in-office work; snacks, drinks available daily",
+      "Generous time off",
+      "Comprehensive health benefits & 401(k) plan",
+      "Fun, modern workspace",
+      "Respectful and nourishing work environment"
+    ],
+    "technologies": [
+      "CRM software (e.g., Salesforce)"
+    ],
+    "matchScore": 0.2,
+    "matchReason": "The job title 'Senior Sales Engineer' at ZeroFox is somewhat relevant to the candidate's expertise in presales roles, as both involve technical sales support and customer interaction. However, the focus of the job is on cybersecurity and digital risk protection, which does not align with the candidate's specialization in artificial intelligence. Additionally, the job is located in Arizona, United States, which does not meet the candidate's location preference for Canberra, Sydney, or remote work within Australia. The lack of alignment in both the industry focus and location significantly reduces the match score.",
+    "scanned": true,
+    "scanDate": "2025-07-08T12:56:31.774Z",
+    "jobUrl": "https://www.linkedin.com/jobs/view/senior-sales-engineer-at-zerofox-4239726561"
+  },
+  {
+    "jobId": "senior-sales-engineer-at-zerofox-4239726562",
+    "timestamp": "2025-07-08T22:54:01.603+10:00",
+    "title": "Senior Sales Engineer",
+    "company": "ZeroFox",
+    "location": "Colorado, United States",
+    "description": "ZeroFox is looking for a Senior Sales Engineer to join our dynamic sales team. The ideal candidate will leverage their technical expertise and strong interpersonal skills to understand customer needs, deliver compelling product demonstrations, and assist in closing sales deals across various industry verticals. You will collaborate closely with sales representatives and customers, guiding them through the integration of our digital risk protection solutions, while conducting product training and creating tailored solutions to meet specific business requirements.",
+    "requirements": [
+      "Proven experience as a Sales Engineer or similar role in the cybersecurity or tech industry, typically obtained in 5+ years",
+      "Strong technical background with a deep understanding of cybersecurity concepts, digital risk protection technologies, and relevant market trends",
+      "Excellent presentation and communication skills, with the ability to effectively articulate complex technical concepts to both technical and non-technical audiences",
+      "Experience with solution selling approaches and a consultative sales methodology",
+      "Strong problem-solving skills and the ability to think critically to deliver effective, tailored solutions",
+      "Ability to work collaboratively in a team environment, building relationships with customers and internal stakeholders",
+      "Willingness to travel as needed to meet with clients and attend industry events",
+      "Bachelor's degree in a relevant field (e.g., Computer Science, Information Technology, Engineering) is preferred"
+    ],
+    "salary": "$192,000.00/yr - $272,000.00/yr",
+    "jobType": "Full-time",
+    "experienceLevel": "Senior",
+    "remoteStatus": null,
+    "companyInfo": {
+      "size": null,
+      "industry": "IT Services and IT Consulting",
+      "founded": null,
+      "description": "ZeroFox offers the only unified cybersecurity platform combining advanced AI analytics, digital risk and privacy protection, full-spectrum threat intelligence, and a robust portfolio of breach, incident and takedown response capabilities to protect customers from growing threats across the external attack surface."
+    },
+    "benefits": [
+      "Competitive compensation",
+      "Community-driven culture with employee events",
+      "Regular catered lunches for in-office work; snacks, drinks available daily",
+      "Generous time off",
+      "Comprehensive health benefits & 401(k) plan",
+      "Fun, modern workspace",
+      "Respectful and nourishing work environment"
+    ],
+    "technologies": [
+      "CRM software (e.g., Salesforce)"
+    ],
+    "matchScore": 0.2,
+    "matchReason": "The job title 'Senior Sales Engineer' at ZeroFox is somewhat relevant to the candidate's expertise in presales roles, as both involve technical sales support and customer interaction. However, the job is heavily focused on cybersecurity and digital risk protection, which does not align with the candidate's focus on artificial intelligence. Additionally, the job is located in Colorado, United States, which does not meet the candidate's location preference of Canberra, Sydney, or remote work within Australia. The mismatch in both the industry focus and location significantly reduces the relevance of this job to the candidate's profile and search criteria.",
+    "scanned": true,
+    "scanDate": "2025-07-08T12:54:01.597Z",
+    "jobUrl": "https://www.linkedin.com/jobs/view/senior-sales-engineer-at-zerofox-4239726562"
+  },
+  {
+    "jobId": "senior-sales-engineer-at-zerofox-4239727563",
+    "timestamp": "2025-07-08T22:53:56.927+10:00",
+    "title": "Senior Sales Engineer",
+    "company": "ZeroFox",
+    "location": "Nevada, United States",
+    "description": "ZeroFox is looking for a Senior Sales Engineer to join our dynamic sales team. The ideal candidate will leverage their technical expertise and strong interpersonal skills to understand customer needs, deliver compelling product demonstrations, and assist in closing sales deals across various industry verticals. You will collaborate closely with sales representatives and customers, guiding them through the integration of our digital risk protection solutions, while conducting product training and creating tailored solutions to meet specific business requirements. This role provides an exciting opportunity to be at the forefront of cutting-edge cybersecurity technology and contribute directly to our customers' success.",
+    "requirements": [
+      "Proven experience as a Sales Engineer or similar role in the cybersecurity or tech industry, typically obtained in 5+ years",
+      "Strong technical background with a deep understanding of cybersecurity concepts, digital risk protection technologies, and relevant market trends",
+      "Excellent presentation and communication skills",
+      "Experience with solution selling approaches and a consultative sales methodology",
+      "Strong problem-solving skills",
+      "Ability to work collaboratively in a team environment",
+      "Willingness to travel as needed",
+      "Bachelor's degree in a relevant field is preferred"
+    ],
+    "salary": "$192,000.00/yr - $272,000.00/yr",
+    "jobType": "Full-time",
+    "experienceLevel": "Senior",
+    "remoteStatus": null,
+    "companyInfo": {
+      "size": null,
+      "industry": "IT Services and IT Consulting",
+      "founded": null,
+      "description": "ZeroFox offers the only unified cybersecurity platform combining advanced AI analytics, digital risk and privacy protection, full-spectrum threat intelligence, and a robust portfolio of breach, incident and takedown response capabilities to protect customers from growing threats across the external attack surface."
+    },
+    "benefits": [
+      "Competitive compensation",
+      "Community-driven culture with employee events",
+      "Regular catered lunches for in-office work; snacks, drinks available daily",
+      "Generous time off",
+      "Comprehensive health benefits & 401(k) plan",
+      "Fun, modern workspace",
+      "Respectful and nourishing work environment"
+    ],
+    "technologies": [
+      "CRM software (e.g., Salesforce)"
+    ],
+    "matchScore": 0.2,
+    "matchReason": "The job title 'Senior Sales Engineer' at ZeroFox is somewhat relevant to the candidate's expertise in presales roles, as both involve technical sales support and customer interaction. However, the job is heavily focused on cybersecurity and digital risk protection, which does not align with the candidate's focus on artificial intelligence. Additionally, the job location is in Nevada, United States, which does not meet the candidate's requirement for opportunities in Canberra, Sydney, or remote work within Australia. These significant discrepancies in both the industry focus and location result in a low match score.",
+    "scanned": true,
+    "scanDate": "2025-07-08T12:53:56.921Z",
+    "jobUrl": "https://www.linkedin.com/jobs/view/senior-sales-engineer-at-zerofox-4239727563"
+  },
+  {
+    "jobId": "senior-sales-engineer-at-zerofox-4239728398",
+    "timestamp": "2025-07-08T22:56:27.751+10:00",
+    "title": "Senior Sales Engineer",
+    "company": "ZeroFox",
+    "location": "New Mexico, United States",
+    "description": "ZeroFox is seeking a Senior Sales Engineer to join their sales team. The role involves leveraging technical expertise and interpersonal skills to understand customer needs, deliver product demonstrations, and assist in closing sales deals. The candidate will collaborate with sales representatives and customers, guiding them through the integration of digital risk protection solutions, conducting product training, and creating tailored solutions. This position offers the opportunity to work with cutting-edge cybersecurity technology and contribute to customer success.",
+    "requirements": [
+      "Proven experience as a Sales Engineer or similar role in the cybersecurity or tech industry, typically obtained in 5+ years",
+      "Strong technical background with a deep understanding of cybersecurity concepts, digital risk protection technologies, and relevant market trends",
+      "Excellent presentation and communication skills",
+      "Experience with solution selling approaches and a consultative sales methodology",
+      "Strong problem-solving skills",
+      "Ability to work collaboratively in a team environment",
+      "Willingness to travel as needed",
+      "Bachelor's degree in a relevant field (e.g., Computer Science, Information Technology, Engineering) is preferred"
+    ],
+    "salary": "$192,000.00/yr - $272,000.00/yr",
+    "jobType": "Full-time",
+    "experienceLevel": "Senior",
+    "remoteStatus": null,
+    "companyInfo": {
+      "size": null,
+      "industry": "IT Services and IT Consulting",
+      "founded": null,
+      "description": "ZeroFox offers a unified cybersecurity platform combining advanced AI analytics, digital risk and privacy protection, full-spectrum threat intelligence, and a robust portfolio of breach, incident, and takedown response capabilities."
+    },
+    "benefits": [
+      "Competitive compensation",
+      "Community-driven culture with employee events",
+      "Regular catered lunches for in-office work; snacks, drinks available daily",
+      "Generous time off",
+      "Comprehensive health benefits & 401(k) plan",
+      "Fun, modern workspace",
+      "Respectful and nourishing work environment"
+    ],
+    "technologies": [
+      "CRM software (e.g., Salesforce)"
+    ],
+    "matchScore": 0.2,
+    "matchReason": "The job title 'Senior Sales Engineer' at ZeroFox is somewhat relevant to the candidate's expertise in presales roles, as both involve technical sales support and customer interaction. However, the focus of this job is on cybersecurity and digital risk protection, which does not align with the candidate's focus on artificial intelligence. Additionally, the job is located in New Mexico, United States, which does not meet the candidate's location preference for Canberra, Sydney, or remote work within Australia. These significant discrepancies in both the technical focus and location requirements result in a low match score.",
+    "scanned": true,
+    "scanDate": "2025-07-08T12:56:27.741Z",
+    "jobUrl": "https://www.linkedin.com/jobs/view/senior-sales-engineer-at-zerofox-4239728398"
+  },
+  {
+    "jobId": "senior-sales-engineer-northeast-territory-at-sophos-4217401866",
+    "timestamp": "2025-07-08T22:57:45.780+10:00",
+    "title": "Senior Sales Engineer (Northeast Territory)",
+    "company": "Sophos",
+    "location": "New Jersey, United States",
+    "description": "The Senior Sales Engineer supports the sales organization in all technical matters regarding pre-sales, sales calls, and customer awareness. Responsibilities include supporting the sales team with technical expertise, building relationships with key customer decision-makers, serving as a subject matter expert for Sophos technology, and providing secondary sales engineering coverage. The role also involves promoting cross-selling and portfolio expansion within the current Sophos customer base.",
+    "requirements": [
+      "3-5 years in a sales role working with decision-makers in large organizations",
+      "Proven track record of achieving and exceeding sales quotas",
+      "Foundational knowledge of Managed Detection and Response (MDR) services",
+      "Technical cybersecurity understanding including protection methods for Networks, Cloud Workloads, Windows, Linux, and Mac OS devices",
+      "Strong verbal communication skills",
+      "Experience in selling through and with channel partners"
+    ],
+    "salary": "$60,200.00/yr - $100,800.00/yr",
+    "jobType": "Full-time",
+    "experienceLevel": "Not Applicable",
+    "remoteStatus": "Remote",
+    "companyInfo": {
+      "size": null,
+      "industry": "Software Development",
+      "founded": null,
+      "description": "Sophos is a global leader and innovator of advanced security solutions for defeating cyberattacks. It is the largest pure-play Managed Detection and Response (MDR) provider, supporting more than 28,000 organizations."
+    },
+    "benefits": [
+      "Remote-first working model",
+      "Employee-led diversity and inclusion networks",
+      "Annual charity and fundraising initiatives",
+      "Global employee sustainability initiatives",
+      "Global fitness and trivia competitions",
+      "Global wellbeing days",
+      "Monthly wellbeing webinars and training"
+    ],
+    "technologies": [
+      "Sophos Central platform",
+      "Taegis XDR/MDR",
+      "NIST Assessments",
+      "Threatparser"
+    ],
+    "matchScore": 0.1,
+    "matchReason": "The job title 'Senior Sales Engineer' aligns with the candidate's expertise in presales roles, but the focus is on cybersecurity rather than artificial intelligence, which is the candidate's area of interest. Additionally, the job is located in New Jersey, United States, which does not meet the candidate's location preference of Canberra, Sydney, or remote work within Australia. The job's requirements and responsibilities are more aligned with cybersecurity sales rather than AI-focused presales, further reducing the relevance to the candidate's profile and original search query. Therefore, the match score is significantly low due to the mismatch in both the job focus and location.",
+    "scanned": true,
+    "scanDate": "2025-07-08T12:57:45.772Z",
+    "jobUrl": "https://www.linkedin.com/jobs/view/senior-sales-engineer-northeast-territory-at-sophos-4217401866"
+  },
+  {
+    "jobId": "solution-engineer-pre-sales-at-union-ai-4250754832",
+    "timestamp": "2025-07-08T22:55:43.963+10:00",
+    "title": "Solution Engineer (Pre-Sales)",
+    "company": "Union.ai",
+    "location": "United States",
+    "description": "Union.ai is seeking a Solution Engineer (Pre-Sales) to support their sales team in achieving ambitious revenue growth goals. The role involves building pre-sales motions for a technical infrastructure product, leading discovery and demo efforts, driving adoption through hands-on experience, and engaging with technical stakeholders. The candidate will also contribute to technical qualifications, support users with trials and deployments, and represent the product at events.",
+    "requirements": [
+      "5+ years of experience in a pre-sales role for a deeply technical product",
+      "Experience with data processing, machine-learning systems, MLOps, and machine learning infrastructure",
+      "Working knowledge of machine learning frameworks (Pytorch, Tensorflow) and data processing frameworks (Spark, Flink, Beam)",
+      "Understanding of distributed systems and familiarity with cloud platforms (AWS, GCP, Azure)",
+      "Knowledge of Infrastructure as Code (Terraform, Cloudformation), Containers (Docker), Kubernetes, and CI/CD systems",
+      "Highly organized and able to thrive in a high-volume environment",
+      "Working knowledge of sales frameworks such as MEDDIC",
+      "Experience with or contribution to the Flyte or Union communities is a strong plus",
+      "Ability to travel to conferences or customer locations"
+    ],
+    "salary": null,
+    "jobType": "Full-time",
+    "experienceLevel": "Mid-Senior level",
+    "remoteStatus": null,
+    "companyInfo": {
+      "size": null,
+      "industry": "Software Development",
+      "founded": null,
+      "description": "Union.ai is focused on enabling high-velocity iteration while maintaining production-readiness for AI workloads at scale. They steward Flyte, an open-source project for data and AI orchestration."
+    },
+    "benefits": [
+      "Excellent medical - 100% of premiums paid for employees and 90% for dependents",
+      "Generous dental and vision plans - 90% of premiums paid for employees and dependents",
+      "Meaningful equity in the form of options",
+      "Unlimited time off + 12 company holidays",
+      "401K match - 100% of contributions up to the first 3%, and 50% up to 5%",
+      "16 weeks paid parental leave for primary and secondary caregivers",
+      "Flexible work schedule",
+      "Lunch provided onsite and well-stocked kitchen for in-office employees"
+    ],
+    "technologies": [
+      "Pytorch",
+      "Tensorflow",
+      "Spark",
+      "Flink",
+      "Beam",
+      "AWS",
+      "GCP",
+      "Azure",
+      "Terraform",
+      "Cloudformation",
+      "Docker",
+      "Kubernetes",
+      "CI/CD systems"
+    ],
+    "matchScore": 0.2,
+    "matchReason": "The job role of Solution Engineer (Pre-Sales) at Union.ai aligns well with the candidate's expertise in presales roles focused on artificial intelligence. The position requires experience with machine learning systems, MLOps, and technical infrastructure, which are relevant to the candidate's background. However, the location of the job is a significant mismatch. The position is based in the United States, whereas the candidate is seeking opportunities in Canberra, Sydney, or remote work within Australia. This geographic mismatch significantly reduces the relevance of the job to the candidate's search criteria. Additionally, while the role involves AI-related technologies, the location constraint is a critical factor in the candidate's job search, leading to a low match score.",
+    "scanned": true,
+    "scanDate": "2025-07-08T12:55:43.954Z",
+    "jobUrl": "https://www.linkedin.com/jobs/view/solution-engineer-pre-sales-at-union-ai-4250754832"
+  },
+  {
+    "jobId": "solutions-engineer-post-sales-proserve-at-unstructured-4250639052",
+    "timestamp": "2025-07-08T22:54:21.732+10:00",
+    "title": "Solutions Engineer (Post-Sales/ProServe)",
+    "company": "Unstructured",
+    "location": "United States",
+    "description": "Join Unstructured as a Solutions Engineer (Post-Sales/ProServe) to help enterprises harness unstructured data and AI. Lead enterprise deployments, build scalable cloud-native architectures, and ensure customers unlock the full potential of our platform. Work directly with customers, design real-world solutions, and see impact fast. Be a core part of our commercial team, driving technical success and shaping the product.",
+    "requirements": [
+      "5+ years of experience in post-sales engineering, solutions architecture, or technical consulting",
+      "Deep experience with cloud-native architectures (AWS, Azure, GCP), containers (Docker, Kubernetes), and IaC tools",
+      "Strong hands-on Python skills for scripting, API integration, and automation",
+      "Proven success leading enterprise-scale deployments",
+      "Excellent communicator",
+      "Comfort navigating ambiguity and speed"
+    ],
+    "salary": "$185,000.00/yr - $245,000.00/yr",
+    "jobType": "Full-time",
+    "experienceLevel": "Not Applicable",
+    "remoteStatus": null,
+    "companyInfo": {
+      "size": null,
+      "industry": "Hospitality, Food and Beverage Services, and Retail",
+      "founded": null,
+      "description": "Unstructured is building the backbone of generative AI, enabling companies to transform various data formats into enterprise-grade data pipelines."
+    },
+    "benefits": [
+      "Competitive salary",
+      "Full health benefits",
+      "Equity",
+      "Parental leave"
+    ],
+    "technologies": [
+      "AWS",
+      "GCP",
+      "Azure",
+      "Docker",
+      "Kubernetes",
+      "Python"
+    ],
+    "matchScore": 0.2,
+    "matchReason": "The job title 'Solutions Engineer (Post-Sales/ProServe)' indicates a focus on post-sales activities, which does not align with the candidate's expertise in presales roles. The job is based in the United States, which does not meet the candidate's location preference of Canberra, Sydney, or remote work within Australia. While the job involves working with AI and cloud-native architectures, which are relevant to the candidate's AI focus, the mismatch in role type and location significantly reduces the relevance of this job to the candidate's search query for 'Presales Engineer AI' in the specified locations.",
+    "scanned": true,
+    "scanDate": "2025-07-08T12:54:21.725Z",
+    "jobUrl": "https://www.linkedin.com/jobs/view/solutions-engineer-post-sales-proserve-at-unstructured-4250639052"
+  },
+  {
+    "jobId": "solutions-engineer-sales-sap-team-northeast-at-netapp-4237249440",
+    "timestamp": "2025-07-08T22:53:36.150+10:00",
+    "title": "Solutions Engineer, Sales - SAP team (Northeast)",
+    "company": "NetApp",
+    "location": "United States",
+    "description": "NetApp is seeking a highly motivated and skilled Solutions Engineer to join their SAP team. The role involves identifying customer needs, analyzing requirements, presenting NetApp technologies, and supporting the sales team in technical meetings. The ideal candidate should have a passion for technology, strong communication skills, and the ability to work collaboratively.",
+    "requirements": [
+      "A minimum of 8 years of related experience in technical selling and/or technical systems",
+      "Strong knowledge and experience with hyperscaler platforms (Microsoft, Google, Amazon)",
+      "Familiarity with the SAP portfolio and SAP architecture",
+      "Successful completion of a technical education or relevant technical degree",
+      "Proficiency in storage technologies",
+      "Strong IT knowledge, including enterprise/cloud computing, virtualization, storage, backup, and high availability solutions",
+      "Interest in current trends in IT and technologies such as public clouds, hybrid clouds, cybersecurity, artificial intelligence, DevOps concepts, and container technologies",
+      "Self-motivated with a results-oriented approach",
+      "Willingness to travel"
+    ],
+    "salary": "$205,000.00/yr - $250,000.00/yr",
+    "jobType": "Full-time",
+    "experienceLevel": "Mid-Senior level",
+    "remoteStatus": "Hybrid",
+    "companyInfo": {
+      "size": null,
+      "industry": "Software Development",
+      "founded": null,
+      "description": "NetApp is the intelligent data infrastructure company, turning a world of disruption into opportunity for every customer."
+    },
+    "benefits": [
+      "Comprehensive benefits package",
+      "Health Insurance",
+      "Life Insurance",
+      "Retirement or Pension Plans",
+      "Paid Time Off (PTO)",
+      "Performance-Based Incentives",
+      "Employee stock purchase plan",
+      "Restricted stocks (RSU’s)",
+      "Volunteer time off program"
+    ],
+    "technologies": [
+      "Hyperscaler platforms (Microsoft, Google, Amazon)",
+      "SAP portfolio",
+      "Enterprise/cloud computing",
+      "Virtualization",
+      "Storage",
+      "Backup",
+      "High availability solutions",
+      "Public clouds",
+      "Hybrid clouds",
+      "Cybersecurity",
+      "Artificial intelligence",
+      "DevOps concepts",
+      "Container technologies"
+    ],
+    "matchScore": 0.2,
+    "matchReason": "The job role of Solutions Engineer, Sales - SAP team at NetApp does not align well with the candidate's search criteria or location preferences. Firstly, the job is located in the United States, which does not meet the candidate's requirement for positions in Canberra, Sydney, or remote work within Australia. Secondly, while the role involves technical selling and requires knowledge of IT trends including artificial intelligence, it is primarily focused on SAP and storage technologies rather than a dedicated focus on artificial intelligence, which is the candidate's area of expertise. Additionally, the role's emphasis on SAP and hyperscaler platforms does not directly align with the candidate's presales focus on AI. Therefore, the job does not sufficiently match the candidate's profile or search criteria, resulting in a low match score.",
+    "scanned": true,
+    "scanDate": "2025-07-08T12:53:36.143Z",
+    "jobUrl": "https://www.linkedin.com/jobs/view/solutions-engineer-sales-sap-team-northeast-at-netapp-4237249440"
+  },
+  {
+    "jobId": "sr-sales-engineer-west-at-obsidian-security-4234421324",
+    "timestamp": "2025-07-08T22:52:04.505+10:00",
+    "title": "Sr Sales Engineer - West",
+    "company": "Obsidian Security",
+    "location": "United States",
+    "description": "We are hiring a talented Senior Sales Engineer to join our team. A Senior Sales Engineer is responsible for actively driving and managing the technical evaluation stage of the sales process and mentoring and building the team. The role involves partnering with prospects in a technical and educational capacity throughout the sales cycle and being the advocate for the customer back to product management and engineering. The ideal candidate is aggressive, collaborative, knowledgeable, and has strong software engineering abilities.",
+    "requirements": [
+      "A strong blend of communication abilities and technical skills",
+      "Expert-level knowledge of cybersecurity, especially Cloud and SaaS security concerns",
+      "Experience interacting with APIs, integrations, and middle-ware",
+      "Competitive and market intelligence reconnaissance abilities",
+      "Understanding of routes to market and ability to represent Obsidian with a wide variety of partnerships",
+      "Experience with cybersecurity solution stacks",
+      "Presentation skills for crafting and delivering thought-leadership presentations",
+      "Willingness to travel depending on customer opportunities and role"
+    ],
+    "salary": "$122,000.00/yr - $197,000.00/yr",
+    "jobType": "Full-time",
+    "experienceLevel": "Mid-Senior level",
+    "remoteStatus": null,
+    "companyInfo": {
+      "size": null,
+      "industry": "Computer and Network Security",
+      "founded": "2017",
+      "description": "Obsidian Security was founded to secure SaaS applications where modern business happens. The company offers a comprehensive SaaS security platform to reduce risk, detect and respond to threats, and prevent breaches."
+    },
+    "benefits": [
+      "Competitive compensation with equity and 401k",
+      "Comprehensive healthcare with dental and vision coverage",
+      "Flexible paid time off and paid holiday time off",
+      "12 weeks of new parent or family leave",
+      "Personal and professional development resources"
+    ],
+    "technologies": [
+      "APIs",
+      "integrations",
+      "middle-ware"
+    ],
+    "matchScore": 0.2,
+    "matchReason": "The job position of Sr Sales Engineer at Obsidian Security is not a strong match for the candidate's profile and search criteria. Firstly, the job is located in the United States, which does not align with the candidate's preference for roles in Canberra, Sydney, or remote positions within Australia. Secondly, while the candidate is focused on presales roles related to artificial intelligence, the job primarily emphasizes expertise in cybersecurity, particularly Cloud and SaaS security, which is not directly aligned with AI. Although both roles involve technical sales engineering, the specific focus areas differ significantly. Additionally, the job requires willingness to travel, which may not be suitable for a candidate seeking remote work. Therefore, the mismatch in location and the specific technical focus area results in a low match score.",
+    "scanned": true,
+    "scanDate": "2025-07-08T12:52:04.497Z",
+    "jobUrl": "https://www.linkedin.com/jobs/view/sr-sales-engineer-west-at-obsidian-security-4234421324"
+  },
+  {
+    "jobId": "strategic-sales-engineer-san-francisco-at-monte-carlo-4245170377",
+    "timestamp": "2025-07-08T22:56:54.752+10:00",
+    "title": "Strategic Sales Engineer, San Francisco",
+    "company": "Monte Carlo",
+    "location": "San Francisco, CA",
+    "description": "Monte Carlo is seeking a Strategic Sales Engineer to join their Sales Engineering team. The role involves providing technical guidance and support to the sales team, delivering demos, and creating content to scale work. The candidate will travel to customer sites, lead product demos, drive discovery processes, and co-develop Business Value Assessments. The position requires a dynamic individual who thrives in fast-paced environments and has a strong technical foundation.",
+    "requirements": [
+      "5+ years of experience in Sales Engineering for a technical product",
+      "Firm understanding of data ecosystems, including cloud data warehousing, data lakes, ETL concepts and workflows, BI solutions, and SQL",
+      "Demonstrated track record in an early-stage company or highly ambiguous environment",
+      "High degree of ownership and a relentless desire to solve customer problems",
+      "Technical acumen to understand and explain complex architecture",
+      "Ability to manage multiple projects simultaneously",
+      "Strong technical foundation and customer-facing experience",
+      "Ability to connect technical solutions to business value",
+      "Self-starter mentality with comfort navigating ambiguity",
+      "Team-first mindset with a collaborative approach to problem-solving"
+    ],
+    "salary": null,
+    "jobType": "Full-time",
+    "experienceLevel": "Mid-Senior level",
+    "remoteStatus": "Remote",
+    "companyInfo": {
+      "size": null,
+      "industry": "Software Development",
+      "founded": null,
+      "description": "Monte Carlo is a company that supports businesses in delivering trustworthy data and AI at scale. It is backed by notable investors and recognized for its innovative solutions in data reliability."
+    },
+    "benefits": [
+      "Inclusive global team",
+      "Equal opportunity employer",
+      "Recognized for world-class employee experience"
+    ],
+    "technologies": [
+      "Cloud data warehousing",
+      "Data lakes",
+      "ETL concepts",
+      "BI solutions",
+      "SQL"
+    ],
+    "matchScore": 0.2,
+    "matchReason": "The job title 'Strategic Sales Engineer' aligns with the candidate's expertise in presales roles, and the responsibilities such as providing technical guidance, delivering demos, and connecting technical solutions to business value are relevant to presales functions. However, the job is located in San Francisco, CA, which does not match the candidate's location preference of Canberra, Sydney, or remote work within Australia. Additionally, while the candidate focuses on artificial intelligence, the job description emphasizes a strong understanding of data ecosystems, cloud data warehousing, and BI solutions, with no specific mention of AI. This misalignment in both location and the specific technical focus significantly reduces the match score.",
+    "scanned": true,
+    "scanDate": "2025-07-08T12:56:54.746Z",
+    "jobUrl": "https://www.linkedin.com/jobs/view/strategic-sales-engineer-san-francisco-at-monte-carlo-4245170377"
+  },
+  {
+    "jobId": "technical-sales-engineer-at-jack-henry-4258332683",
+    "timestamp": "2025-07-08T22:57:00.399+10:00",
+    "title": "Technical Sales Engineer",
+    "company": "Jack Henry",
+    "location": "United States",
+    "description": "At Jack Henry, we deliver technology solutions that are digitally transforming and empowering community banks and credit unions. Our Sales Engineering team focuses on helping clients maximize the technology solutions Jack Henry offers. This role involves identifying client needs, ideating solutions, and providing feedback to development teams. The position requires approximately 50% travel and can be worked remotely from anywhere in the United States.",
+    "requirements": [
+      "Minimum of 18 months of hands-on experience in a technical field",
+      "50% travel availability",
+      "Strong verbal, written, and presentation skills"
+    ],
+    "salary": null,
+    "jobType": "Full-time",
+    "experienceLevel": "Entry level",
+    "remoteStatus": "Remote",
+    "companyInfo": {
+      "size": null,
+      "industry": "Financial Services",
+      "founded": null,
+      "description": "Jack Henry provides technology solutions for community banks and credit unions, focusing on digital banking and payments."
+    },
+    "benefits": [
+      "Outstanding benefit programs for physical, mental, and financial well-being"
+    ],
+    "technologies": [
+      "Google Cloud Platform",
+      "BigQuery",
+      "Looker Studio",
+      "Google SQL",
+      "Vertex AI",
+      "Javascript",
+      "AngularJS",
+      "Node.js",
+      "Typescript",
+      "Go",
+      "Python",
+      "HTML5",
+      "CSS",
+      "Microsoft SQL",
+      "Jack Henry’s Symitar Core System",
+      "Banno Platform stack"
+    ],
+    "matchScore": 0.2,
+    "matchReason": "The job title 'Technical Sales Engineer' at Jack Henry does not align well with the candidate's focus on presales roles specifically centered on artificial intelligence. Additionally, the job is located in the United States and requires 50% travel, which does not meet the candidate's location preference for Canberra, Sydney, or remote work within Australia. While the role involves sales engineering, which could have some overlap with presales activities, the lack of a specific focus on artificial intelligence and the geographic mismatch significantly reduce the relevance of this job to the candidate's profile and original search query.",
+    "scanned": true,
+    "scanDate": "2025-07-08T12:57:00.390Z",
+    "jobUrl": "https://www.linkedin.com/jobs/view/technical-sales-engineer-at-jack-henry-4258332683"
   }
 ]

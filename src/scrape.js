@@ -71,6 +71,7 @@ export async function scrapeLinkedIn(url, options = {}, checkCancellation = null
   }));
   
   // Update the job index with the new jobs
+  console.log(`Updating job index with ${enhancedJobs.length} jobs...`);
   const jobIndex = await updateJobIndex(enhancedJobs, forceRescan);
   
   // Display sample of jobs found
@@ -196,16 +197,23 @@ export async function scrapeMultipleSearches(searchUrls, options = {}, checkCanc
     };
     
     // Scrape LinkedIn jobs
-    const jobs = await linkedinScraper.scrapeLinkedInJobs(url, {
-      checkCancellation,
-      ...options,
-      deepScan: false, // We'll do deep scan after all searches
-      progressCallback: searchProgressCallback
+    const { jobs } = await scrapeLinkedInJobs({
+      url,
+      keepOpen: options.keepOpen,
+      debug: options.debug,
+      maxPages: config.paginationEnabled ? config.paginationMaxPages : 1,
+      resultsPerPage: config.paginationResultsPerPage,
+      progressCallback: searchProgressCallback,
+      checkCancellation
     });
     
     // Add location metadata to jobs
     const jobsWithLocation = jobs.map(job => ({
       ...job,
+      id: generateJobId(job.link),
+      company: job.company || extractCompanyFromTitle(job.title),
+      scrapedDate: new Date().toISOString(),
+      searchUrl: url,
       searchTerm: term,
       searchLocation: location
     }));
@@ -238,6 +246,11 @@ export async function scrapeMultipleSearches(searchUrls, options = {}, checkCanc
   }
   
   console.log(`\nCompleted all searches. Found ${allJobs.length} total jobs.`);
+  
+  // Update the job index with ALL collected jobs at once
+  // This ensures the job index is fully populated before deep scanning starts
+  console.log(`Updating job index with ${allJobs.length} jobs...`);
+  const jobIndex = await updateJobIndex(allJobs, forceRescan);
   
   // Perform deep scanning if requested
   if (deepScan) {

@@ -529,33 +529,8 @@ export function createServer() {
     }
   );
 
-  // Get a specific job
-  mcpServer.tool(
-    "job",
-    "Get details for a specific job by ID. The ID parameter should be the 'id' attribute of a job object from the jobs array returned by the 'jobs' tool.",
-    {
-      id: z.string().describe("Job ID to retrieve")
-    },
-    async ({ id }) => {
-      const jobIndex = await getJobIndex();
-      const job = jobIndex.jobs.find((j) => j.id === id);
-      if (!job) {
-        return {
-          content: [{ type: "text", text: `Job with ID ${id} not found` }],
-          isError: true,
-        };
-      }
-      return {
-        content: [{ type: "text", text: JSON.stringify(job, null, 2) }],
-        structuredContent: job,
-      };
-    },
-    {
-      title: "Get Job Details",
-      readOnlyHint: true,
-      openWorldHint: false
-    }
-  );
+  // Note: The individual job tool has been removed as it was redundant with the jobs tool
+  // Users can filter for a specific job ID using the jobs tool if needed
 
   // Latest matches
   mcpServer.tool(

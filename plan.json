@@ -1,5 +1,5 @@
 {
-  "profile": "Job seeker with expertise in presales roles focused on artificial intelligence, seeking opportunities in Canberra, Sydney, or remote within Australia.",
+  "profile": "Job seeker targeting presales roles in artificial intelligence.",
   "searchTerms": [
     "Presales Engineer AI",
     "AI Solution Architect",
@@ -13,20 +13,11 @@
       "distance": 25
     },
     {
-      "name": "Sydney, Australia",
-      "type": "city",
-      "distance": 25
-    },
-    {
       "name": "Australia",
-      "type": "country"
-    },
-    {
-      "name": "Remote",
       "type": "remote"
     }
   ],
-  "scanPrompt": "Evaluate job matches based on relevance to presales roles with a focus on artificial intelligence, ensuring the position is located in Canberra, Sydney, or offers remote work within Australia.",
+  "scanPrompt": "Evaluate job matches by experimenting with Boolean operators, refining experience levels, and highlighting relevant skills.",
   "searchUrls": [
     {
       "term": "Presales Engineer AI",
@@ -35,18 +26,8 @@
     },
     {
       "term": "Presales Engineer AI",
-      "location": "Sydney, Australia",
-      "url": "https://www.linkedin.com/jobs/search/?keywords=Presales%20Engineer%20AI&location=Sydney%2C%20Australia&distance=25&sortBy=DD"
-    },
-    {
-      "term": "Presales Engineer AI",
       "location": "Australia",
       "url": "https://www.linkedin.com/jobs/search/?keywords=Presales%20Engineer%20AI&location=Australia&sortBy=DD"
-    },
-    {
-      "term": "Presales Engineer AI",
-      "location": "Remote",
-      "url": "https://www.linkedin.com/jobs/search/?keywords=Presales%20Engineer%20AI&f_WT=2&sortBy=DD"
     },
     {
       "term": "AI Solution Architect",
@@ -55,18 +36,8 @@
     },
     {
       "term": "AI Solution Architect",
-      "location": "Sydney, Australia",
-      "url": "https://www.linkedin.com/jobs/search/?keywords=AI%20Solution%20Architect&location=Sydney%2C%20Australia&distance=25&sortBy=DD"
-    },
-    {
-      "term": "AI Solution Architect",
       "location": "Australia",
       "url": "https://www.linkedin.com/jobs/search/?keywords=AI%20Solution%20Architect&location=Australia&sortBy=DD"
-    },
-    {
-      "term": "AI Solution Architect",
-      "location": "Remote",
-      "url": "https://www.linkedin.com/jobs/search/?keywords=AI%20Solution%20Architect&f_WT=2&sortBy=DD"
     },
     {
       "term": "Pre-Sales Consultant AI",
@@ -75,18 +46,8 @@
     },
     {
       "term": "Pre-Sales Consultant AI",
-      "location": "Sydney, Australia",
-      "url": "https://www.linkedin.com/jobs/search/?keywords=Pre-Sales%20Consultant%20AI&location=Sydney%2C%20Australia&distance=25&sortBy=DD"
-    },
-    {
-      "term": "Pre-Sales Consultant AI",
       "location": "Australia",
       "url": "https://www.linkedin.com/jobs/search/?keywords=Pre-Sales%20Consultant%20AI&location=Australia&sortBy=DD"
-    },
-    {
-      "term": "Pre-Sales Consultant AI",
-      "location": "Remote",
-      "url": "https://www.linkedin.com/jobs/search/?keywords=Pre-Sales%20Consultant%20AI&f_WT=2&sortBy=DD"
     },
     {
       "term": "Sales Engineer Artificial Intelligence",
@@ -95,25 +56,15 @@
     },
     {
       "term": "Sales Engineer Artificial Intelligence",
-      "location": "Sydney, Australia",
-      "url": "https://www.linkedin.com/jobs/search/?keywords=Sales%20Engineer%20Artificial%20Intelligence&location=Sydney%2C%20Australia&distance=25&sortBy=DD"
-    },
-    {
-      "term": "Sales Engineer Artificial Intelligence",
       "location": "Australia",
       "url": "https://www.linkedin.com/jobs/search/?keywords=Sales%20Engineer%20Artificial%20Intelligence&location=Australia&sortBy=DD"
-    },
-    {
-      "term": "Sales Engineer Artificial Intelligence",
-      "location": "Remote",
-      "url": "https://www.linkedin.com/jobs/search/?keywords=Sales%20Engineer%20Artificial%20Intelligence&f_WT=2&sortBy=DD"
     }
   ],
   "feedback": {
-    "searchTermsFeedback": "Consider using Boolean operators to refine searches, such as 'Presales AND AI' or 'AI OR Artificial Intelligence' to capture more relevant results.",
-    "locationsFeedback": "Expand location coverage to include other tech hubs in Australia like Melbourne and Brisbane to increase opportunities.",
-    "profileFeedback": "Include specific skills and experience levels, such as '5+ years in AI presales', to better align with job requirements.",
-    "scanPromptFeedback": "Clarify the scan prompt by specifying key responsibilities or technologies, such as 'experience with AI platforms or cloud solutions'.",
+    "searchTermsFeedback": "Consider adding Boolean operators like 'AND' or 'OR' to refine searches, e.g., 'Presales Engineer AND AI'. Include variations like 'Technical Sales AI' to capture more opportunities.",
+    "locationsFeedback": "Expand location coverage to include major tech hubs in Australia such as Sydney and Melbourne, and consider global remote roles to widen the search net.",
+    "profileFeedback": "Ensure your profile highlights key skills in AI and presales, relevant certifications, and any industry-specific experience to align with targeted roles.",
+    "scanPromptFeedback": "Incorporate specific skills and experience levels in the scan prompt to better filter job matches, such as '5+ years in AI presales'.",
     "overallRating": 7
   }
 }

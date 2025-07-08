@@ -65,7 +65,16 @@ export function generateSearchUrls(searchTerms, locations) {
           url += `&distance=${loc.distance}`;
         }
       } else if (loc.name === 'Remote') {
-        url += '&f_WT=2'; // Remote work filter
+        // Get country from other locations if available
+        const countryLocation = locations.find(l => l.type === 'country');
+        
+        if (countryLocation && countryLocation.name) {
+          // Add both remote filter and country filter
+          url += `&f_WT=2&location=${encodeURIComponent(countryLocation.name)}`;
+        } else {
+          // If no country specified, just use remote filter
+          url += '&f_WT=2'; // Remote work filter
+        }
       }
       
       // Add sorting by date
