@@ -66,5 +66,20 @@
     "profileFeedback": "Ensure your profile highlights key skills in AI and presales, relevant certifications, and any industry-specific experience to align with targeted roles.",
     "scanPromptFeedback": "Incorporate specific skills and experience levels in the scan prompt to better filter job matches, such as '5+ years in AI presales'.",
     "overallRating": 7
+  },
+  "signal": {},
+  "requestId": 181,
+  "requestInfo": {
+    "headers": {
+      "host": "localhost:8000",
+      "connection": "keep-alive",
+      "content-type": "application/json",
+      "accept": "application/json, text/event-stream",
+      "accept-language": "*",
+      "sec-fetch-mode": "cors",
+      "user-agent": "node",
+      "accept-encoding": "gzip, deflate",
+      "content-length": "95"
+    }
   }
 }

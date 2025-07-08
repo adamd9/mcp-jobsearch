@@ -72,20 +72,8 @@ const start = async () => {
     }
   });
 
-// MCP resource - Get latest matches from job index
-app.get("/latest_matches", async () => {
-  try {
-    // Get matched jobs with score >= 0.7
-    const matches = await getMatchedJobs(0.7);
-    return matches;
-  } catch (error) {
-    console.error(`Error getting latest matches: ${error.message}`);
-    // Fall back to file-based matches if job index fails
-    const files = await fs.readdir("data");
-    const latest = files.sort().pop();
-    return latest ? JSON.parse(await fs.readFile(`data/${latest}`)) : [];
-  }
-});
+// Note: The latest_matches endpoint has been removed as it was redundant with the jobs MCP tool
+// Users can filter for job matches with a minimum score using the jobs tool with minScore parameter
 
 // MCP tool - Send digest email
 app.post("/send_digest", async (req, reply) => {

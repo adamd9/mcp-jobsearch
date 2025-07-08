@@ -243,16 +243,24 @@ export function createServer() {
         })();
         
         // Return immediately with job started status
+        const structuredResult = { 
+          jobStarted: true,
+          mockMode: config.mockMode,
+          jobType: 'scan'
+        };
+        
         return {
-          content: [{ 
-            type: "text", 
-            text: `Scan job started in the background. Use the 'status' tool to check progress.` 
-          }],
-          structuredContent: { 
-            jobStarted: true,
-            mockMode: config.mockMode,
-            jobType: 'scan'
-          },
+          content: [
+            { 
+              type: "text", 
+              text: `Scan job started in the background. Use the 'status' tool to check progress.` 
+            },
+            {
+              type: "text",
+              text: JSON.stringify(structuredResult, null, 2)
+            }
+          ],
+          structuredContent: structuredResult,
         };
       } catch (error) {
         backgroundJobs.scan.status = 'error';
@@ -260,9 +268,14 @@ export function createServer() {
         backgroundJobs.scan.endTime = Date.now();
         backgroundJobs.scan.inProgress = false;
         
+        const errorResult = { error: error.message };
+        
         return {
-          content: [{ type: "text", text: `Error starting scan job: ${error.message}` }],
-          structuredContent: { error: error.message },
+          content: [
+            { type: "text", text: `Error starting scan job: ${error.message}` },
+            { type: "text", text: JSON.stringify(errorResult, null, 2) }
+          ],
+          structuredContent: errorResult,
           isError: true
         };
       }
@@ -462,16 +475,24 @@ export function createServer() {
         })();
         
         // Return immediately with job started status
+        const structuredResult = { 
+          jobStarted: true,
+          mockMode: config.mockMode,
+          jobType: 'rescan'
+        };
+        
         return {
-          content: [{ 
-            type: "text", 
-            text: `Rescan job started in the background. Use the 'status' tool to check progress.` 
-          }],
-          structuredContent: { 
-            jobStarted: true,
-            mockMode: config.mockMode,
-            jobType: 'rescan'
-          },
+          content: [
+            { 
+              type: "text", 
+              text: `Rescan job started in the background. Use the 'status' tool to check progress.` 
+            },
+            {
+              type: "text",
+              text: JSON.stringify(structuredResult, null, 2)
+            }
+          ],
+          structuredContent: structuredResult,
         };
       } catch (error) {
         backgroundJobs.rescan.status = 'error';
@@ -479,9 +500,14 @@ export function createServer() {
         backgroundJobs.rescan.endTime = Date.now();
         backgroundJobs.rescan.inProgress = false;
         
+        const errorResult = { error: error.message };
+        
         return {
-          content: [{ type: "text", text: `Error starting rescan job: ${error.message}` }],
-          structuredContent: { error: error.message },
+          content: [
+            { type: "text", text: `Error starting rescan job: ${error.message}` },
+            { type: "text", text: JSON.stringify(errorResult, null, 2) }
+          ],
+          structuredContent: errorResult,
           isError: true
         };
       }
@@ -515,10 +541,16 @@ export function createServer() {
         jobs = jobs.slice(0, limit);
       }
       return {
-        content: [{ 
-          type: "text", 
-          text: `Found ${jobs.length} jobs${minScore ? ` with score >= ${minScore}` : ''}${typeof scanned !== "undefined" ? ` (${scanned ? 'scanned' : 'not scanned'})` : ''}` 
-        }],
+        content: [
+          { 
+            type: "text", 
+            text: `Found ${jobs.length} jobs${minScore ? ` with score >= ${minScore}` : ''}${typeof scanned !== "undefined" ? ` (${scanned ? 'scanned' : 'not scanned'})` : ''}` 
+          },
+          {
+            type: "text",
+            text: JSON.stringify({ jobs }, null, 2)
+          }
+        ],
         structuredContent: { jobs },
       };
     },
@@ -532,42 +564,8 @@ export function createServer() {
   // Note: The individual job tool has been removed as it was redundant with the jobs tool
   // Users can filter for a specific job ID using the jobs tool if needed
 
-  // Latest matches
-  mcpServer.tool(
-    "latest_matches",
-    "Get the latest job matches with score >= 0.7",
-    {},
-    async ({ sendDigest }) => {
-      try {
-        const matches = await getMatchedJobs(0.7);
-        return {
-          content: [{ 
-            type: "text", 
-            text: `Found ${matches.length} job matches with score >= 0.7` 
-          }],
-          structuredContent: matches,
-        };
-      } catch {
-        const files = await fs.readdir("data");
-        const latest = files.sort().pop();
-        const matches = latest
-          ? JSON.parse(await fs.readFile(`data/${latest}`))
-          : [];
-        return {
-          content: [{ 
-            type: "text", 
-            text: `Found ${matches.length} job matches from backup file` 
-          }],
-          structuredContent: matches,
-        };
-      }
-    },
-    {
-      title: "Get Latest Matches",
-      readOnlyHint: true,
-      openWorldHint: false
-    }
-  );
+  // Note: The latest_matches tool has been removed as it was redundant with the jobs tool
+  // Users can filter for job matches with a minimum score using the jobs tool with minScore parameter
 
   // Status endpoint - Get current status of the job search service
   mcpServer.tool(
@@ -645,15 +643,27 @@ export function createServer() {
         }
         
         return {
-          content: [{ 
-            type: "text", 
-            text: statusText
-          }],
+          content: [
+            { 
+              type: "text", 
+              text: statusText
+            },
+            {
+              type: "text",
+              text: JSON.stringify(status, null, 2)
+            }
+          ],
           structuredContent: status,
         };
       } catch (error) {
+        const errorResult = { error: error.message };
+        
         return {
-          content: [{ type: "text", text: `Error getting status: ${error.message}` }],
+          content: [
+            { type: "text", text: `Error getting status: ${error.message}` },
+            { type: "text", text: JSON.stringify(errorResult, null, 2) }
+          ],
+          structuredContent: errorResult,
           isError: true,
         };
       }
