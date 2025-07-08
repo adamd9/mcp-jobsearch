@@ -195,11 +195,12 @@ export function createServer() {
               let total = 0;
               let jobs = [];
               
-              for (const term of plan.searchTerms) {
-                const url = `https://www.linkedin.com/jobs/search/?keywords=${encodeURIComponent(
-                  term
-                )}`;
-                const { jobs: scrapedJobs } = await scrapeLinkedIn(url, {
+              console.log(`[Tool: scan] Using ${plan.searchUrls.length} search URLs from plan`);
+              
+              // Use the search URLs from the plan which include location parameters
+              for (const searchUrlObj of plan.searchUrls) {
+                console.log(`[Tool: scan] Scraping with URL: ${searchUrlObj.url} (Term: ${searchUrlObj.term}, Location: ${searchUrlObj.location})`);
+                const { jobs: scrapedJobs } = await scrapeLinkedIn(searchUrlObj.url, {
                   deepScan: deepScan, // Use the deepScan parameter
                   profileText: plan.profile,
                   scanPrompt: plan.scanPrompt,
@@ -298,14 +299,35 @@ export function createServer() {
       
       try {
         // Start the rescan process in the background
-        (async ({ sendDigest }) => {
+        console.log('[Tool: rescan] Starting rescan process in background');
+        (async () => {
+          // Don't destructure from parameters, use the imported sendDigest function
           try {
-            // Get all jobs from the index
-            const jobIndex = await getJobIndex();
-            const jobs = jobIndex.jobs;
+            console.log('[Tool: rescan] Clearing job index before rescanning');
+            // Clear the job index by saving an empty jobs array
+            await saveJobIndex({ jobs: [] });
+            
+            // Scrape jobs using the plan search URLs
+            console.log(`[Tool: rescan] Using ${plan.searchUrls.length} search URLs from plan`);
+            let allJobs = [];
+            
+            // Use the search URLs from the plan which include location parameters
+            for (const searchUrlObj of plan.searchUrls) {
+              console.log(`[Tool: rescan] Scraping with URL: ${searchUrlObj.url} (Term: ${searchUrlObj.term}, Location: ${searchUrlObj.location})`);
+              const { jobs: scrapedJobs } = await scrapeLinkedIn(searchUrlObj.url, {
+                deepScan: false, // We'll do deep scan after all jobs are collected
+                profileText: plan.profile,
+                scanPrompt: plan.scanPrompt
+              });
+              allJobs = [...allJobs, ...scrapedJobs];
+            }
             
             // Update background job status
-            backgroundJobs.rescan.totalJobs = jobs.length;
+            backgroundJobs.rescan.totalJobs = allJobs.length;
+            
+            // Get the updated job index after scraping
+            const jobIndex = await getJobIndex();
+            const jobs = jobIndex.jobs;
             
             // Get profile text
             const profile =

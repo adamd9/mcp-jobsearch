@@ -57,8 +57,8 @@ export function generateSearchUrls(searchTerms, locations) {
       let url = `${baseUrl}?keywords=${encodeURIComponent(term)}`;
       
       // Add location parameters based on location type
-      if (loc.geoId) {
-        url += `&location=${encodeURIComponent(loc.name)}&geoId=${loc.geoId}`;
+      if (loc.name && loc.name !== 'Remote') {
+        url += `&location=${encodeURIComponent(loc.name)}`;
         
         // Add distance parameter for city searches
         if (loc.type === 'city' && loc.distance) {
