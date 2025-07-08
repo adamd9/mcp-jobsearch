@@ -519,7 +519,7 @@ export function createServer() {
           type: "text", 
           text: `Found ${jobs.length} jobs${minScore ? ` with score >= ${minScore}` : ''}${typeof scanned !== "undefined" ? ` (${scanned ? 'scanned' : 'not scanned'})` : ''}` 
         }],
-        structuredContent: jobs,
+        structuredContent: { jobs },
       };
     },
     {
