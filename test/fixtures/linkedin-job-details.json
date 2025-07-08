@@ -1,266 +1,344 @@
 [
   {
-    "jobId": "air-arabia-vacancies-open-to-all-department-apply-now-at-aviation-jobs-4203324478",
-    "timestamp": "2025-07-07T10:54:44.146Z",
-    "title": "Air Arabia Vacancies Open To All Department",
-    "company": "Air Arabia",
-    "location": "Indiana, United States",
-    "description": "At Air Arabia, we offer a diverse and inclusive work environment where employees truly belong. Our facilities include state-of-the-art office spaces, a gym, gaming facilities, and a multi-cuisine food court. We have a strong corporate social responsibility program, 'Charity Cloud', which supports education and healthcare initiatives globally. We provide career development programs and training opportunities, including the Airline MPL Cadets Pilot Program and certified programs in Flight Dispatch. Fresh graduates in Aeronautical/Aerospace Engineering can join our Engineering & Maintenance team to gain experience.",
+    "jobId": "aws-sales-engineer-at-adastra-4247336619",
+    "timestamp": "2025-07-08T10:02:54.748+10:00",
+    "title": "AWS Sales Engineer",
+    "company": "Adastra",
+    "location": "New York, New Jersey, or Texas",
+    "description": "Join Adastra as an AWS Sales Engineer to shape the future of cloud computing across North America and Europe. This role involves pre-sales activities, delivery of proof of concepts, and supporting AWS partnership goals. You'll build client relationships, create presentations, and lead workshops while spotting new AWS opportunities.",
     "requirements": [
-      "Interest in aviation industry",
-      "Motivation to join career development programs",
-      "Qualifications in Aeronautical/Aerospace Engineering for engineering roles"
+      "Excellent communication and presentation skills",
+      "Experience in technical presales or as a customer-facing solution architect",
+      "Solid understanding of AWS services like S3, Redshift, SageMaker, Lambda, and ETL pipelines",
+      "Experience with cloud-based Data & Analytics solutions",
+      "Knowledge of Data Science and Advanced Analytics in the cloud",
+      "A degree in a technical field (or equivalent experience)",
+      "A self-starter attitude and a hunger to learn the latest in cloud tech",
+      "Experience leading large-scale cloud projects (Bonus)",
+      "AWS certifications (Bonus)"
     ],
     "salary": null,
     "jobType": "Full-time",
-    "experienceLevel": "Internship",
+    "experienceLevel": "Mid-Senior level",
+    "remoteStatus": "Hybrid (2 days onsite)",
+    "companyInfo": {
+      "size": null,
+      "industry": "IT Services and IT Consulting",
+      "founded": null,
+      "description": "Adastra is an international consulting company focused on data and analytic solutions in Cloud, Data Management, Analytics, AI and ML, Governance, Hyper Automation, and Enterprise Application Development."
+    },
+    "benefits": [
+      "Opportunity for advancement and career progression",
+      "Competitive compensation package",
+      "Successful referral program",
+      "Satisfaction of working for a reputable company",
+      "A flexible, dynamic, and diverse workplace"
+    ],
+    "technologies": [
+      "AWS",
+      "S3",
+      "Redshift",
+      "SageMaker",
+      "Lambda",
+      "ETL pipelines",
+      "Data & Analytics solutions",
+      "Data Science",
+      "Advanced Analytics"
+    ],
+    "matchScore": 0.6,
+    "matchReason": "The candidate's profile aligns with several key aspects of the AWS Sales Engineer role at Adastra, but there are notable gaps primarily related to location and specific AWS experience. The candidate has experience in sales/presales engineering roles, which matches the job's focus on pre-sales activities and client relationship building. Their flexibility in location is beneficial, but the job is specifically based in New York, New Jersey, or Texas, which may not align with the candidate's preference for roles in Australia or remote positions. The candidate's technical background and experience with cloud-based Data & Analytics solutions align well with the job's requirements, including knowledge of AWS services and Data Science. However, the job specifically emphasizes AWS services like S3, Redshift, SageMaker, Lambda, and ETL pipelines, and it is unclear if the candidate has direct experience with all these technologies. Additionally, AWS certifications and experience leading large-scale cloud projects are listed as bonuses, and it is not specified if the candidate possesses these qualifications. Overall, while there is a strong alignment in terms of role responsibilities and technical skills, the geographical and specific AWS experience requirements reduce the match score.",
+    "scanned": true,
+    "scanDate": "2025-07-08T00:02:54.736Z",
+    "jobUrl": "https://www.linkedin.com/jobs/view/aws-sales-engineer-at-adastra-4247336619"
+  },
+  {
+    "jobId": "cloud-solution-architect-instaclustr-presales-at-netapp-4263458678",
+    "timestamp": "2025-07-08T10:03:19.146+10:00",
+    "title": "Cloud Solution Architect - Instaclustr - Presales",
+    "company": "NetApp",
+    "location": "Bakersfield, CA",
+    "description": "An Instaclustr Solutions Engineer at NetApp leads the technical strategy for greenfield and installed base accounts. Working in tight collaboration with Sales colleagues, SEs align technical and service capabilities to customer needs and articulate how companies will benefit from partnering with NetApp. This position will support both our National & Global Sales Teams with a primary focus on our Western US Regional Sales Teams & Customers.",
+    "requirements": [
+      "Find and support opportunities in new and existing customers in close collaboration with Sales",
+      "Translate customer business needs into technical solutions based on Instaclustr offerings",
+      "Partner with SMEs, Sales, Customer Success and other groups to create comprehensive solutions",
+      "Develop and own key stakeholder relationships within the customer and partner communities",
+      "Conduct demonstrations and lead POCs in collaboration with SMEs as needed",
+      "Demonstrate a good understanding of both business and technology strategy",
+      "Use NetApp’s sales tools to effectively manage accounts, opportunities & pipeline",
+      "Understand Open Source technologies, with emphasis on one or more of the Instaclustr projects",
+      "Use of or strong knowledge of technologies like Cassandra, Kafka, PostgreSQL, Spark, OpenSearch, Valkey, ClickHouse, Cadence",
+      "Drive results through customer obsession and being the technical authority to win opportunities",
+      "A minimum 8 to 12 years of experience is desired",
+      "A bachelor's degree in computer science or a similar field is a plus but not required"
+    ],
+    "salary": "$205,700.00/yr - $266,200.00/yr",
+    "jobType": "Full-time",
+    "experienceLevel": "Mid-Senior level",
+    "remoteStatus": "Hybrid",
+    "companyInfo": {
+      "size": null,
+      "industry": "Software Development",
+      "founded": null,
+      "description": "NetApp is the intelligent data infrastructure company, turning a world of disruption into opportunity for every customer."
+    },
+    "benefits": [
+      "Comprehensive benefits package",
+      "Health Insurance",
+      "Life Insurance",
+      "Retirement or Pension Plans",
+      "Paid Time Off (PTO)",
+      "Employee stock purchase plan",
+      "Restricted stocks (RSU’s)",
+      "Volunteer time off program",
+      "Educational assistance",
+      "Legal services",
+      "Access to discounts",
+      "Financial savings programs"
+    ],
+    "technologies": [
+      "Cassandra",
+      "Kafka",
+      "PostgreSQL",
+      "Spark",
+      "OpenSearch (Elastic Search)",
+      "Valkey (Redis)",
+      "ClickHouse",
+      "Cadence"
+    ],
+    "matchScore": 0.4,
+    "matchReason": "The candidate's profile indicates flexibility in location, which is a positive aspect for remote or hybrid roles. However, the job is located in Bakersfield, CA, and does not mention remote or hybrid work options, which may not align with the candidate's preference for location-flexible roles. The role is a Cloud Solution Architect with a focus on presales, which aligns with the candidate's experience in sales/presales engineering. The job requires a strong understanding of specific technologies such as Cassandra, Kafka, PostgreSQL, and others, as well as experience with Open Source technologies, which may or may not align with the candidate's technical expertise depending on their background. The requirement of 8 to 12 years of experience is a potential match if the candidate meets this criterion. However, the lack of flexibility in working arrangements and the specific location requirement significantly lowers the match score for a candidate seeking flexible work arrangements.",
+    "scanned": true,
+    "scanDate": "2025-07-08T00:03:19.135Z",
+    "jobUrl": "https://www.linkedin.com/jobs/view/cloud-solution-architect-instaclustr-presales-at-netapp-4263458678"
+  },
+  {
+    "jobId": "cloud-solution-architect-instaclustr-presales-at-netapp-4263462468",
+    "timestamp": "2025-07-08T10:03:22.287+10:00",
+    "title": "Cloud Solution Architect - Instaclustr - Presales",
+    "company": "NetApp",
+    "location": "Los Angeles, CA",
+    "description": "An Instaclustr Solutions Engineer at NetApp leads the technical strategy for greenfield and installed base accounts. Working closely with Sales colleagues, SEs align technical and service capabilities to customer needs and articulate how companies will benefit from partnering with NetApp. This position supports both National & Global Sales Teams with a primary focus on the Western US Regional Sales Teams & Customers.",
+    "requirements": [
+      "Find and support opportunities in new and existing customers in close collaboration with Sales",
+      "Translate customer business needs into technical solutions based on Instaclustr offerings",
+      "Partner with SMEs, Sales, Customer Success and other groups to create comprehensive solutions",
+      "Develop and own key stakeholder relationships within the customer and partner communities",
+      "Conduct demonstrations and lead POCs in collaboration with SMEs as needed",
+      "Demonstrate a good understanding of both business and technology strategy",
+      "Use NetApp’s sales tools to effectively manage accounts, opportunities & pipeline"
+    ],
+    "salary": "$205,700.00/yr - $266,200.00/yr",
+    "jobType": "Full-time",
+    "experienceLevel": "Mid-Senior level",
+    "remoteStatus": "Hybrid",
+    "companyInfo": {
+      "size": null,
+      "industry": "Software Development",
+      "founded": null,
+      "description": "NetApp is the intelligent data infrastructure company, turning a world of disruption into opportunity for every customer."
+    },
+    "benefits": [
+      "Health Insurance",
+      "Life Insurance",
+      "Retirement or Pension Plans",
+      "Paid Time Off (PTO)",
+      "Employee stock purchase plan",
+      "Restricted stocks (RSU’s)",
+      "Volunteer time off program"
+    ],
+    "technologies": [
+      "Cassandra",
+      "Kafka",
+      "PostgreSQL",
+      "Spark",
+      "OpenSearch (Elastic Search)",
+      "Valkey (Redis)",
+      "ClickHouse",
+      "Cadence"
+    ],
+    "matchScore": 0.4,
+    "matchReason": "The candidate's profile indicates experience in sales/presales engineering roles with a flexible location preference, which aligns with the general nature of the job. However, there are several mismatches that lower the match score. Firstly, the job is based in Los Angeles, CA, whereas the candidate prefers flexible locations, particularly hybrid roles in Sydney or remote positions anywhere in Australia. This geographical mismatch is significant. Secondly, while the role is in the IT and technology sector, which fits the candidate's focus, the specific requirement to support the Western US Regional Sales Teams and Customers may not align with the candidate's location flexibility. Additionally, the job requires a deep understanding of NetApp's specific sales tools and Instaclustr offerings, which may not be within the candidate's current expertise unless they have prior experience with these technologies. The role's focus on developing relationships and conducting demonstrations aligns with typical presales responsibilities, which is a positive match. However, the lack of flexibility in working arrangements and the specific regional focus are major drawbacks for this candidate.",
+    "scanned": true,
+    "scanDate": "2025-07-08T00:03:22.277Z",
+    "jobUrl": "https://www.linkedin.com/jobs/view/cloud-solution-architect-instaclustr-presales-at-netapp-4263462468"
+  },
+  {
+    "jobId": "cloud-solution-architect-instaclustr-presales-at-netapp-4263465083",
+    "timestamp": "2025-07-08T10:02:26.337+10:00",
+    "title": "Cloud Solution Architect - Instaclustr - Presales",
+    "company": "NetApp",
+    "location": "Peoria, IL",
+    "description": "An Instaclustr Solutions Engineer at NetApp leads the technical strategy for greenfield and installed base accounts. Working in tight collaboration with Sales colleagues, SEs align technical and service capabilities to customer needs and articulate how companies will benefit from partnering with NetApp. This position will support both National & Global Sales Teams with a primary focus on Western US Regional Sales Teams & Customers.",
+    "requirements": [
+      "Find and support opportunities in new and existing customers in close collaboration with Sales",
+      "Translate customer business needs into technical solutions based on Instaclustr offerings",
+      "Partner with SMEs, Sales, Customer Success and other groups to create comprehensive solutions",
+      "Develop and own key stakeholder relationships within the customer and partner communities",
+      "Conduct demonstrations and lead POCs in collaboration with SMEs as needed",
+      "Demonstrate a good understanding of both business and technology strategy",
+      "Use NetApp’s sales tools to effectively manage accounts, opportunities & pipeline",
+      "Understand Open Source technologies, with emphasis on Instaclustr projects",
+      "Use of or strong knowledge of technologies like Cassandra, Kafka, PostgreSQL, Spark, OpenSearch, Valkey, ClickHouse, Cadence",
+      "A minimum 8 to 12 years of experience is desired",
+      "A bachelor's degree in computer science or a similar field is a plus but not required"
+    ],
+    "salary": "$205,700.00/yr - $266,200.00/yr",
+    "jobType": "Full-time",
+    "experienceLevel": "Mid-Senior level",
+    "remoteStatus": "Hybrid",
+    "companyInfo": {
+      "size": null,
+      "industry": "Software Development",
+      "founded": null,
+      "description": "NetApp is the intelligent data infrastructure company, turning a world of disruption into opportunity for every customer."
+    },
+    "benefits": [
+      "Comprehensive benefits package",
+      "Health Insurance",
+      "Life Insurance",
+      "Retirement or Pension Plans",
+      "Paid Time Off (PTO)",
+      "Employee stock purchase plan",
+      "Restricted stocks (RSU’s)",
+      "Volunteer time off program",
+      "Educational assistance",
+      "Legal services",
+      "Access to discounts",
+      "Financial savings programs"
+    ],
+    "technologies": [
+      "Cassandra",
+      "Kafka",
+      "PostgreSQL",
+      "Spark",
+      "OpenSearch (Elastic Search)",
+      "Valkey (Redis)",
+      "ClickHouse",
+      "Cadence"
+    ],
+    "matchScore": 0.3,
+    "matchReason": "The candidate's profile indicates a focus on sales/presales engineering roles with location flexibility, particularly in hybrid or remote arrangements within Australia. However, the job posting for the Cloud Solution Architect - Instaclustr - Presales at NetApp is based in Peoria, IL, with no mention of remote or hybrid work options. This geographical mismatch significantly reduces the suitability of the role for the candidate. Furthermore, while the candidate has experience in sales/presales engineering, the job requires specific technical expertise in Open Source technologies such as Cassandra, Kafka, PostgreSQL, Spark, and others, which may not align with the candidate's current skill set if they lack experience in these areas. The role also demands a strong understanding of both business and technology strategy, which may align with the candidate's experience, but the location and specific technical requirements present significant barriers. Therefore, the match score is low due to the lack of alignment in location flexibility and specific technical expertise required.",
+    "scanned": true,
+    "scanDate": "2025-07-08T00:02:26.326Z",
+    "jobUrl": "https://www.linkedin.com/jobs/view/cloud-solution-architect-instaclustr-presales-at-netapp-4263465083"
+  },
+  {
+    "jobId": "manager-2-pre-sales-engineering-at-intuit-4235356772",
+    "timestamp": "2025-07-08T10:02:50.040+10:00",
+    "title": "Manager 2, Pre-Sales Engineering",
+    "company": "Intuit",
+    "location": "Plano, TX",
+    "description": "Come join the Mid-Market Sales team as a front line leader within the Presales Sales Engineering team. We are not your typical sales organization. Nothing is more important to us than the success of our customers, which is why we are investing in the growth of this vital piece of our ecosystem. We are problem solvers, strategic thinkers, solution seekers, team players, and consultative experts who use the latest tools and technology to solve our customers’ most important problems. The solutions we present are backed by collaborative cross-functional teams. This is a newly created leadership role to help manage our rapidly growing SE organization.",
+    "requirements": [
+      "5+ years of leadership experience in a SaaS B2B sales organization (Presales, Sales Engineering, Solutions Consulting, Solutions Engineering)",
+      "Proven ability to coach and mentor those around you.",
+      "Accounting industry experience, sales process and Mid-Market expertise is a plus.",
+      "High degree of professionalism, emotional intelligence and empathy.",
+      "Excellent communicator, experience in learning styles, self-managed.",
+      "Strong analytical, planning, and problem-solving skills with a deep understanding of sales levers, metrics, performance standards and sales methodology.",
+      "Unwavering positive attitude, strong drive for results, and able to work through ambiguity.",
+      "High level of accountability and follow through, keeping an ‘owner’s mindset’",
+      "Bachelor’s degree or MBA preferred."
+    ],
+    "salary": null,
+    "jobType": "Full-time",
+    "experienceLevel": "Mid-Senior level",
+    "remoteStatus": "On-site",
+    "companyInfo": {
+      "size": null,
+      "industry": "Software Development",
+      "founded": null,
+      "description": null
+    },
+    "benefits": [],
+    "technologies": [],
+    "matchScore": 0.6,
+    "matchReason": "The candidate has experience in sales/presales engineering roles, which aligns with the core focus of the job. However, the job is located in Plano, TX, and the candidate is seeking location-flexible roles, preferably hybrid in Sydney or remote within Australia. This geographical mismatch significantly impacts the match score. The candidate's flexibility in location is a critical factor, and the job does not offer remote or hybrid options that align with the candidate's preferences. Additionally, while the candidate has relevant experience in sales engineering, the job requires 5+ years of leadership experience in a SaaS B2B sales organization, which may or may not align with the candidate's background depending on their leadership experience. The candidate's profile does not specify experience in the accounting industry, which is a plus for the job. Overall, while there is a skills match, the location and specific industry experience requirements reduce the overall match score.",
+    "scanned": true,
+    "scanDate": "2025-07-08T00:02:50.027Z",
+    "jobUrl": "https://www.linkedin.com/jobs/view/manager-2-pre-sales-engineering-at-intuit-4235356772"
+  },
+  {
+    "jobId": "presales-engineer-enterprise-content-management-at-opentext-4253949077",
+    "timestamp": "2025-07-08T10:02:24.375+10:00",
+    "title": "Presales Engineer (Enterprise Content Management)",
+    "company": "OpenText",
+    "location": "United States",
+    "description": "As a Solution Consultant/Presales Engineer at OpenText, you will be a core member of the sales team, identifying and developing revenue opportunities. You will analyze customer business issues and provide a compelling value proposition by leveraging OpenText EIM solutions. The role involves leading presales technical/functional support activities, identifying customer business drivers, and providing technical leadership to deliver successful solutions.",
+    "requirements": [
+      "5+ years of customer-facing pre-sales experience focused on the information lifecycle",
+      "Experience both using and selling AI tools and applications",
+      "Analytical and creative mindset",
+      "Experience developing solutions and strategies to solve complex business problems",
+      "Knowledge of and experience with Enterprise Content Management solutions",
+      "Knowledge of and experience with SAP and key SAP business process areas",
+      "Experience with GSIs (EY, Deloitte, Accenture) helpful but not required",
+      "Experience leading customer-facing engagements such as presentations, demos & POC's",
+      "Engaging with customers in PST time zone and extensive travel to clients on west coast"
+    ],
+    "salary": "Minimum of $174,000/annum",
+    "jobType": "Full-time",
+    "experienceLevel": "Mid-Senior level",
     "remoteStatus": null,
     "companyInfo": {
       "size": null,
-      "industry": "Airlines and Aviation",
+      "industry": "Software Development",
       "founded": null,
-      "description": "Air Arabia is committed to diversity and offers a supportive work environment with opportunities for career growth and development."
+      "description": "OpenText is a global leader in information management, focusing on innovation, creativity, and collaboration."
     },
     "benefits": [
-      "Diverse and inclusive work environment",
-      "State-of-the-art facilities",
-      "Corporate social responsibility initiatives",
-      "Career development programs",
-      "Training opportunities"
-    ],
-    "technologies": [],
-    "matchScore": 0,
-    "matchReason": "The job posting is for positions at Air Arabia located in Indiana, United States, which does not align with the candidate's search criteria for engineering jobs in Australia. Additionally, the job is focused on the aviation industry, specifically targeting fresh graduates in Aeronautical/Aerospace Engineering, whereas the candidate's profile is unspecified and does not indicate a specialization in Aeronautical/Aerospace Engineering. Furthermore, the candidate is interested in various engineering disciplines and industries, including civil, mechanical, electrical, and software engineering, which are not addressed in this job posting. Therefore, there is no alignment between the job details and the candidate's profile or preferences.",
-    "scanned": true,
-    "scanDate": "2025-07-07T10:54:44.143Z",
-    "jobUrl": "https://www.linkedin.com/jobs/view/air-arabia-vacancies-open-to-all-department-apply-now-at-aviation-jobs-4203324478"
-  },
-  {
-    "jobId": "british-airways-aircraft-maintenance-vacancies-at-heathrow-uk-apply-now-at-aviation-jobs-4203325241",
-    "timestamp": "2025-07-07T10:55:14.865Z",
-    "title": "Aircraft Maintenance Instructor",
-    "company": "British Airways",
-    "location": "Heathrow, UK",
-    "description": "Working for the British Airways Part-147 training school at Heathrow, you'll be responsible for the development, design, and delivery of aircraft maintenance theory and practical training for British Airways’ apprentices and engineers, as well as external customers. You will carry out training needs analysis, design and update training material, develop lesson plans and deliver training for a selection of Category A & B level Part-66 Modules, Part-66 B1 & B2 Aircraft Type courses, Part-145 and Part-M subjects. You will be working in a highly regulated and safety-conscious environment.",
-    "requirements": [
-      "Experience in developing and delivering aircraft maintenance training in a Part-147 training organization",
-      "Part-66 licensed engineers with a passion for teaching",
-      "Transferable teaching experience at A-level/HNC or above",
-      "Excellent written and verbal communication skills",
-      "English language proficiency at B2 level or higher",
-      "Team player, culturally aware, and 'can do' attitude",
-      "Proficient in Microsoft applications and online meeting/social platforms"
-    ],
-    "salary": null,
-    "jobType": "Full-time",
-    "experienceLevel": "Entry level",
-    "remoteStatus": "On-site",
-    "companyInfo": {
-      "size": null,
-      "industry": "Airlines and Aviation",
-      "founded": null,
-      "description": "British Airways is the UK’s national and largest airline, offering many opportunities to develop and further your career."
-    },
-    "benefits": [
-      "Excellent salary and benefits package",
-      "Discounted worldwide travel",
-      "Healthcare"
+      "Comprehensive and competitive group benefit and healthcare plan"
     ],
     "technologies": [
-      "Microsoft applications",
-      "Online meeting platforms",
-      "Social platforms"
+      "Enterprise Content Management solutions",
+      "SAP"
     ],
-    "matchScore": 0,
-    "matchReason": "The job details specify a position for an Aircraft Maintenance Instructor located in Heathrow, UK, which does not align with the candidate's search criteria for engineering jobs in Australia. The candidate is focused on various engineering disciplines such as civil, mechanical, electrical, and software engineering, rather than aircraft maintenance. Additionally, the job requires specific experience in developing and delivering aircraft maintenance training in a Part-147 training organization, as well as a Part-66 license, which are specialized qualifications not mentioned in the candidate's profile. Furthermore, the candidate is interested in roles within Australia, whereas this position is based in the UK. Therefore, there is no alignment between the job requirements and the candidate's search criteria.",
+    "matchScore": 0.4,
+    "matchReason": "The candidate's profile indicates a focus on sales/presales engineering roles with a flexible location preference, ideally in hybrid or remote settings within Australia. The OpenText Presales Engineer role is based in the United States, requiring engagement in the PST time zone and extensive travel to the west coast, which does not align with the candidate's location flexibility preference. Additionally, the role's requirement for experience with Enterprise Content Management solutions, SAP, and GSIs may not align with the candidate's expertise if their experience is primarily in other IT or technology sectors. While the candidate may have relevant sales/presales experience, the geographical and specific technical requirements significantly reduce the match score.",
     "scanned": true,
-    "scanDate": "2025-07-07T10:55:14.861Z",
-    "jobUrl": "https://www.linkedin.com/jobs/view/british-airways-aircraft-maintenance-vacancies-at-heathrow-uk-apply-now-at-aviation-jobs-4203325241"
+    "scanDate": "2025-07-08T00:02:24.362Z",
+    "jobUrl": "https://www.linkedin.com/jobs/view/presales-engineer-enterprise-content-management-at-opentext-4253949077"
   },
   {
-    "jobId": "emirates-airways-aircraft-technician-vacancies-apply-now-at-aviation-jobs-4203320444",
-    "timestamp": "2025-07-07T10:54:19.760Z",
-    "title": "Aircraft Technician",
-    "company": "Emirates Airways",
-    "location": "Indiana, United States",
-    "description": "The Aircraft Technician is responsible for carrying out maintenance tasks on Emirates and third party aircraft components in accordance with laid down procedures and regulations. The Aircraft Technician will work as part of a team under the direction and guidance of the assigned Licensed Aircraft Engineer within the trade disciplines for which they have been trained. This is a safety-sensitive role involving working at height, exposure to hazardous energy systems, heavy lifting, and working in confined spaces.",
+    "jobId": "sales-solutions-engineer-%E2%80%93-infrastructure-daas-at-sonda-4251672988",
+    "timestamp": "2025-07-08T10:03:45.083+10:00",
+    "title": "Sales Solutions Engineer – Infrastructure & DaaS",
+    "company": "SONDA",
+    "location": "Miami, FL",
+    "description": "We are looking for a highly motivated Sales Solutions Engineer with a strong background in IT infrastructure and integration to support our business development efforts across mid-sized enterprise clients. This role is ideal for someone who combines technical experience in datacenter environments with pricing expertise and vendor alignment, particularly in the context of integrated solutions.",
     "requirements": [
-      "Carry out maintenance tasks on aircraft components",
-      "Work under the direction of a Licensed Aircraft Engineer",
-      "Trained in relevant trade disciplines"
-    ],
-    "salary": "Attractive tax-free salary",
-    "jobType": "Full-time",
-    "experienceLevel": "Entry level",
-    "remoteStatus": "On-site",
-    "companyInfo": {
-      "size": null,
-      "industry": "Airlines and Aviation",
-      "founded": null,
-      "description": null
-    },
-    "benefits": [
-      "Tax-free salary",
-      "Generous travel benefits",
-      "Discounted flights and hotel stays",
-      "Excellent leave and healthcare package",
-      "Transport benefits",
-      "Life insurance"
-    ],
-    "technologies": [],
-    "matchScore": 0.1,
-    "matchReason": "The job posting for an Aircraft Technician at Emirates Airways in Indiana, United States, does not align well with the candidate's search criteria for engineering jobs in Australia. The candidate is interested in various engineering disciplines such as civil, mechanical, electrical, and software engineering, and is open to roles in both urban and regional areas within Australia. However, the job is located in the United States and specifically requires skills and experience related to aircraft maintenance, which is a specialized field not mentioned in the candidate's profile. Additionally, the job involves working under a Licensed Aircraft Engineer and requires specific training in aircraft maintenance, which may not align with the candidate's engineering background. Therefore, the match score is low due to the geographical mismatch and the specific nature of the job requirements.",
-    "scanned": true,
-    "scanDate": "2025-07-07T10:54:19.755Z",
-    "jobUrl": "https://www.linkedin.com/jobs/view/emirates-airways-aircraft-technician-vacancies-apply-now-at-aviation-jobs-4203320444"
-  },
-  {
-    "jobId": "emirates-airways-aircraft-technician-vacancies-apply-now-at-aviation-jobs-4203322373",
-    "timestamp": "2025-07-07T10:54:51.811Z",
-    "title": "Aircraft Technician",
-    "company": "Emirates Airways",
-    "location": "Indiana, United States",
-    "description": "The Aircraft Technician is responsible for carrying out maintenance tasks on Emirates and third-party aircraft components in accordance with laid down procedures and regulations. The role involves routine aircraft/engine/component servicing, maintenance, and approved structural repairs. Technicians assist Licensed Aircraft Engineers in troubleshooting, defect rectifications, and modifications while promoting a safety culture and maintaining excellent housekeeping conditions.",
-    "requirements": [
-      "Carry out routine aircraft/engine/component servicing/maintenance",
-      "Comply with manufacturers' procedures and safety protocols",
-      "Assist Licensed Aircraft Engineers in troubleshooting and defect rectifications",
-      "Participate in creating a safety culture",
-      "Maintain airport safety regulations and driving permit",
-      "Work closely with supervisor for development plans"
-    ],
-    "salary": "Attractive tax-free salary",
-    "jobType": "Full-time",
-    "experienceLevel": "Entry level",
-    "remoteStatus": "On-site",
-    "companyInfo": {
-      "size": null,
-      "industry": "Airlines and Aviation",
-      "founded": null,
-      "description": null
-    },
-    "benefits": [
-      "Tax-free salary",
-      "Generous travel benefits",
-      "Discounted flights and hotel stays",
-      "Excellent leave and healthcare package",
-      "Transport benefits",
-      "Life insurance"
-    ],
-    "technologies": [
-      "Aircraft Maintenance Manual (AMM)",
-      "Illustrated Parts Catalogue (IPC)",
-      "Component Maintenance Manual (CMM)"
-    ],
-    "matchScore": 0.2,
-    "matchReason": "The job posting for an Aircraft Technician at Emirates Airways in Indiana, United States, does not align well with the candidate's search criteria for engineering jobs in Australia across various disciplines such as civil, mechanical, electrical, and software engineering. The role is highly specialized in aircraft maintenance, which requires specific skills and certifications related to aviation, rather than the broader engineering disciplines the candidate is interested in. Additionally, the location is in the United States, whereas the candidate is focused on opportunities in Australia. The job also emphasizes hands-on maintenance and compliance with aviation safety regulations, which may not align with the candidate's engineering background unless they have specific experience in aerospace or aviation engineering. Therefore, the match score is low due to the mismatch in location, industry focus, and specific job requirements.",
-    "scanned": true,
-    "scanDate": "2025-07-07T10:54:51.807Z",
-    "jobUrl": "https://www.linkedin.com/jobs/view/emirates-airways-aircraft-technician-vacancies-apply-now-at-aviation-jobs-4203322373"
-  },
-  {
-    "jobId": "emirates-airways-aircraft-technician-vacancies-apply-now-at-aviation-jobs-4203325170",
-    "timestamp": "2025-07-07T10:54:21.928Z",
-    "title": "Aircraft Technician",
-    "company": "Emirates Airways",
-    "location": "Indiana, United States",
-    "description": "The Aircraft Technician is responsible for carrying out maintenance tasks on Emirates and third-party aircraft components in accordance with laid down procedures and regulations. The Aircraft Technician will work as part of a team under the direction and guidance of the assigned Licensed Aircraft Engineer within the trade disciplines for which they have been trained.",
-    "requirements": [
-      "Carry out maintenance tasks on aircraft components",
-      "Work under the direction of a Licensed Aircraft Engineer",
-      "Trained in relevant trade disciplines"
-    ],
-    "salary": "Attractive tax-free salary",
-    "jobType": "Full-time",
-    "experienceLevel": "Entry level",
-    "remoteStatus": "On-site",
-    "companyInfo": {
-      "size": null,
-      "industry": "Airlines and Aviation",
-      "founded": null,
-      "description": null
-    },
-    "benefits": [
-      "Tax-free salary",
-      "Generous travel benefits",
-      "Discounted flights and hotel stays",
-      "Excellent leave and healthcare package",
-      "Transport benefits",
-      "Life insurance"
-    ],
-    "technologies": [],
-    "matchScore": 0.1,
-    "matchReason": "The job details for the Aircraft Technician position at Emirates Airways do not align well with the candidate's profile, which is focused on engineering roles in Australia across various disciplines such as civil, mechanical, electrical, and software engineering. The job is located in Indiana, United States, whereas the candidate is seeking opportunities in Australia. Additionally, the role is specific to aircraft maintenance, which may not align with the candidate's engineering focus unless they have specific training or experience in aircraft systems or aerospace engineering. The job also requires working under a Licensed Aircraft Engineer, suggesting a need for specific aviation-related skills and certifications that may not be relevant to the candidate's broader engineering interests. Therefore, the match score is low due to the geographical mismatch and the specialized nature of the job compared to the candidate's broader engineering focus.",
-    "scanned": true,
-    "scanDate": "2025-07-07T10:54:21.924Z",
-    "jobUrl": "https://www.linkedin.com/jobs/view/emirates-airways-aircraft-technician-vacancies-apply-now-at-aviation-jobs-4203325170"
-  },
-  {
-    "jobId": "qatar-airways-mechanical-technician-vacancies-apply-now-at-aviation-jobs-4203318890",
-    "timestamp": "2025-07-07T10:55:11.768Z",
-    "title": "Mechanical Technician",
-    "company": "Qatar Airways",
-    "location": "Indiana, United States",
-    "description": "As a Mechanical Technician, you will be responsible for undertaking corrective, preventive maintenance and new minor project works on various mechanical systems to minimize downtime at Doha International Airport and Hamad International Airport. Responsibilities include coordinating site activities, troubleshooting, monitoring, and repairing systems to ensure smooth operations.",
-    "requirements": [
-      "High School qualification",
-      "Minimum 2 years of job-related experience"
+      "Proven experience in IT infrastructure (datacenter, networking, virtualization, storage)",
+      "Previous background in systems integration companies (preferably similar to SONDA or mid-sized IT integrators)",
+      "Strong understanding of solution pricing, margin management, and commercial modeling",
+      "Technical hands-on experience earlier in career (e.g., field technician or infrastructure engineer) is a strong plus",
+      "Excellent communication and stakeholder management skills",
+      "Experience working with DaaS, managed services, or vendor-partner ecosystems is preferred",
+      "Located in or willing to work from the Miami area"
     ],
     "salary": null,
     "jobType": "Full-time",
-    "experienceLevel": "Entry level",
-    "remoteStatus": "On-site",
+    "experienceLevel": "Mid-Senior level",
+    "remoteStatus": "on-site",
     "companyInfo": {
       "size": null,
-      "industry": "Airlines and Aviation",
+      "industry": "Information Technology & Services",
       "founded": null,
-      "description": null
-    },
-    "benefits": [],
-    "technologies": [],
-    "matchScore": 0,
-    "matchReason": "The job posting for a Mechanical Technician at Qatar Airways is located in Indiana, United States, and involves maintenance work at airports in Doha and Hamad. The candidate's profile specifies a search for engineering jobs in Australia, focusing on various engineering disciplines such as civil, mechanical, electrical, and software engineering. The job does not align with the candidate's geographical preference for Australia, nor does it specify a requirement for an engineering degree, which is typically expected in engineering roles. Additionally, the job is more technical and maintenance-focused rather than engineering-focused, which further reduces the match. Therefore, the match score is 0.0 as the job does not meet the candidate's criteria.",
-    "scanned": true,
-    "scanDate": "2025-07-07T10:55:11.765Z",
-    "jobUrl": "https://www.linkedin.com/jobs/view/qatar-airways-mechanical-technician-vacancies-apply-now-at-aviation-jobs-4203318890"
-  },
-  {
-    "jobId": "qatar-airways-mechanical-technician-vacancies-apply-now-at-aviation-jobs-4203322481",
-    "timestamp": "2025-07-07T10:55:36.161Z",
-    "title": "Mechanical Technician",
-    "company": "Qatar Airways",
-    "location": "Indiana, United States",
-    "description": "As a Mechanical Technician, you will be responsible for undertaking corrective, preventive maintenance and new minor project works on various mechanical systems to minimize downtime at Doha International Airport and Hamad International Airport. Responsibilities include coordinating site activities, troubleshooting, monitoring, and repairing systems to ensure smooth operations.",
-    "requirements": [
-      "High School qualification",
-      "Minimum 2 years of job-related experience",
-      "Knowledge of or ability to operate forklifts, boom-lifts, and scissor lifts",
-      "Good working knowledge of pneumatic & hydraulics systems",
-      "Basic working knowledge of Electrical systems",
-      "Knowledge of Basic Mechanical & Electrical System Controls",
-      "Ability to put up simple daily progress reports and incident reports"
-    ],
-    "salary": null,
-    "jobType": "Full-time",
-    "experienceLevel": "Entry level",
-    "remoteStatus": "On-site",
-    "companyInfo": {
-      "size": null,
-      "industry": "Airlines and Aviation",
-      "founded": null,
-      "description": null
+      "description": "SONDA is the largest IT service provider in Latin America, leader in systems integration, support and IT outsourcing. With almost 50 years of experience and in constant growth around the World, and growing so far in in US, as well."
     },
     "benefits": [],
     "technologies": [
-      "pneumatic systems",
-      "hydraulics systems",
-      "Electrical systems",
-      "Mechanical & Electrical System Controls"
+      "virtualization",
+      "servers",
+      "storage",
+      "networking",
+      "switches",
+      "Device as a Service"
     ],
-    "matchScore": 0,
-    "matchReason": "The job posting for a Mechanical Technician at Qatar Airways is located in Indiana, United States, and involves maintenance work at airports in Doha, Qatar. This does not align with the candidate's search criteria, which focuses on engineering roles in Australia across various disciplines such as civil, mechanical, electrical, and software engineering. Additionally, the job requires only a high school qualification and 2 years of job-related experience, which may not match the candidate's likely educational background and experience level if they are seeking engineering roles. Furthermore, the job is more technical and maintenance-focused rather than engineering-focused, which may not align with the candidate's career aspirations in engineering disciplines.",
+    "matchScore": 0.3,
+    "matchReason": "The candidate's profile indicates a focus on sales/presales engineering roles with location flexibility, particularly emphasizing hybrid or remote work arrangements within Australia. The job at SONDA is based in Miami, FL, and requires the candidate to be located in or willing to work from the Miami area, which does not align with the candidate's location preferences. Additionally, while the candidate has experience in sales/presales engineering, the job specifically requires a strong background in IT infrastructure, datacenter environments, and systems integration, which may not fully align with the candidate's expertise unless explicitly stated in their profile. Furthermore, the job description emphasizes experience with DaaS, managed services, and vendor-partner ecosystems, which may or may not match the candidate's experience. The lack of flexibility in working arrangements and the specific location requirement significantly reduce the match score.",
     "scanned": true,
-    "scanDate": "2025-07-07T10:55:36.158Z",
-    "jobUrl": "https://www.linkedin.com/jobs/view/qatar-airways-mechanical-technician-vacancies-apply-now-at-aviation-jobs-4203322481"
+    "scanDate": "2025-07-08T00:03:45.071Z",
+    "jobUrl": "https://www.linkedin.com/jobs/view/sales-solutions-engineer-%E2%80%93-infrastructure-daas-at-sonda-4251672988"
   }
 ]

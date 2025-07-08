@@ -13,6 +13,10 @@ const defaultConfig = {
   deepScanLimit: 50,
   timezone: 'Australia/Sydney',
   jobIndexPath: path.join(process.cwd(), 'data', 'job-index.json'),
+  // Pagination configuration
+  paginationEnabled: true,
+  paginationMaxPages: 3,    // Maximum number of pages to scrape per search URL
+  paginationResultsPerPage: 25, // LinkedIn default is 25 results per page
   // Audit logging configuration
   auditLogging: true,
   auditLogPath: path.join(process.cwd(), 'data', 'audit-logs'),
@@ -59,6 +63,14 @@ export async function loadConfig() {
     deepScanLimit: parseInt(process.env.DEEP_SCAN_LIMIT) || fileConfig.deepScanLimit || defaultConfig.deepScanLimit,
     timezone: process.env.TIMEZONE || fileConfig.timezone || defaultConfig.timezone,
     jobIndexPath: process.env.JOB_INDEX_PATH || fileConfig.jobIndexPath || defaultConfig.jobIndexPath,
+    
+    // Pagination configuration
+    paginationEnabled: process.env.PAGINATION_ENABLED === 'true' ? true :
+                      process.env.PAGINATION_ENABLED === 'false' ? false :
+                      fileConfig.paginationEnabled !== undefined ? fileConfig.paginationEnabled :
+                      defaultConfig.paginationEnabled,
+    paginationMaxPages: parseInt(process.env.PAGINATION_MAX_PAGES) || fileConfig.paginationMaxPages || defaultConfig.paginationMaxPages,
+    paginationResultsPerPage: parseInt(process.env.PAGINATION_RESULTS_PER_PAGE) || fileConfig.paginationResultsPerPage || defaultConfig.paginationResultsPerPage,
     
     // Audit logging configuration
     auditLogging: process.env.AUDIT_LOGGING === 'true' ? true :

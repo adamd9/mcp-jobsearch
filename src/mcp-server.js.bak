@@ -4,7 +4,7 @@ import { getPlan, savePlan, createPlanFromDescription, updatePlanFromDescription
 import { loadConfig } from "./config.js";
 import { scrapeLinkedIn } from "./scrape.js";
 import { deepScanJobs } from "./deep-scan.js";
-import { sendDigest, isSmtpConfigured } from "./mailer.js";
+import { sendDigest } from "./mailer.js";
 import { createAuditLogger } from "./audit-logger.js";
 import {
   getJobIndex,
@@ -50,7 +50,7 @@ export function createServer() {
   mcpServer.tool(
     "get_plan",
     "Get the current job search plan",
-    async ({ sendDigest }) => {
+    async () => {
       const plan = await getPlan();
       return {
         content: [{ type: "text", text: JSON.stringify(plan, null, 2) }],
@@ -125,7 +125,7 @@ export function createServer() {
     {
       sendDigest: z.boolean().optional().describe('Send email digest after scan completes (default: true if SMTP configured)')
     },
-    async ({ sendDigest }) => {
+    async () => {
       // Reset scan job status
       backgroundJobs.scan = {
         inProgress: true,
@@ -142,7 +142,7 @@ export function createServer() {
       
       try {
         // Start the scan process in the background
-        (async ({ sendDigest }) => {
+        (async () => {
           try {
             if (config.mockMode) {
               // Mock only the scraping part
@@ -274,11 +274,9 @@ export function createServer() {
   // Force rescan all jobs
   mcpServer.tool(
     "rescan",
-    "Deep scan all jobs in the index and match against profile. Can optionally send an email digest of new job matches after rescanning completes.",
-    {
-      sendDigest: z.boolean().optional().describe('Send email digest after rescan completes (default: true if SMTP configured)')
-    },
-    async ({ sendDigest }) => {
+    "Deep scan all jobs in the index and match against profile",
+    {},
+    async () => {
       // Reset rescan job status
       backgroundJobs.rescan = {
         inProgress: true,
@@ -295,7 +293,7 @@ export function createServer() {
       
       try {
         // Start the rescan process in the background
-        (async ({ sendDigest }) => {
+        (async () => {
           try {
             // Get all jobs from the index
             const jobIndex = await getJobIndex();
@@ -408,18 +406,6 @@ export function createServer() {
             backgroundJobs.rescan.inProgress = false;
             console.log('Rescan job completed successfully');
             
-            // Send email digest if SMTP is configured and sendDigest is not explicitly false
-            const shouldSendDigest = sendDigest !== false && isSmtpConfigured();
-            if (shouldSendDigest) {
-              try {
-                const matches = await getMatchedJobs(0.7, true); // Get new jobs with match score >= 70%
-                await sendDigest(config.digestTo, matches, { source: 'rescan', onlyNew: true });
-                console.log(`Automatically sent digest email to ${config.digestTo} with ${matches.length} new job matches`);
-              } catch (error) {
-                console.error(`Error sending automatic digest email: ${error.message}`);
-              }
-            }
-            
           } catch (error) {
             console.error('Error in background rescan job:', error);
             backgroundJobs.rescan.status = 'error';
@@ -530,7 +516,7 @@ export function createServer() {
     "latest_matches",
     "Get the latest job matches with score >= 0.7",
     {},
-    async ({ sendDigest }) => {
+    async () => {
       try {
         const matches = await getMatchedJobs(0.7);
         return {
@@ -567,7 +553,7 @@ export function createServer() {
     "status",
     "Get the current status of the job search service",
     {},
-    async ({ sendDigest }) => {
+    async () => {
       try {
         // Get current configuration
         const config = await loadConfig();
@@ -664,7 +650,7 @@ export function createServer() {
     "reset_job_index",
     "Reset the job index to start fresh",
     {},
-    async ({ sendDigest }) => {
+    async () => {
       await saveJobIndex({ 
         jobs: [],
         lastScanDate: null,
@@ -686,7 +672,7 @@ export function createServer() {
   // Send digest email
   mcpServer.tool(
     "send_digest",
-    "Send digest email with job matches to the specified email address",
+    "Scan for jobs, match against profile, and send digest email",
     {
       email: z.string().describe("Email address to send digest to")
     },
@@ -772,7 +758,17 @@ export function createServer() {
         };
       }
       
-      // Non-mock mode: just send digest without scraping
+      // Non-mock mode: real scraping and assessment
+      for (const term of plan.searchTerms) {
+        const url = `https://www.linkedin.com/jobs/search/?keywords=${encodeURIComponent(
+          term
+        )}`;
+        await scrapeLinkedIn(url, {
+          deepScan: true,
+          profileText: plan.profile,
+          scanPrompt: plan.scanPrompt,
+        });
+      }
       const matches = await getMatchedJobs(0.7);
       await sendDigest(email || config.digestTo, matches);
       return {

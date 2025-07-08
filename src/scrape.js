@@ -1,15 +1,21 @@
-import { chromium } from "playwright";
 import fs from 'fs/promises';
 import path from 'path';
 import { updateJobIndex, generateJobId, getJobsToScan, hasProfileChanged } from './storage.js';
 import { deepScanJobs } from './deep-scan.js';
 import { loadConfig } from './config.js';
 import { createAuditLogger } from './audit-logger.js';
+import { scrapeLinkedInJobs, extractCompanyFromTitle } from './scrapers/linkedin.js';
 
-export async function scrapeLinkedIn(url, options = {}) {
-  const { keepOpen = false, debug = false, deepScan = false, forceRescan = false, profileText = null, scanPrompt = '', progressCallback = null } = options;
-  console.log(`Starting LinkedIn scrape for URL: ${url}`);
-  console.log(`Debug mode: ${debug ? 'ON' : 'OFF'}, Keep browser open: ${keepOpen ? 'YES' : 'NO'}`);
+export async function scrapeLinkedIn(url, options = {}, checkCancellation = null) {
+  const { 
+    keepOpen = false, 
+    debug = false, 
+    deepScan = false, 
+    forceRescan = false, 
+    profileText = null, 
+    scanPrompt = '', 
+    progressCallback = null 
+  } = options;
   
   // Load configuration
   const config = await loadConfig();
@@ -17,172 +23,43 @@ export async function scrapeLinkedIn(url, options = {}) {
   // Initialize audit logger
   const auditLogger = await createAuditLogger(config);
   
-  // Extract search term from URL
-  const searchTerm = extractSearchTermFromUrl(url);
+  // Check for cancellation before starting
+  if (checkCancellation && checkCancellation()) {
+    console.log('Cancellation requested before starting LinkedIn scraping');
+    return { jobs: [], cancelled: true };
+  }
   
-  // Set headless to false for debugging to see the browser
-  const browser = await chromium.launch({ 
-    headless: !debug, // Only show browser in debug mode
-    slowMo: debug ? 100 : 0, // Slow down actions by 100ms in debug mode
-  });
-  const page = await browser.newPage();
+  // Set up pagination options
+  const paginationOptions = {
+    maxPages: config.paginationEnabled ? config.paginationMaxPages : 1,
+    resultsPerPage: config.paginationResultsPerPage
+  };
   
-  // Block all unnecessary requests to reduce noise
-  await page.route('**/*', (route) => {
-    const url = route.request().url();
-    if (
-      url.includes('linkedin.com/jobs') || 
-      url.includes('linkedin.com/login') ||
-      url.includes('linkedin.com/voyager/api')
-    ) {
-      route.continue();
-    } else {
-      route.abort();
+  console.log(`Pagination config: enabled=${config.paginationEnabled}, maxPages=${paginationOptions.maxPages}, resultsPerPage=${paginationOptions.resultsPerPage}`);
+  
+  // Create a progress callback wrapper that includes pagination info
+  const paginationProgressCallback = (paginationInfo) => {
+    if (typeof progressCallback === 'function') {
+      progressCallback({
+        ...paginationInfo,
+        stage: 'scraping'
+      });
     }
+  };
+  
+  // Scrape LinkedIn jobs with pagination support
+  const { jobs } = await scrapeLinkedInJobs({
+    url,
+    keepOpen,
+    debug,
+    maxPages: paginationOptions.maxPages,
+    resultsPerPage: paginationOptions.resultsPerPage,
+    progressCallback: paginationProgressCallback,
+    checkCancellation
   });
-  
-  // Only log critical errors
-  page.on('pageerror', err => console.error(`BROWSER ERROR: ${err.message}`));
-  
-  console.log('Navigating to LinkedIn login page...');
-  await page.goto("https://www.linkedin.com/login");
-  
-  console.log('Entering login credentials...');
-  await page.type("#username", process.env.LINKEDIN_EMAIL);
-  await page.type("#password", process.env.LINKEDIN_PASSWORD);
-  
-  console.log('Submitting login form...');
-  await page.click("[type=submit]");
-  
-  // Wait for navigation after login
-  console.log('Waiting for login to complete...');
-  await page.waitForNavigation({ waitUntil: 'networkidle' }).catch(e => console.log('Navigation timeout, continuing...'));
-  
-  // Check if login was successful
-  const currentUrl = page.url();
-  console.log(`Current URL after login attempt: ${currentUrl}`);
-  
-  if (currentUrl.includes('checkpoint') || currentUrl.includes('add-phone') || currentUrl.includes('security-verification')) {
-    console.log('LinkedIn security check detected. Manual intervention may be required.');
-    // Wait longer for potential manual intervention
-    await page.waitForTimeout(10000);
-  }
-  
-  console.log(`Navigating to job search URL: ${url}`);
-  try {
-    // Use a shorter timeout and don't wait for networkidle which can be problematic
-    await page.goto(url, { timeout: 60000, waitUntil: "domcontentloaded" });
-    
-    // Wait for the job listings to be visible with a more generous timeout
-    console.log('Waiting for job listings to load...');
-    await page.waitForSelector('.jobs-search-results-list, .jobs-search__results-list', { timeout: 10000 })
-      .catch(() => console.log('Could not find job listings container, continuing anyway...'));
-    
-    // Take screenshot after basic content is loaded
-    console.log('Taking screenshot for debugging...');
-    const screenshotBuffer = await page.screenshot();
-    
-    
-    // Log screenshot to audit log
-    await auditLogger.logScreenshot(`search-${searchTerm.replace(/\s+/g, '-')}`, screenshotBuffer);
-    
-    // Give the page a bit more time to fully load
-    console.log('Waiting a bit longer for page to stabilize...');
-    await page.waitForTimeout(5000);
-  } catch (error) {
-    console.log(`Navigation error: ${error.message}`);
-    // Take screenshot even if there was an error
-    console.log('Taking screenshot after error...');
-    await page.screenshot({ path: 'debug-linkedin-error.png' });
-  }
-  
-  console.log('Extracting job listings...');
-  // Try different selectors that LinkedIn might be using
-  const selectors = [
-    // Modern LinkedIn selectors
-    ".jobs-search-results__list-item",
-    ".job-search-card", 
-    // Older selectors
-    "ul.jobs-search-results__list li",
-    ".jobs-search-results-list__list-item",
-    ".jobs-search__results-list li"
-  ];
-  
-  let jobs = [];
-  for (const selector of selectors) {
-    console.log(`Trying selector: ${selector}`);
-    const elements = await page.$$(selector);
-    console.log(`Found ${elements.length} elements with selector ${selector}`);
-    
-    if (elements.length > 0) {
-      try {
-        jobs = await page.$$eval(selector, els =>
-          els.map(el => {
-            // Try multiple possible selectors for each field
-            const titleSelectors = [
-              "h3.base-search-card__title",
-              ".job-card-list__title",
-              ".job-card-container__link-wrapper h3",
-              "h3"
-            ];
-            
-            const linkSelectors = [
-              ".base-card__full-link",
-              ".job-card-container__link",
-              "a.job-card-list__title",
-              "a"
-            ];
-            
-            const postedSelectors = [
-              "time",
-              ".job-search-card__listdate",
-              ".job-card-container__metadata-item--posted-date",
-              ".job-card-container__footer-item"
-            ];
-            
-            // Find title
-            let title = null;
-            for (const titleSelector of titleSelectors) {
-              const titleElement = el.querySelector(titleSelector);
-              if (titleElement?.innerText) {
-                title = titleElement.innerText.trim();
-                break;
-              }
-            }
-            
-            // Find link
-            let link = null;
-            for (const linkSelector of linkSelectors) {
-              const linkElement = el.querySelector(linkSelector);
-              if (linkElement?.href) {
-                link = linkElement.href.split("?")[0];
-                break;
-              }
-            }
-            
-            // Find posted date
-            let posted = null;
-            for (const postedSelector of postedSelectors) {
-              const postedElement = el.querySelector(postedSelector);
-              if (postedElement) {
-                posted = postedElement.dateTime || postedElement.innerText?.trim();
-                break;
-              }
-            }
-            
-            return { title, link, posted };
-          })
-        );
-        console.log(`Successfully extracted job data using selector: ${selector}`);
-        break;
-      } catch (error) {
-        console.log(`Error extracting data with selector ${selector}: ${error.message}`);
-      }
-    }
-  }
   
   // Process the jobs and update the job index
-  console.log(`Found ${jobs.length} job listings`);
+  console.log(`Found ${jobs.length} job listings across all pages`);
   
   // Enhance jobs with IDs and additional metadata
   const enhancedJobs = jobs.map(job => ({
@@ -191,9 +68,6 @@ export async function scrapeLinkedIn(url, options = {}) {
     company: job.company || extractCompanyFromTitle(job.title),
     scrapedDate: new Date().toISOString()
   }));
-  
-  // Log search results to audit log
-  await auditLogger.logSearchResults(searchTerm, enhancedJobs);
   
   // Update the job index with the new jobs
   const jobIndex = await updateJobIndex(enhancedJobs, forceRescan);
@@ -238,10 +112,7 @@ export async function scrapeLinkedIn(url, options = {}) {
       console.log(`\nDeep scanning ${jobsToScan.length} jobs${profileChanged ? ' (profile changed)' : ''}${forceRescan ? ' (force rescan)' : ''}`);
       
       if (jobsToScan.length > 0) {
-        // Close the browser before deep scanning to free up resources
-        if (!keepOpen) {
-          await browser.close();
-        }
+        // No need to close browser here as we're not using one in this context
         
         // Deep scan the jobs
         const concurrency = parseInt(process.env.DEEP_SCAN_CONCURRENCY || '2');
@@ -276,59 +147,150 @@ export async function scrapeLinkedIn(url, options = {}) {
     }
   }
   
-  if (keepOpen) {
-    console.log('\nKeeping browser open for manual inspection. Close the browser window when done.');
-    return { jobs: enhancedJobs, browser };
-  } else {
-    await browser.close();
-    return { jobs: enhancedJobs };
-  }
+  // Return the enhanced jobs
+  return { jobs: enhancedJobs };
 }
 
 /**
- * Extract company name from job title if possible
- * @param {string} title - Job title
- * @returns {string|null} - Company name or null
+ * Scrape multiple LinkedIn search URLs (for different search terms and locations)
+ * @param {Array} searchUrls - Array of search URL objects
+ * @param {Object} options - Scraping options
+ * @param {Function} checkCancellation - Optional function to check if scraping should be cancelled
+ * @returns {Promise<Object>} - Scraping results
  */
-function extractCompanyFromTitle(title) {
-  if (!title) return null;
+export async function scrapeMultipleSearches(searchUrls, options = {}, checkCancellation = null) {
+  const { deepScan = false, forceRescan = false, profileText = null, scanPrompt = '', progressCallback = null } = options;
   
-  // Look for "at Company" pattern
-  const atMatch = title.match(/\bat\s+([^\s]+(?:\s+[^\s]+){0,3})$/i);
-  if (atMatch) {
-    return atMatch[1].trim();
-  }
+  // Load configuration
+  const config = await loadConfig();
   
-  return null;
-}
-
-/**
- * Extract search term from LinkedIn URL
- * @param {string} url - LinkedIn search URL
- * @returns {string} - Extracted search term or 'unknown'
- */
-function extractSearchTermFromUrl(url) {
-  if (!url) return 'unknown';
+  // Initialize audit logger
+  const auditLogger = await createAuditLogger(config);
   
-  try {
-    const urlObj = new URL(url);
-    
-    // Extract keywords parameter
-    if (urlObj.searchParams.has('keywords')) {
-      return decodeURIComponent(urlObj.searchParams.get('keywords'));
+  let allJobs = [];
+  
+  // Loop through each search URL
+  for (let i = 0; i < searchUrls.length; i++) {
+    // Check for cancellation request
+    if (checkCancellation && checkCancellation()) {
+      console.log('Cancellation requested. Stopping scraping process.');
+      return { jobs: allJobs, cancelled: true };
     }
+    const searchUrlObj = searchUrls[i];
+    const { url, term, location } = searchUrlObj;
     
-    // Try to extract from path segments
-    const pathSegments = urlObj.pathname.split('/');
-    for (let i = 0; i < pathSegments.length; i++) {
-      if (pathSegments[i] === 'search' && i + 1 < pathSegments.length) {
-        return pathSegments[i + 1].replace(/-/g, ' ');
+    console.log(`\nProcessing search ${i + 1}/${searchUrls.length}: Term="${term}", Location="${location}"`);
+    
+    // Create a progress callback wrapper that includes search info
+    const searchProgressCallback = (info) => {
+      if (typeof progressCallback === 'function') {
+        progressCallback({
+          ...info,
+          currentSearch: i + 1,
+          totalSearches: searchUrls.length,
+          searchTerm: term,
+          searchLocation: location
+        });
+      }
+    };
+    
+    // Scrape LinkedIn jobs
+    const jobs = await linkedinScraper.scrapeLinkedInJobs(url, {
+      checkCancellation,
+      ...options,
+      deepScan: false, // We'll do deep scan after all searches
+      progressCallback: searchProgressCallback
+    });
+    
+    // Add location metadata to jobs
+    const jobsWithLocation = jobs.map(job => ({
+      ...job,
+      searchTerm: term,
+      searchLocation: location
+    }));
+    
+    // Add jobs from this search to the overall collection
+    allJobs = [...allJobs, ...jobsWithLocation];
+    
+    // Wait a bit between searches to avoid rate limiting
+    if (i < searchUrls.length - 1) {
+      console.log('Waiting between searches...');
+      // Check for cancellation during wait
+      if (checkCancellation) {
+        // Wait with cancellation check
+        const waitTimeMs = 3000;
+        const checkIntervalMs = 500;
+        const startTime = Date.now();
+        
+        while (Date.now() - startTime < waitTimeMs) {
+          if (checkCancellation()) {
+            console.log('Cancellation requested during wait. Stopping scraping process.');
+            return { jobs: allJobs, cancelled: true };
+          }
+          await new Promise(resolve => setTimeout(resolve, Math.min(checkIntervalMs, waitTimeMs - (Date.now() - startTime))));
+        }
+      } else {
+        // Regular wait
+        await new Promise(resolve => setTimeout(resolve, 3000));
       }
     }
-    
-    return 'unknown';
-  } catch (error) {
-    console.error(`Error extracting search term from URL: ${error.message}`);
-    return 'unknown';
   }
+  
+  console.log(`\nCompleted all searches. Found ${allJobs.length} total jobs.`);
+  
+  // Perform deep scanning if requested
+  if (deepScan) {
+    try {
+      // Check if profile has changed
+      let profile = profileText;
+      if (!profile) {
+        const profilePath = path.join(process.cwd(), 'profile.txt');
+        profile = await fs.readFile(profilePath, 'utf8');
+      }
+      
+      // Get jobs that need scanning
+      const profileChanged = await hasProfileChanged(profile);
+      const jobsToScan = await getJobsToScan(profileChanged || forceRescan);
+      
+      console.log(`\nDeep scanning ${jobsToScan.length} jobs${profileChanged ? ' (profile changed)' : ''}${forceRescan ? ' (force rescan)' : ''}`);
+      
+      if (jobsToScan.length > 0) {
+        // Deep scan the jobs
+        const concurrency = config.deepScanConcurrency;
+        
+        // Create job details capture callback
+        const jobDetailsCallback = async (jobId, jobDetails) => {
+          // Log job details to audit log
+          await auditLogger.logJobDetails(jobId, jobDetails);
+          
+          // Call progress callback if provided
+          if (typeof progressCallback === 'function') {
+            progressCallback({
+              stage: 'deepScan',
+              jobId,
+              jobDetails
+            });
+          }
+        };
+        
+        // Pass audit logger to deep scan
+        await deepScanJobs(jobsToScan, profile, concurrency, scanPrompt, jobDetailsCallback, auditLogger);
+        
+        console.log('Deep scanning complete');
+        
+        // Generate mock data if audit logging is enabled
+        if (config.auditLogging) {
+          console.log('Generating mock data from audit logs...');
+          const mockDataResult = await auditLogger.generateMockData();
+          console.log(`Mock data generation complete: ${JSON.stringify(mockDataResult)}`);
+        }
+      } else {
+        console.log('No jobs need deep scanning');
+      }
+    } catch (error) {
+      console.error(`Error during deep scanning: ${error.message}`);
+    }
+  }
+  
+  return { jobs: allJobs };
 }

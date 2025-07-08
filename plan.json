@@ -1,11 +1,177 @@
 {
-  "profile": "Engineering",
+  "profile": "Experienced engineer seeking roles in presales, sales, or solutions engineering with a focus on AI and agentic AI solutions.",
   "searchTerms": [
-    "engineering jobs",
-    "engineering positions",
-    "engineering careers",
-    "engineering opportunities",
-    "engineering vacancies"
+    "Presales Engineer AI",
+    "Sales Engineer AI",
+    "Solutions Engineer AI",
+    "Presales Engineer Agentic AI",
+    "Sales Engineer Agentic AI",
+    "Solutions Engineer Agentic AI",
+    "Presales Engineer Artificial Intelligence",
+    "Sales Engineer Artificial Intelligence",
+    "Solutions Engineer Artificial Intelligence"
   ],
-  "scanPrompt": "Search for engineering jobs in Australia, focusing on various engineering disciplines and industries. Consider roles in both urban and regional areas, and explore opportunities in sectors such as civil, mechanical, electrical, and software engineering."
+  "locations": [
+    {
+      "name": "Canberra, Australia",
+      "geoId": null,
+      "type": "city",
+      "distance": 50
+    },
+    {
+      "name": "Sydney, Australia",
+      "geoId": null,
+      "type": "city"
+    },
+    {
+      "name": "Australia",
+      "geoId": null,
+      "type": "country"
+    }
+  ],
+  "scanPrompt": "Evaluate job matches based on alignment with IT and technology sectors, focusing on innovative AI products, agentic AI, or related emerging tech. Prioritize roles offering hybrid, remote, or flexible work arrangements, and emphasize work/life balance and flexibility.",
+  "searchUrls": [
+    {
+      "term": "Presales Engineer AI",
+      "location": "Canberra, Australia",
+      "url": "https://www.linkedin.com/jobs/search/?keywords=Presales%20Engineer%20AI&sortBy=DD"
+    },
+    {
+      "term": "Presales Engineer AI",
+      "location": "Sydney, Australia",
+      "url": "https://www.linkedin.com/jobs/search/?keywords=Presales%20Engineer%20AI&sortBy=DD"
+    },
+    {
+      "term": "Presales Engineer AI",
+      "location": "Australia",
+      "url": "https://www.linkedin.com/jobs/search/?keywords=Presales%20Engineer%20AI&sortBy=DD"
+    },
+    {
+      "term": "Sales Engineer AI",
+      "location": "Canberra, Australia",
+      "url": "https://www.linkedin.com/jobs/search/?keywords=Sales%20Engineer%20AI&sortBy=DD"
+    },
+    {
+      "term": "Sales Engineer AI",
+      "location": "Sydney, Australia",
+      "url": "https://www.linkedin.com/jobs/search/?keywords=Sales%20Engineer%20AI&sortBy=DD"
+    },
+    {
+      "term": "Sales Engineer AI",
+      "location": "Australia",
+      "url": "https://www.linkedin.com/jobs/search/?keywords=Sales%20Engineer%20AI&sortBy=DD"
+    },
+    {
+      "term": "Solutions Engineer AI",
+      "location": "Canberra, Australia",
+      "url": "https://www.linkedin.com/jobs/search/?keywords=Solutions%20Engineer%20AI&sortBy=DD"
+    },
+    {
+      "term": "Solutions Engineer AI",
+      "location": "Sydney, Australia",
+      "url": "https://www.linkedin.com/jobs/search/?keywords=Solutions%20Engineer%20AI&sortBy=DD"
+    },
+    {
+      "term": "Solutions Engineer AI",
+      "location": "Australia",
+      "url": "https://www.linkedin.com/jobs/search/?keywords=Solutions%20Engineer%20AI&sortBy=DD"
+    },
+    {
+      "term": "Presales Engineer Agentic AI",
+      "location": "Canberra, Australia",
+      "url": "https://www.linkedin.com/jobs/search/?keywords=Presales%20Engineer%20Agentic%20AI&sortBy=DD"
+    },
+    {
+      "term": "Presales Engineer Agentic AI",
+      "location": "Sydney, Australia",
+      "url": "https://www.linkedin.com/jobs/search/?keywords=Presales%20Engineer%20Agentic%20AI&sortBy=DD"
+    },
+    {
+      "term": "Presales Engineer Agentic AI",
+      "location": "Australia",
+      "url": "https://www.linkedin.com/jobs/search/?keywords=Presales%20Engineer%20Agentic%20AI&sortBy=DD"
+    },
+    {
+      "term": "Sales Engineer Agentic AI",
+      "location": "Canberra, Australia",
+      "url": "https://www.linkedin.com/jobs/search/?keywords=Sales%20Engineer%20Agentic%20AI&sortBy=DD"
+    },
+    {
+      "term": "Sales Engineer Agentic AI",
+      "location": "Sydney, Australia",
+      "url": "https://www.linkedin.com/jobs/search/?keywords=Sales%20Engineer%20Agentic%20AI&sortBy=DD"
+    },
+    {
+      "term": "Sales Engineer Agentic AI",
+      "location": "Australia",
+      "url": "https://www.linkedin.com/jobs/search/?keywords=Sales%20Engineer%20Agentic%20AI&sortBy=DD"
+    },
+    {
+      "term": "Solutions Engineer Agentic AI",
+      "location": "Canberra, Australia",
+      "url": "https://www.linkedin.com/jobs/search/?keywords=Solutions%20Engineer%20Agentic%20AI&sortBy=DD"
+    },
+    {
+      "term": "Solutions Engineer Agentic AI",
+      "location": "Sydney, Australia",
+      "url": "https://www.linkedin.com/jobs/search/?keywords=Solutions%20Engineer%20Agentic%20AI&sortBy=DD"
+    },
+    {
+      "term": "Solutions Engineer Agentic AI",
+      "location": "Australia",
+      "url": "https://www.linkedin.com/jobs/search/?keywords=Solutions%20Engineer%20Agentic%20AI&sortBy=DD"
+    },
+    {
+      "term": "Presales Engineer Artificial Intelligence",
+      "location": "Canberra, Australia",
+      "url": "https://www.linkedin.com/jobs/search/?keywords=Presales%20Engineer%20Artificial%20Intelligence&sortBy=DD"
+    },
+    {
+      "term": "Presales Engineer Artificial Intelligence",
+      "location": "Sydney, Australia",
+      "url": "https://www.linkedin.com/jobs/search/?keywords=Presales%20Engineer%20Artificial%20Intelligence&sortBy=DD"
+    },
+    {
+      "term": "Presales Engineer Artificial Intelligence",
+      "location": "Australia",
+      "url": "https://www.linkedin.com/jobs/search/?keywords=Presales%20Engineer%20Artificial%20Intelligence&sortBy=DD"
+    },
+    {
+      "term": "Sales Engineer Artificial Intelligence",
+      "location": "Canberra, Australia",
+      "url": "https://www.linkedin.com/jobs/search/?keywords=Sales%20Engineer%20Artificial%20Intelligence&sortBy=DD"
+    },
+    {
+      "term": "Sales Engineer Artificial Intelligence",
+      "location": "Sydney, Australia",
+      "url": "https://www.linkedin.com/jobs/search/?keywords=Sales%20Engineer%20Artificial%20Intelligence&sortBy=DD"
+    },
+    {
+      "term": "Sales Engineer Artificial Intelligence",
+      "location": "Australia",
+      "url": "https://www.linkedin.com/jobs/search/?keywords=Sales%20Engineer%20Artificial%20Intelligence&sortBy=DD"
+    },
+    {
+      "term": "Solutions Engineer Artificial Intelligence",
+      "location": "Canberra, Australia",
+      "url": "https://www.linkedin.com/jobs/search/?keywords=Solutions%20Engineer%20Artificial%20Intelligence&sortBy=DD"
+    },
+    {
+      "term": "Solutions Engineer Artificial Intelligence",
+      "location": "Sydney, Australia",
+      "url": "https://www.linkedin.com/jobs/search/?keywords=Solutions%20Engineer%20Artificial%20Intelligence&sortBy=DD"
+    },
+    {
+      "term": "Solutions Engineer Artificial Intelligence",
+      "location": "Australia",
+      "url": "https://www.linkedin.com/jobs/search/?keywords=Solutions%20Engineer%20Artificial%20Intelligence&sortBy=DD"
+    }
+  ],
+  "feedback": {
+    "searchTermsFeedback": "Consider using Boolean operators to refine searches, such as 'AI AND presales' or 'AI OR agentic AI', and include variations like 'machine learning' or 'data science' to broaden results.",
+    "locationsFeedback": "Expand location coverage to include other tech hubs in Australia, such as Melbourne and Brisbane, and consider remote opportunities globally to increase options.",
+    "profileFeedback": "Ensure your profile highlights specific AI-related projects and achievements, and clearly states your experience level and industry focus to attract the right roles.",
+    "scanPromptFeedback": "Refine the scan prompt to include specific keywords related to desired company size, culture, and specific AI technologies to better align job matches with your preferences.",
+    "overallRating": 7
+  }
 }

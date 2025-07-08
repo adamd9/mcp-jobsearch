@@ -120,7 +120,8 @@ export async function updateJobIndex(newJobs, forceRescan = false) {
         matchScore: null,
         matchReason: null,
         description: null,
-        requirements: []
+        requirements: [],
+        isNew: true // Mark as new for digest emails
       });
     }
   });
@@ -149,15 +150,20 @@ export async function markJobAsScanned(jobId, scanResults) {
     job.scanned = true;
     job.scanDate = new Date().toISOString();
     
-    // Update with scan results
-    if (scanResults) {
-      Object.keys(scanResults).forEach(key => {
-        job[key] = scanResults[key];
-      });
+    // Update job with scan results
+    Object.keys(scanResults).forEach(key => {
+      job[key] = scanResults[key];
+    });
+    
+    // If job wasn't previously scanned, mark it as new for digest emails
+    if (!job.isNew && job.isNew !== false) {
+      job.isNew = true;
     }
+    
+    // Save the updated index
+    await saveJobIndex(jobIndex);
   }
   
-  await saveJobIndex(jobIndex);
   return jobIndex;
 }
 
@@ -207,11 +213,41 @@ export async function hasProfileChanged(profileText) {
  * @param {number} minScore - Minimum match score (0-1)
  * @returns {Promise<Array>} - Array of matched jobs
  */
-export async function getMatchedJobs(minScore = 0.7) {
+/**
+ * Get matched jobs based on match score
+ * @param {number} minScore - Minimum match score (0-1)
+ * @param {boolean} onlyNew - Whether to only return jobs marked as new
+ * @returns {Promise<Array>} - Array of matched jobs
+ */
+export async function getMatchedJobs(minScore = 0.7, onlyNew = false) {
   const jobIndex = await getJobIndex();
   return jobIndex.jobs.filter(job => 
     job.scanned && 
     job.matchScore !== null && 
-    job.matchScore >= minScore
+    job.matchScore >= minScore &&
+    (!onlyNew || job.isNew !== false) // Include if onlyNew is false OR job.isNew is not false
   );
+}
+
+/**
+ * Mark jobs as no longer new after sending in digest
+ * @param {Array} jobIds - Array of job IDs to mark as not new
+ * @returns {Promise<Object>} - Updated job index
+ */
+export async function markJobsAsSent(jobIds) {
+  const jobIndex = await getJobIndex();
+  
+  // Mark each job as not new
+  jobIds.forEach(jobId => {
+    const job = jobIndex.jobs.find(job => job.id === jobId);
+    if (job) {
+      job.isNew = false;
+      job.sentInDigest = new Date().toISOString();
+    }
+  });
+  
+  // Save the updated index
+  await saveJobIndex(jobIndex);
+  
+  return jobIndex;
 }
