@@ -121,11 +121,12 @@ export function createServer() {
   // Scan jobs without sending digest
   mcpServer.tool(
     "scan",
-    "Scan LinkedIn for jobs based on search terms in the plan. Can optionally send an email digest of new job matches after scanning completes.",
+    "Scan LinkedIn for jobs based on search terms in the plan. Can optionally send an email digest of new job matches after scanning completes. Can also disable deep scanning of job details.",
     {
-      sendDigest: z.boolean().optional().describe('Send email digest after scan completes (default: true if SMTP configured)')
+      sendDigest: z.boolean().optional().describe('Send email digest after scan completes (default: true if SMTP configured)'),
+      deepScan: z.boolean().optional().describe('Perform deep scanning of job details (default: true)')
     },
-    async ({ sendDigest }) => {
+    async ({ sendDigest, deepScan = true }) => {
       // Reset scan job status
       backgroundJobs.scan = {
         inProgress: true,
@@ -142,7 +143,7 @@ export function createServer() {
       
       try {
         // Start the scan process in the background
-        (async ({ sendDigest }) => {
+        (async () => {
           try {
             if (config.mockMode) {
               // Mock only the scraping part
@@ -182,8 +183,8 @@ export function createServer() {
                 await deepScanJobs(jobsToScan, profile, concurrency, plan.scanPrompt, progressCallback, auditLogger, config.deepScanLimit);
                 console.log('Deep scanning complete');
                 
-                // Generate mock data if audit logging is enabled
-                if (config.auditLogging) {
+                // Generate mock data only if both audit logging and mock mode are enabled
+                if (config.auditLogging && config.mockMode) {
                   console.log('Generating mock data from audit logs...');
                   const mockDataResult = await auditLogger.generateMockData();
                   console.log(`Mock data generation complete: ${JSON.stringify(mockDataResult)}`);
@@ -199,7 +200,7 @@ export function createServer() {
                   term
                 )}`;
                 const { jobs: scrapedJobs } = await scrapeLinkedIn(url, {
-                  deepScan: true,
+                  deepScan: deepScan, // Use the deepScan parameter
                   profileText: plan.profile,
                   scanPrompt: plan.scanPrompt,
                   progressCallback: (scanned, total) => {
@@ -218,11 +219,12 @@ export function createServer() {
             backgroundJobs.scan.inProgress = false;
             console.log('Scan job completed successfully');
             
-            // Send email digest if SMTP is configured and sendDigest is not explicitly false
+            // Send email digest if SMTP is configured and sendDigest parameter is not explicitly false
             const shouldSendDigest = sendDigest !== false && isSmtpConfigured();
             if (shouldSendDigest) {
               try {
                 const matches = await getMatchedJobs(0.7, true); // Get new jobs with match score >= 70%
+                // Use the imported sendDigest function from mailer.js
                 await sendDigest(config.digestTo, matches, { source: 'scan', onlyNew: true });
                 console.log(`Automatically sent digest email to ${config.digestTo} with ${matches.length} new job matches`);
               } catch (error) {
@@ -274,11 +276,12 @@ export function createServer() {
   // Force rescan all jobs
   mcpServer.tool(
     "rescan",
-    "Deep scan all jobs in the index and match against profile. Can optionally send an email digest of new job matches after rescanning completes.",
+    "Rescan existing jobs in the index. Can optionally send an email digest of new job matches after scanning completes. Can also disable deep scanning of job details.",
     {
-      sendDigest: z.boolean().optional().describe('Send email digest after rescan completes (default: true if SMTP configured)')
+      sendDigest: z.boolean().optional().describe('Send email digest after rescan completes (default: true if SMTP configured)'),
+      deepScan: z.boolean().optional().describe('Perform deep scanning of job details (default: true)')
     },
-    async ({ sendDigest }) => {
+    async ({ sendDigest, deepScan = true }) => {
       // Reset rescan job status
       backgroundJobs.rescan = {
         inProgress: true,
@@ -344,32 +347,38 @@ export function createServer() {
                 }
               }
               
-              // Now perform real assessment with OpenAI
-              console.log(`Performing real assessment on ${jobs.length} mock jobs`);
-              const concurrency = parseInt(process.env.DEEP_SCAN_CONCURRENCY || '2');
-              
-              // Initialize audit logger
-              const auditLogger = await createAuditLogger(config);
-              
-              // Track progress
-              let scannedCount = 0;
-              const progressCallback = (jobId, jobDetails) => {
-                scannedCount++;
-                backgroundJobs.rescan.scannedJobs = scannedCount;
-              };
-              
-              await deepScanJobs(
-                jobs,
-                profile,
-                concurrency,
-                plan.scanPrompt,
-                progressCallback,
-                auditLogger,
-                config.deepScanLimit
-              );
+              // Now perform real assessment with OpenAI if deepScan is enabled
+              if (deepScan) {
+                console.log(`Performing real assessment on ${jobs.length} mock jobs`);
+                const concurrency = parseInt(process.env.DEEP_SCAN_CONCURRENCY || '2');
+                
+                // Initialize audit logger
+                const auditLogger = await createAuditLogger(config);
+                
+                // Track progress
+                let scannedCount = 0;
+                const progressCallback = (jobId, jobDetails) => {
+                  scannedCount++;
+                  backgroundJobs.rescan.scannedJobs = scannedCount;
+                };
+                
+                await deepScanJobs(
+                  jobs,
+                  profile,
+                  concurrency,
+                  plan.scanPrompt,
+                  progressCallback,
+                  auditLogger,
+                  config.deepScanLimit
+                );
+              } else {
+                console.log(`Deep scanning disabled, skipping assessment of ${jobs.length} jobs`);
+                // Update job status even if we're not deep scanning
+                backgroundJobs.rescan.scannedJobs = jobs.length;
+              }
               
               // Generate mock data if audit logging is enabled
-              if (config.auditLogging) {
+              if (config.auditLogging && config.mockMode) {
                 console.log('Generating mock data from audit logs...');
                 const mockDataResult = await auditLogger.generateMockData();
                 console.log(`Mock data generation complete: ${JSON.stringify(mockDataResult)}`);
@@ -395,7 +404,7 @@ export function createServer() {
               );
               
               // Generate mock data if audit logging is enabled
-              if (config.auditLogging) {
+              if (config.auditLogging && config.mockMode) {
                 console.log('Generating mock data from audit logs...');
                 const mockDataResult = await auditLogger.generateMockData();
                 console.log(`Mock data generation complete: ${JSON.stringify(mockDataResult)}`);
@@ -408,11 +417,12 @@ export function createServer() {
             backgroundJobs.rescan.inProgress = false;
             console.log('Rescan job completed successfully');
             
-            // Send email digest if SMTP is configured and sendDigest is not explicitly false
+            // Send email digest if SMTP is configured and sendDigest parameter is not explicitly false
             const shouldSendDigest = sendDigest !== false && isSmtpConfigured();
             if (shouldSendDigest) {
               try {
                 const matches = await getMatchedJobs(0.7, true); // Get new jobs with match score >= 70%
+                // Use the imported sendDigest function from mailer.js
                 await sendDigest(config.digestTo, matches, { source: 'rescan', onlyNew: true });
                 console.log(`Automatically sent digest email to ${config.digestTo} with ${matches.length} new job matches`);
               } catch (error) {

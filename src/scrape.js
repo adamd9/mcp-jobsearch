@@ -66,7 +66,8 @@ export async function scrapeLinkedIn(url, options = {}, checkCancellation = null
     ...job,
     id: generateJobId(job.link),
     company: job.company || extractCompanyFromTitle(job.title),
-    scrapedDate: new Date().toISOString()
+    scrapedDate: new Date().toISOString(),
+    searchUrl: url  // Add the search URL to each job
   }));
   
   // Update the job index with the new jobs

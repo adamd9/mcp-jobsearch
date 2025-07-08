@@ -18,9 +18,10 @@ const openai = new OpenAI({
  * @param {string} profile - User profile text
  * @param {string} scanPrompt - Additional criteria for job matching
  * @param {Object} auditLogger - Optional audit logger instance
+ * @param {Object} searchInfo - Information about the original search query and location
  * @returns {Promise<Object>} - Scan results
  */
-export async function deepScanJob(jobUrl, jobId, profile, scanPrompt = '', auditLogger = null) {
+export async function deepScanJob(jobUrl, jobId, profile, scanPrompt = '', auditLogger = null, searchInfo = null) {
   console.log(`Deep scanning job: ${jobUrl}`);
   
   const browser = await chromium.launch({ 
@@ -69,7 +70,7 @@ export async function deepScanJob(jobUrl, jobId, profile, scanPrompt = '', audit
     }
     
     // Match job to profile
-    const matchResults = await matchJobToProfile(jobDetails, profile, scanPrompt);
+    const matchResults = await matchJobToProfile(jobDetails, profile, scanPrompt, searchInfo);
     
     // Close the browser
     await browser.close();
@@ -419,9 +420,11 @@ export async function extractRawJobContent(jobUrl, jobId) {
  * Match job details to user profile using OpenAI
  * @param {Object} jobDetails - Job details
  * @param {string} profile - User profile
+ * @param {string} scanPrompt - Additional criteria for job matching
+ * @param {Object} searchInfo - Information about the original search query and location
  * @returns {Promise<Object>} - Match results
  */
-async function matchJobToProfile(jobDetails, profile, scanPrompt = '') {
+async function matchJobToProfile(jobDetails, profile, scanPrompt = '', searchInfo = null) {
   try {
     // Prepare job details for OpenAI
     const { title, company, location, description, requirements, salary } = jobDetails;
@@ -429,6 +432,33 @@ async function matchJobToProfile(jobDetails, profile, scanPrompt = '') {
     // Skip if we don't have enough information
     if (!title || !description) {
       return { matchScore: 0, matchReason: "Insufficient job details" };
+    }
+    
+    // Extract search information if available
+    let searchTerm = null;
+    let searchLocation = null;
+    
+    if (searchInfo && typeof searchInfo === 'object') {
+      searchTerm = searchInfo.searchTerm || null;
+      searchLocation = searchInfo.searchLocation || null;
+    }
+    
+    // Try to extract search info from job URL if available
+    if (jobDetails.searchUrl && !searchTerm) {
+      try {
+        const url = new URL(jobDetails.searchUrl);
+        const keywords = url.searchParams.get('keywords');
+        if (keywords) {
+          searchTerm = decodeURIComponent(keywords);
+        }
+        // LinkedIn doesn't always include location in URL params, but we can try
+        const locationParam = url.searchParams.get('location');
+        if (locationParam) {
+          searchLocation = decodeURIComponent(locationParam);
+        }
+      } catch (e) {
+        console.log('Could not parse search URL:', e.message);
+      }
     }
     
     // Prepare the prompt for OpenAI
@@ -449,6 +479,11 @@ ${requirements.length > 0 ? `Key Requirements:\n${requirements.join('\n')}` : ''
 
 CANDIDATE PROFILE:
 ${profile}
+
+${searchTerm ? `ORIGINAL SEARCH QUERY: ${searchTerm}` : ''}
+${searchLocation ? `EXPECTED LOCATION: ${searchLocation}` : ''}
+
+IMPORTANT: When evaluating this job match, consider not only the candidate's profile but also whether the job aligns with the original search query and location. If the job location doesn't match or align with the expected location, or if the job role doesn't relate to the search query terms, reduce the match score accordingly. The job should be relevant to both the candidate's profile AND the original search parameters.
 
 Provide your analysis in the following JSON format:
 {
@@ -528,16 +563,41 @@ export async function deepScanJobs(jobs, profile, concurrency = 2, scanPrompt = 
   const results = [];
   for (let i = 0; i < jobsToScan.length; i += concurrency) {
     const batch = jobsToScan.slice(i, i + concurrency);
-    const batchPromises = batch.map(job =>
-      deepScanJob(job.link, job.id, profile, scanPrompt, auditLogger)
+    const batchPromises = batch.map(job => {
+      // Extract search information from the job if available
+      const searchInfo = job.searchUrl ? {
+        searchUrl: job.searchUrl,
+        // Try to extract search term from URL
+        searchTerm: (() => {
+          try {
+            const url = new URL(job.searchUrl);
+            const keywords = url.searchParams.get('keywords');
+            return keywords ? decodeURIComponent(keywords) : null;
+          } catch (e) {
+            return null;
+          }
+        })(),
+        // Try to extract location from URL or job data
+        searchLocation: (() => {
+          try {
+            const url = new URL(job.searchUrl);
+            const location = url.searchParams.get('location');
+            return location ? decodeURIComponent(location) : job.location || null;
+          } catch (e) {
+            return job.location || null;
+          }
+        })()
+      } : null;
+      
+      return deepScanJob(job.link, job.id, profile, scanPrompt, auditLogger, searchInfo)
         .then(result => {
           // Call progress callback if provided
           if (typeof progressCallback === 'function') {
             progressCallback(job.id, result);
           }
           return result;
-        })
-    );
+        });
+    });
     
     const batchResults = await Promise.all(batchPromises);
     results.push(...batchResults);
