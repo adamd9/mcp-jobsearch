@@ -17,6 +17,10 @@ import {
 } from "./storage.js";
 import fs from "fs/promises";
 import path from "path";
+import dotenv from "dotenv";
+
+// Load environment variables from .env file
+dotenv.config();
 
 // Track background jobs
 const backgroundJobs = {
@@ -44,6 +48,30 @@ export function createServer() {
   const mcpServer = new McpServer({
     name: "jobsearch-mcp",
     version: "1.0.0",
+  });
+  
+  // Add authentication handler to MCP server
+  mcpServer.onRequest(async (request) => {
+    // Skip auth check for OPTIONS requests (for CORS)
+    if (request.method === 'OPTIONS') {
+      return true; // Allow OPTIONS requests without authentication
+    }
+    
+    const authToken = request.headers['authorization'];
+    const expectedToken = process.env.ACCESS_TOKEN;
+    
+    // If no API token is configured, skip authentication
+    if (!expectedToken) {
+      console.warn('WARNING: ACCESS_TOKEN not configured in .env file. Authentication disabled for MCP server.');
+      return true; // Allow requests if no token is configured
+    }
+    
+    // Check if the token is valid (format: 'Bearer TOKEN')
+    if (!authToken || !authToken.startsWith('Bearer ') || authToken.replace('Bearer ', '') !== expectedToken) {
+      throw new Error('Unauthorized: Invalid or missing authentication token');
+    }
+    
+    return true; // Authentication successful
   });
 
   // Plan tools

@@ -10,8 +10,35 @@ import { getPlan, savePlan, createPlanFromDescription } from "./plan.js";
 import { createServer as createMcpServer } from "./mcp-server.js";
 import fs from "fs/promises";
 import path from "path";
+import dotenv from "dotenv";
+
+// Load environment variables from .env file
+dotenv.config();
 
 const app = Fastify();
+
+// Authentication middleware to check for valid API token
+app.addHook('onRequest', async (request, reply) => {
+  // Skip auth check for OPTIONS requests (for CORS)
+  if (request.method === 'OPTIONS') {
+    return;
+  }
+  
+  const authToken = request.headers['authorization'];
+  const expectedToken = process.env.ACCESS_TOKEN;
+  
+  // If no API token is configured, skip authentication
+  if (!expectedToken) {
+    console.warn('WARNING: ACCESS_TOKEN not configured in .env file. Authentication disabled.');
+    return;
+  }
+  
+  // Check if the token is valid (format: 'Bearer TOKEN')
+  if (!authToken || !authToken.startsWith('Bearer ') || authToken.replace('Bearer ', '') !== expectedToken) {
+    reply.status(401).send({ error: 'Unauthorized: Invalid or missing authentication token' });
+    return reply;
+  }
+});
 
 // Use top-level await inside an async IIFE
 const start = async () => {

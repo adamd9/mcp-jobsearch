@@ -18,7 +18,10 @@ This project implements a LinkedIn job scraper with persistent job indexing, dee
    DIGEST_FROM=jobs@example.com
    DIGEST_TO=you@example.com
    TIMEZONE=Australia/Sydney
+   ACCESS_TOKEN=your-secure-random-token
    ```
+   
+   The `ACCESS_TOKEN` is used for API authentication and should be a secure random string.
 
 2. Run `./setup.sh` to install npm packages and Playwright's browser dependencies.
 3. Create a `plan.json` file (or use the `/plan` endpoint) describing your profile, search terms and deep scan criteria.
@@ -78,6 +81,90 @@ so previous results are preserved:
 - **Concurrency Control**: Configurable number of concurrent scans to balance speed and resource usage.
 
 ### API Endpoints
+
+#### Authentication
+All API endpoints require authentication using the `ACCESS_TOKEN` from your `.env` file. Include the token in the `Authorization` header with each request:
+
+```
+Authorization: Bearer your-access-token-here
+```
+
+Requests without a valid authentication token will receive a 401 Unauthorized response.
+
+##### Authentication Examples
+
+###### Using cURL
+```bash
+# Example GET request with authentication
+curl -X GET http://localhost:8000/jobs \
+  -H "Authorization: Bearer your-access-token-here"
+
+# Example POST request with authentication and JSON body
+curl -X POST http://localhost:8000/send_digest \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer your-access-token-here" \
+  -d '{"email": "you@example.com"}'
+```
+
+###### Using JavaScript/Fetch
+```javascript
+// Example GET request with authentication
+fetch('http://localhost:8000/jobs', {
+  method: 'GET',
+  headers: {
+    'Authorization': 'Bearer your-access-token-here'
+  }
+})
+.then(response => response.json())
+.then(data => console.log(data));
+
+// Example POST request with authentication
+fetch('http://localhost:8000/send_digest', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'Authorization': 'Bearer your-access-token-here'
+  },
+  body: JSON.stringify({ email: 'you@example.com' })
+})
+.then(response => response.json())
+.then(data => console.log(data));
+```
+
+###### Using the MCP Client
+When using the MCP client library to connect to the MCP server, you'll need to pass the token in the headers:
+
+```javascript
+import { McpClient } from '@modelcontextprotocol/sdk/client/mcp.js';
+
+const client = new McpClient({
+  url: 'http://localhost:8000/mcp',
+  headers: {
+    'Authorization': 'Bearer your-access-token-here'
+  }
+});
+
+// Now you can use the client to call MCP tools
+const result = await client.callTool('get_plan', {});
+```
+
+###### Updating Test Scripts
+If you're using the provided npm test scripts, you'll need to update them to include the authorization header. For example:
+
+```bash
+# Add this to your package.json scripts or create a custom script
+"test:jobs:auth": "curl -H 'Authorization: Bearer $ACCESS_TOKEN' http://localhost:8000/jobs | jq"
+```
+
+Or set the token as an environment variable before running scripts:
+
+```bash
+# Set the token as an environment variable
+export ACCESS_TOKEN=your-access-token-here
+
+# Then run your scripts which should be updated to use this environment variable
+npm run test:jobs:all
+```
 
 #### Plan Management
 - `GET /plan` – Retrieve the current plan.
