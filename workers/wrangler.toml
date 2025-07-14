@@ -1,0 +1,31 @@
+name = "mcp-jobsearch-worker"
+main = "src/index.js"
+compatibility_date = "2025-03-10"
+compatibility_flags = ["nodejs_compat"]
+
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["MyMCP"]
+
+# Enable the AI bindings
+[ai]
+binding = "AI"
+
+# Enable Durable objects bindings   
+[[durable_objects.bindings]]
+name = "MCP_OBJECT"
+class_name = "MyMCP"
+
+# KV namespace for job storage
+[[kv_namespaces]]
+binding = "JOB_STORAGE"
+id = "your-kv-namespace-id-here" # Replace with actual KV namespace ID after creation
+
+# Environment variables
+[vars]
+OPENAI_API_KEY = ""
+OPENAI_MODEL = "gpt-4o"
+ACCESS_TOKEN = ""
+
+# Enable browser rendering
+browser = { binding = "BROWSER" }

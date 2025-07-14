@@ -1,0 +1,21 @@
+{
+  "name": "mcp-jobsearch-worker",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "deploy": "wrangler deploy",
+    "dev": "wrangler dev",
+    "start": "wrangler dev"
+  },
+  "dependencies": {
+    "@cloudflare/ai": "^1.0.0",
+    "@cloudflare/puppeteer": "^0.0.5",
+    "@modelcontextprotocol/sdk": "1.15.1",
+    "agents": "^0.0.105",
+    "zod": "^3.25.67"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20240320.1",
+    "wrangler": "^4.24.3"
+  }
+}

@@ -2,7 +2,23 @@
 
 This project implements a LinkedIn job scraper with persistent job indexing, deep scanning, and filtering capabilities. It scrapes LinkedIn job listings, performs detailed analysis of each job against a candidate profile using OpenAI, stores matches in a persistent job index, and exposes MCP-compatible HTTP endpoints.
 
-## Setup
+## Implementation Options
+
+This project provides two separate implementations:
+
+1. **Node.js Implementation** (Original): Located in the `src/` directory
+   - Full-featured with filesystem access, screenshots, and raw file storage
+   - Runs locally or on any Node.js hosting platform
+
+2. **Cloudflare Worker Implementation** (New): Located in the `workers/` directory
+   - Serverless implementation using Cloudflare Workers
+   - Uses Cloudflare's Playwright fork for scraping
+   - Stores data in Cloudflare KV
+   - No filesystem access (no screenshots or raw file storage)
+
+## Node.js Implementation
+
+### Setup
 
 1. Copy `.env.example` to `.env` and fill in your credentials:
    ```
@@ -27,7 +43,87 @@ This project implements a LinkedIn job scraper with persistent job indexing, dee
 3. Create a `plan.json` file (or use the `/plan` endpoint) describing your profile, search terms and deep scan criteria.
 4. Start the server with `npm start`.
 
-## Core Features
+## Cloudflare Worker Implementation
+
+### Setup
+
+1. Navigate to the `workers/` directory:
+   ```bash
+   cd workers
+   ```
+
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+
+3. Login to Cloudflare:
+   ```bash
+   npx wrangler login
+   ```
+
+4. Create a KV namespace for job storage:
+   ```bash
+   npx wrangler kv:namespace create JOB_STORAGE
+   ```
+
+5. Update `wrangler.toml` with your KV namespace ID and environment variables.
+
+### Local Development
+
+To run the Worker locally:
+
+```bash
+cd workers
+npm run dev
+```
+
+This will start a local development server at http://localhost:8787.
+
+### Deployment
+
+To deploy to Cloudflare Workers:
+
+```bash
+cd workers
+npm run deploy
+```
+
+### Deploy to Cloudflare Button
+
+[![Deploy to Cloudflare Workers](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/YOUR_USERNAME/mcp-jobsearch)
+
+To use the Deploy to Cloudflare button:
+1. Fork this repository
+2. Update the URL in the button above with your GitHub username
+3. Click the button to deploy to your Cloudflare account
+4. Configure the required environment variables during deployment
+
+## Feature Comparison
+
+| Feature | Node.js Implementation | Cloudflare Worker |
+|---------|------------------------|-------------------|
+| LinkedIn Scraping | ✅ | ✅ |
+| Job Analysis with OpenAI | ✅ | ✅ |
+| Persistent Storage | ✅ (Filesystem) | ✅ (KV) |
+| Deep Scanning | ✅ | ✅ |
+| Screenshots | ✅ | ❌ |
+| Raw File Storage | ✅ | ❌ |
+| Email Digests | ✅ | ❌ |
+| MCP Server | ✅ | ✅ |
+| Deploy to Cloudflare Button | ❌ | ✅ |
+
+## Authentication
+
+All API endpoints in both implementations require authentication using the `ACCESS_TOKEN`. Include the token in the `Authorization` header with each request:
+
+```
+Authorization: Bearer your-access-token-here
+```
+
+Requests without a valid authentication token will receive a 401 Unauthorized response.
+
+## Node.js Implementation Core Features
 - **Plan Driven Search**: Define your profile, search terms and scan prompt in `plan.json` or via the `/plan` API.
 
 ### Persistent Job Index
