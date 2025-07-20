@@ -381,26 +381,113 @@ export class JobSearchMCP extends McpAgent {
 	}
 }
 
+// Function to validate required environment variables
+function validateEnv(env) {
+	const requiredVars = ['ACCESS_TOKEN'];
+	const missing = requiredVars.filter(varName => !env[varName]);
+	
+	if (missing.length > 0) {
+		return {
+			valid: false,
+			missing
+		};
+	}
+	
+	return { valid: true };
+}
+
 export default {
 	async fetch(request, env, ctx) {
 		const url = new URL(request.url);
 
+		// Add CORS headers to all responses
+		const corsHeaders = {
+			'Access-Control-Allow-Origin': '*',
+			'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+			'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+		};
+
+		// Handle OPTIONS requests for CORS preflight
+		if (request.method === 'OPTIONS') {
+			return new Response(null, {
+				status: 204,
+				headers: corsHeaders
+			});
+		}
+
+		// Add a simple health check endpoint (no auth required)
+		if (url.pathname === "/health") {
+			// Even for health check, validate that required env vars are present
+			const envValidation = validateEnv(env);
+			if (!envValidation.valid) {
+				console.error("Server configuration incomplete. Missing required environment variables: " + envValidation.missing.join(", "));
+				return new Response(JSON.stringify({ 
+					status: "error", 
+					error: "Server configuration incomplete", 
+					missing: envValidation.missing 
+				}), { 
+					status: 500,
+					headers: { 
+						"Content-Type": "application/json",
+						...corsHeaders 
+					}
+				});
+			}
+			
+			return new Response(JSON.stringify({ status: "ok" }), { 
+				status: 200,
+				headers: { 
+					"Content-Type": "application/json",
+					...corsHeaders 
+				}
+			});
+		}
+
+		// Validate required environment variables
+		const envValidation = validateEnv(env);
+		if (!envValidation.valid) {
+			console.error("Server configuration incomplete. Missing required environment variables: " + envValidation.missing.join(", "));
+			return new Response(JSON.stringify({ 
+				error: "Server configuration incomplete. Missing required environment variables: " + envValidation.missing.join(", ")
+			}), { 
+				status: 500,
+				headers: { 
+					"Content-Type": "application/json",
+					...corsHeaders 
+				}
+			});
+		}
+
+		// Handle SSE endpoints
 		if (url.pathname === "/sse" || url.pathname === "/sse/message") {
 			return JobSearchMCP.serveSSE("/sse").fetch(request, env, ctx);
 		}
 
+		// Handle MCP endpoint with authentication
 		if (url.pathname === "/mcp") {
+			// Check for authentication token
+			const authHeader = request.headers.get('Authorization');
+			const expectedToken = env.ACCESS_TOKEN;
+
+			// Check if the token is valid (format: 'Bearer TOKEN')
+			if (!authHeader || !authHeader.startsWith('Bearer ') || authHeader.replace('Bearer ', '') !== expectedToken) {
+				console.error("Unauthorized: Invalid or missing authentication token");
+				return new Response(JSON.stringify({ error: 'Unauthorized: Invalid or missing authentication token' }), { 
+					status: 401,
+					headers: { 
+						"Content-Type": "application/json",
+						...corsHeaders 
+					}
+				});
+			}
+
+			// Authentication passed, proceed to MCP handler
 			return JobSearchMCP.serve("/mcp").fetch(request, env, ctx);
 		}
 
-		// Add a simple health check endpoint
-		if (url.pathname === "/health") {
-			return new Response(JSON.stringify({ status: "ok" }), { 
-				status: 200,
-				headers: { "Content-Type": "application/json" }
-			});
-		}
-
-		return new Response("Not found", { status: 404 });
+		return new Response("Not found", { 
+			status: 404,
+			headers: corsHeaders
+		});
 	},
 };
