@@ -1,53 +1,59 @@
 # MCP Job Search - Cloudflare Worker Implementation
 
-This directory contains the Cloudflare Worker implementation of the MCP Job Search project. This version uses Cloudflare Workers and Cloudflare's Playwright fork for LinkedIn job scraping.
+This directory contains the Cloudflare Worker implementation for the MCP Job Search project. The worker exposes an MCP server with a set of tools for managing a job search.
 
-## Features
+## Current Status
 
-- **MCP Server**: Implements a Model Context Protocol server for job searching
-- **LinkedIn Scraping**: Uses Cloudflare's Playwright fork for scraping job listings
-- **Job Matching**: Analyzes job listings against candidate profiles using OpenAI
-- **Persistent Storage**: Stores job data in Cloudflare KV
+The worker is fully functional and can be run locally. It includes a complete MCP server with authentication, CORS handling, a health check endpoint, and SSE endpoints for real-time updates.
 
-## Setup
+All tools are currently implemented as stubs, returning mock data. This allows for testing the end-to-end flow of the application without requiring access to external services or APIs.
 
-### Prerequisites
+### Running the Worker
 
-1. [Node.js](https://nodejs.org/) (v16 or later)
-2. [Wrangler CLI](https://developers.cloudflare.com/workers/wrangler/install-and-update/)
-3. Cloudflare account
+To run the worker locally, you will first need to install the dependencies:
 
-### Installation
+```bash
+npm install
+```
 
-1. Install dependencies:
-   ```bash
-   npm install
-   ```
+Then, you can start the worker using the following command:
 
-2. Login to Cloudflare:
-   ```bash
-   npx wrangler login
-   ```
+```bash
+npm run dev
+```
 
-3. Create a KV namespace for job storage:
-   ```bash
-   npx wrangler kv:namespace create JOB_STORAGE
-   ```
+The worker will be available at `http://localhost:8787`.
 
-4. Update `wrangler.toml` with your KV namespace ID from the previous step.
+### Implemented Tools
 
-5. Configure environment variables:
+The following tools are available on the MCP server:
 
-   **For local development**:
-   Create a `.dev.vars` file in the workers directory with your environment variables:
-   ```
-   # API Authentication token - randomly generated
-   ACCESS_TOKEN=your_secure_token_here
-   OPENAI_API_KEY=your_openai_api_key_here
-   OPENAI_MODEL=gpt-4o
-   LINKEDIN_EMAIL=your_linkedin_email@example.com
-   LINKEDIN_PASSWORD=your_linkedin_password
-   SMTP_HOST=your_smtp_host.com
+*   **`get_plan`**: Get the current job search plan.
+*   **`create_plan`**: Create a new job search plan from a description.
+*   **`update_plan`**: Update the existing job search plan.
+*   **`scan`**: Scan for jobs based on the plan.
+*   **`rescan`**: Rescan existing jobs in the index.
+*   **`jobs`**: Get jobs from the index with optional filtering.
+*   **`status`**: Get the current status of the job search service.
+*   **`reset_job_index`**: Reset the job index.
+*   **`send_digest`**: Send a digest email with job matches.
+
+## Next Steps: Tool Implementation
+
+The next phase of the project is to implement the tools with real functionality. Here is a suggested order for implementation:
+
+1.  **`get_plan` / `create_plan` / `update_plan`**: These tools will manage the job search plan. We will need to decide where to store the plan data (e.g., in a database, a file, or a key-value store). The original implementation in `src/plan.js` uses a local `plan.json` file. We can adapt the `getPlan`, `createPlanFromDescription`, and `updatePlanFromDescription` functions for the worker, using Cloudflare KV for storage.
+STOP IMPLEMENTING ONCE THIS IS DONE SO THE USER CAN TEST
+2.  **`scan`**: This tool will be responsible for searching for jobs on external sites (e.g., LinkedIn). This will likely involve web scraping or using an API. The original implementation in `src/scrape.js` and `src/deep-scan.js` uses Playwright for scraping and OpenAI for analysis. We can adapt the `scrapeMultipleSearches` and `deepScanJobs` functions for the worker.
+STOP IMPLEMENTING ONCE THIS IS DONE SO THE USER CAN TEST
+3.  **`jobs`**: This tool will retrieve jobs from our own data store. The original implementation in `src/storage.js` uses a `job-index.json` file as a database. The `filterJobs` function in `src/filter.js` provides an AI-powered filtering layer. We can adapt these for the worker, using Cloudflare KV for storage.
+4.  **`rescan`**: This tool will re-evaluate the jobs in our data store against the current plan. The original implementation uses the `deepScanJobs` function from `src/deep-scan.js` with the `forceRescan` option. We can follow a similar approach.
+STOP IMPLEMENTING ONCE THIS IS DONE SO THE USER CAN TEST
+5.  **`status`**: This tool will provide real-time status updates on the job search process.
+STOP IMPLEMENTING ONCE THIS IS DONE SO THE USER CAN TEST
+6.  **`reset_job_index`**: This tool will clear out the job data store.
+STOP IMPLEMENTING ONCE THIS IS DONE SO THE USER CAN TEST
+7.  **`send_digest`**: This tool will send an email digest of job matches.
    SMTP_PORT=587
    SMTP_USER=your_smtp_user@example.com
    SMTP_PASS=your_smtp_password
