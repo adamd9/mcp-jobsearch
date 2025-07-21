@@ -4,86 +4,83 @@ import { z } from "zod";
 import OpenAI from "openai";
 import { launch } from "@cloudflare/playwright";
 
-// Track background jobs
-const backgroundJobs = {
-  scan: {
-    inProgress: false,
-    startTime: null,
-    endTime: null,
-    status: 'idle', // idle, running, completed, error
-    totalJobs: 0,
-    scannedJobs: 0,
-    error: null
-  },
-  rescan: {
-    inProgress: false,
-    startTime: null,
-    endTime: null,
-    status: 'idle', // idle, running, completed, error
-    totalJobs: 0,
-    scannedJobs: 0,
-    error: null
-  }
-};
-
 // Define our MCP agent with tools
+
 export class JobSearchMCP extends McpAgent {
-	constructor(state, env) {
-		super(state, env);
-		console.log("--- Durable Object Initialized ---");
-		console.log("Available environment keys:", Object.keys(env));
-	}
-	server = new McpServer({
-		name: "JobSearch MCP",
-		version: "1.0.0",
-	});
+  constructor(state, env) {
+    super(state, env);
+    this.backgroundJobs = {
+      scan: { inProgress: false, status: 'idle', error: null },
+    };
+  }
 
-	openai = null;
+  server = new McpServer({
+    name: "JobSearch MCP",
+    version: "1.0.0",
+  });
 
-	async init() {
-		this.openai = new OpenAI({
-			apiKey: this.env.OPENAI_API_KEY,
-		});
+  openai = null;
 
-		// Plan tools
-		this.server.tool(
-			"get_plan",
-			"Get the current job search plan",
-			async () => {
-				const plan = await this.env.JOB_STORAGE.get("plan", "json");
-				if (!plan) {
-					return {
-						content: [{ type: "text", text: "No plan found." }],
-						structuredContent: { 
-							profile: '', 
-							searchTerms: [], 
-							locations: [],
-							scanPrompt: '',
-							searchUrls: []
-						},
-					};
-				}
+  async init() {
+    this.openai = new OpenAI({
+      apiKey: this.env.OPENAI_API_KEY,
+    });
 
-				return {
-					content: [{ type: "text", text: JSON.stringify(plan, null, 2) }],
-					structuredContent: plan,
-				};
-			},
-			{
-				title: "Get Job Search Plan",
-				readOnlyHint: true,
-				openWorldHint: false
-			}
-		);
+    // Plan tools
+    this.server.tool(
+      "status",
+      "Check the status of a background job, such as a scan.",
+      {},
+      async () => {
+        return {
+          content: [{ type: "text", text: JSON.stringify(this.backgroundJobs.scan, null, 2) }],
+          structuredContent: this.backgroundJobs.scan
+        };
+      },
+      {
+        title: "Get Job Status",
+        readOnlyHint: true
+      }
+    );
 
-		this.server.tool(
-			"create_plan",
-			"Create a new job search plan from a description",
-			{
-				description: z.string().describe("Description of the job search plan")
-			},
-			async ({ description }) => {
-				const prompt = `Convert the following description into a JSON job search plan with these fields:
+    this.server.tool(
+      "get_plan",
+      "Get the current job search plan",
+      async () => {
+        const plan = await this.env.JOB_STORAGE.get("plan", "json");
+        if (!plan) {
+          return {
+            content: [{ type: "text", text: "No plan found." }],
+            structuredContent: { 
+              profile: '', 
+              searchTerms: [], 
+              locations: [],
+              scanPrompt: '',
+              searchUrls: []
+            },
+          };
+        }
+
+        return {
+          content: [{ type: "text", text: JSON.stringify(plan, null, 2) }],
+          structuredContent: plan,
+        };
+      },
+      {
+        title: "Get Job Search Plan",
+        readOnlyHint: true,
+        openWorldHint: false
+      }
+    );
+
+    this.server.tool(
+      "create_plan",
+      "Create a new job search plan from a description",
+      {
+        description: z.string().describe("Description of the job search plan")
+      },
+      async ({ description }) => {
+        const prompt = `Convert the following description into a JSON job search plan with these fields:
 - "profile": A concise summary of the job seeker's profile
 - "searchTerms": Array of search terms/keywords (each item should be a complete search query)
 - "locations": Array of location objects, each with:
@@ -98,377 +95,269 @@ ${description}
 
 Respond with ONLY the JSON object. No additional text.`;
 
-				console.log("--- AI PROMPT ---");
-				console.log(prompt);
+        console.log("--- AI PROMPT ---");
+        console.log(prompt);
 
-				const aiResponse = await this.openai.chat.completions.create({
-					model: this.env.OPENAI_MODEL || 'gpt-4.1-mini',
-					messages: [
-						{ role: 'system', content: 'You create structured job search plans.' },
-						{ role: 'user', content: prompt }
-					],
-					temperature: 0.2
-				});
+        const aiResponse = await this.openai.chat.completions.create({
+          model: this.env.OPENAI_MODEL || 'gpt-4.1-mini',
+          messages: [
+            { role: 'system', content: 'You create structured job search plans.' },
+            { role: 'user', content: prompt }
+          ],
+          temperature: 0.2
+        });
 
-				const content = aiResponse.choices[0].message.content;
-				console.log("--- AI RAW RESPONSE ---");
-				console.log(content);
+        const content = aiResponse.choices[0].message.content;
+        console.log("--- AI RAW RESPONSE ---");
+        console.log(content);
 
-				const jsonMatch = content.match(/\{[\s\S]*\}/);
-				let plan;
-				try {
-					plan = jsonMatch ? JSON.parse(jsonMatch[0]) : {};
-					console.log("--- PARSED PLAN ---");
-					console.log(JSON.stringify(plan, null, 2));
-				} catch (e) {
-					console.error("--- JSON PARSE ERROR ---", e);
-					plan = {};
-				}
+        const jsonMatch = content.match(/\{[\s\S]*\}/);
+        let plan;
+        try {
+          plan = jsonMatch ? JSON.parse(jsonMatch[0]) : {};
+          console.log("--- PARSED PLAN ---");
+          console.log(JSON.stringify(plan, null, 2));
+        } catch (e) {
+          console.error("--- JSON PARSE ERROR ---", e);
+          plan = {};
+        }
 
-				plan.profile = plan.profile || description;
-				plan.searchTerms = plan.searchTerms || [];
-				plan.locations = plan.locations || [];
-				plan.scanPrompt = plan.scanPrompt || description;
+        plan.profile = plan.profile || description;
+        plan.searchTerms = plan.searchTerms || [];
+        plan.locations = plan.locations || [];
+        plan.scanPrompt = plan.scanPrompt || description;
 
-				plan.searchUrls = this._generateSearchUrls(plan.searchTerms, plan.locations);
-				plan.feedback = await this._generatePlanFeedback(plan);
+        plan.searchUrls = this._generateSearchUrls(plan.searchTerms, plan.locations);
+        plan.feedback = await this._generatePlanFeedback(plan);
 
-				await this.env.JOB_STORAGE.put("plan", JSON.stringify(plan));
+        await this.env.JOB_STORAGE.put("plan", JSON.stringify(plan));
 
-				return {
-					content: [{ type: "text", text: JSON.stringify(plan, null, 2) }],
-					structuredContent: plan,
-				};
-			},
-			{
-				title: "Create Job Search Plan",
-				readOnlyHint: false,
-				openWorldHint: false
-			}
-		);
+        return {
+          content: [{ type: "text", text: JSON.stringify(plan, null, 2) }],
+          structuredContent: plan,
+        };
+      },
+      {
+        title: "Create Job Search Plan",
+        readOnlyHint: false,
+        openWorldHint: false
+      }
+    );
 
-		this.server.tool(
-			"update_plan",
-			"Update the job search plan based on a description of the changes.",
-			{
-				description: z.string().describe("A description of the changes to make to the plan."),
-			},
-			async ({ description }) => {
-				const currentPlanJSON = await this.env.JOB_STORAGE.get("plan");
-				const currentPlan = currentPlanJSON ? JSON.parse(currentPlanJSON) : {};
+    this.server.tool(
+      "update_plan",
+      "Update the job search plan based on a description of the changes.",
+      {
+        description: z.string().describe("A description of the changes to make to the plan."),
+      },
+      async ({ description }) => {
+        const currentPlanJSON = await this.env.JOB_STORAGE.get("plan");
+        const currentPlan = currentPlanJSON ? JSON.parse(currentPlanJSON) : {};
 
-				const prompt = `Update the following job search plan based on this change request: "${description}"
+        const prompt = `Update the following job search plan based on this change request: "${description}"
 
-				Current plan:
-				${JSON.stringify(currentPlan, null, 2)}
+        Current plan:
+        ${JSON.stringify(currentPlan, null, 2)}
 
-				Provide a complete updated JSON plan with these fields:
-				- "profile": A concise summary of the job seeker's profile
-				- "searchTerms": Array of search terms/keywords (each item should be a complete search query)
-				- "locations": Array of location objects, each with:
-				  - "name": Location name (city, state, country)
-				  - "geoId": LinkedIn geographic ID if known (optional)
-				  - "type": "city", "country", or "remote"
-				  - "distance": Search radius in miles (for city searches, optional)
-				- "scanPrompt": Instructions for evaluating job matches
+        Provide a complete updated JSON plan with these fields:
+        - "profile": A concise summary of the job seeker's profile
+        - "searchTerms": Array of search terms/keywords (each item should be a complete search query)
+        - "locations": Array of location objects, each with:
+          - "name": Location name (city, state, country)
+          - "geoId": LinkedIn geographic ID if known (optional)
+          - "type": "city", "country", or "remote"
+          - "distance": Search radius in miles (for city searches, optional)
+        - "scanPrompt": Instructions for evaluating job matches
 
-				Incorporate the requested changes while preserving relevant existing information.
-				Respond with ONLY the JSON object. No additional text.`;
+        Incorporate the requested changes while preserving relevant existing information.
+        Respond with ONLY the JSON object. No additional text.`;
 
-				const aiResponse = await this.openai.chat.completions.create({
-					model: this.env.OPENAI_MODEL || 'gpt-4o',
-					messages: [
-						{ role: 'system', content: 'You update structured job search plans based on user requests.' },
-						{ role: 'user', content: prompt }
-					],
-					temperature: 0.2
-				});
+        const aiResponse = await this.openai.chat.completions.create({
+          model: this.env.OPENAI_MODEL || 'gpt-4o',
+          messages: [
+            { role: 'system', content: 'You update structured job search plans based on user requests.' },
+            { role: 'user', content: prompt }
+          ],
+          temperature: 0.2
+        });
 
-				const content = aiResponse.choices[0].message.content;
-				const jsonMatch = content.match(/\{[\s\S]*\}/);
-				let updatedPlan;
-				try {
-					updatedPlan = jsonMatch ? JSON.parse(jsonMatch[0]) : {};
-				} catch (e) {
-					updatedPlan = { ...currentPlan };
-				}
+        const content = aiResponse.choices[0].message.content;
+        const jsonMatch = content.match(/\{[\s\S]*\}/);
+        let updatedPlan;
+        try {
+          updatedPlan = jsonMatch ? JSON.parse(jsonMatch[0]) : {};
+        } catch (e) {
+          updatedPlan = { ...currentPlan };
+        }
 
-				updatedPlan.searchUrls = this._generateSearchUrls(updatedPlan.searchTerms, updatedPlan.locations);
-				updatedPlan.feedback = await this._generatePlanFeedback(updatedPlan);
+        updatedPlan.searchUrls = this._generateSearchUrls(updatedPlan.searchTerms, updatedPlan.locations);
+        updatedPlan.feedback = await this._generatePlanFeedback(updatedPlan);
 
-				await this.env.JOB_STORAGE.put("plan", JSON.stringify(updatedPlan));
-				return {
-					content: [{ type: "text", text: "Plan updated." }],
-					structuredContent: updatedPlan,
-				};
-			},
-			{
-				title: "Update Job Search Plan",
-				readOnlyHint: false,
-				openWorldHint: true
-			}
-		);
+        await this.env.JOB_STORAGE.put("plan", JSON.stringify(updatedPlan));
+        return {
+          content: [{ type: "text", text: "Plan updated." }],
+          structuredContent: updatedPlan,
+        };
+      },
+      {
+        title: "Update Job Search Plan",
+        readOnlyHint: false,
+        openWorldHint: true
+      }
+    );
 
-		// Scan jobs without sending digest
-		this.server.tool(
-			"scan",
-			"Scans a specific URL for job listings using a headless browser.",
-			{
-				url: z.string().url().describe("The URL of the job search results page to scan.")
-			},
-			async ({ url }) => {
-				if (!this.env.BROWSER) {
-					return { content: [{ type: "text", text: "Browser binding not configured." }] };
-				}
+    this.server.tool(
+      "scan",
+      "Scans for jobs. If a URL is provided, it scans that specific page. Otherwise, it scans all job search URLs defined in the current plan.",
+      {
+        url: z.string().url().optional().describe("An optional URL of a job search results page to scan.")
+      },
+      async ({ url }) => {
+        if (this.backgroundJobs.scan.inProgress) {
+          return { content: [{ type: "text", text: "A scan is already in progress. Please wait for it to complete before starting a new one." }] };
+        }
 
-				console.log(`Starting scan for URL: ${url}`);
-				const browser = await launch(this.env.BROWSER);
-				const page = await browser.newPage();
+        // Reset scan job status and kick off in the background
+        this.backgroundJobs.scan = {
+          inProgress: true,
+          startTime: new Date().toISOString(),
+          endTime: null,
+          status: 'starting',
+          urlsToScan: [],
+          scannedUrls: [],
+          totalJobsFound: 0,
+          error: null
+        };
 
-				try {
-					// Login to LinkedIn
-					console.log('Navigating to LinkedIn login page...');
-					await page.goto("https://www.linkedin.com/login");
-					console.log('Entering login credentials...');
-					await page.type("#username", this.env.LINKEDIN_EMAIL);
-					await page.type("#password", this.env.LINKEDIN_PASSWORD);
-					console.log('Submitting login form...');
-					await page.click("[type=submit]");
-					await page.waitForNavigation({ waitUntil: 'networkidle' }).catch(e => console.log('Navigation timeout after login, continuing...'));
+        // Do not await this call
+        this._runScan(url);
 
-					console.log(`Navigating to ${url}...`);
-					await page.goto(url, { waitUntil: "domcontentloaded" });
-					await page.waitForSelector('.jobs-search-results-list, .jobs-search__results-list', { timeout: 10000 }).catch(() => console.log('Could not find job listings container, continuing anyway...'));
+        return {
+          content: [{ type: "text", text: "Scan job started in the background. Use the 'status' tool to check progress." }]
+        };
+      },
+      {
+        title: "Scan for LinkedIn Jobs",
+        readOnlyHint: false,
+        openWorldHint: true
+      }
+    );
 
-					// Scrape job data
-					const jobSelector = ".jobs-search-results__list-item, .job-search-card, ul.jobs-search-results__list li, .jobs-search-results-list__list-item, .jobs-search__results-list li";
-					const jobs = await page.$$eval(jobSelector, els =>
-						els.map(el => {
-							const title = el.querySelector('h3, .job-card-list__title')?.innerText.trim();
-							const link = el.querySelector('a')?.href.split('?')[0];
-							const posted = el.querySelector('time')?.innerText.trim();
-							return { title, link, posted };
-						})
-					);
+        // Job Indexing and Digests
+    this.server.tool(
+      "reset_job_index",
+      "Reset the job index to start fresh",
+      {},
+      async () => {
+        // Stub implementation
+        return {
+          content: [{ type: "text", text: "Job index has been reset successfully. All jobs have been removed." }],
+          structuredContent: { success: true },
+        };
+      },
+      {
+        title: "Reset Job Index",
+        readOnlyHint: false,
+        openWorldHint: false
+      }
+    );
 
-					console.log(`Found ${jobs.length} job listings.`);
-					await browser.close();
+    this.server.tool(
+      "send_digest",
+      "Send digest email with job matches to the specified email address",
+      {
+        email: z.string().describe("Email address to send digest to")
+      },
+      async ({ email }) => {
+        // Stub implementation
+        return {
+          content: [{ type: "text", text: `Sent digest email to ${email} with 5 job matches` }],
+          structuredContent: { sent: 5, email },
+        };
+      },
+      {
+        title: "Send Job Digest Email",
+        readOnlyHint: false,
+        openWorldHint: false
+      }
+    );
+  }
 
-					return { 
-						content: [{ type: "text", text: `Found ${jobs.length} jobs.` }],
-						structuredContent: { jobs }
-					};
-				} catch (error) {
-					console.error(`Error during scan: ${error.message}`);
-					await browser.close();
-					return { content: [{ type: "text", text: `Failed to scan URL: ${url}. Error: ${error.message}` }] };
-				}
-			},
-			{
-				title: "Scan URL for Jobs",
-				readOnlyHint: false,
-				openWorldHint: true
-			}
-		);
+  async _runScan(url) {
+    try {
+      let urlsToProcess = [];
+      if (url) {
+        urlsToProcess.push({ url }); // Match the structure of plan.searchUrls
+      } else {
+        const plan = await this.env.JOB_STORAGE.get('plan', 'json');
+        if (!plan || !plan.searchUrls || plan.searchUrls.length === 0) {
+          throw new Error('No URL provided and no searches found in the current plan.');
+        }
+        urlsToProcess = plan.searchUrls;
+      }
 
-		// Force rescan all jobs
-		this.server.tool(
-			"rescan",
-			"Rescan existing jobs in the index. Can optionally send an email digest of new job matches after scanning completes. Can also disable deep scanning of job details.",
-			{
-				sendDigest: z.boolean().optional().describe('Send email digest after rescan completes (default: true if SMTP configured)'),
-				deepScan: z.boolean().optional().describe('Perform deep scanning of job details (default: true)')
-			},
-			async ({ sendDigest, deepScan = true }) => {
-				// Stub implementation
-				// Reset rescan job status
-				backgroundJobs.rescan = {
-					inProgress: true,
-					startTime: Date.now(),
-					endTime: null,
-					status: 'running',
-					totalJobs: 5,
-					scannedJobs: 0,
-					error: null
-				};
-				
-				// Simulate background job
-				setTimeout(() => {
-					backgroundJobs.rescan.status = 'completed';
-					backgroundJobs.rescan.endTime = Date.now();
-					backgroundJobs.rescan.inProgress = false;
-					backgroundJobs.rescan.scannedJobs = 5;
-				}, 1000);
-				
-				// Return immediately with job started status
-				const structuredResult = { 
-					jobStarted: true,
-					mockMode: false,
-					jobType: 'rescan'
-				};
-				
-				return {
-					content: [
-						{ 
-							type: "text", 
-							text: `Rescan job started in the background. Use the 'status' tool to check progress.` 
-						},
-						{
-							type: "text",
-							text: JSON.stringify(structuredResult, null, 2)
-						}
-					],
-					structuredContent: structuredResult,
-				};
-			},
-			{
-				title: "Rescan All Jobs",
-				readOnlyHint: false,
-				openWorldHint: false
-			}
-		);
+      this.backgroundJobs.scan.status = 'running';
+      this.backgroundJobs.scan.urlsToScan = urlsToProcess.map(u => u.url);
 
-		// Get jobs with optional filtering
-		this.server.tool(
-			"jobs",
-			"Get jobs from the index with optional filtering",
-			{
-				minScore: z.number().optional().describe("Minimum match score (0-1)"),
-				scanned: z.boolean().optional().describe("Filter by scan status"),
-				limit: z.number().optional().describe("Maximum number of jobs to return"),
-			},
-			async ({ minScore, scanned, limit }) => {
-				// Stub implementation
-				const jobs = [
-					{
-						id: "job1",
-						title: "Software Engineer",
-						company: "Example Corp",
-						location: "Remote",
-						url: "https://example.com/job1",
-						matchScore: 0.85,
-						scanned: true
-					},
-					{
-						id: "job2",
-						title: "Frontend Developer",
-						company: "Tech Inc",
-						location: "San Francisco, CA",
-						url: "https://example.com/job2",
-						matchScore: 0.75,
-						scanned: true
-					}
-				];
-				
-				return {
-					content: [
-						{ 
-							type: "text", 
-							text: `Found ${jobs.length} jobs${minScore ? ` with score >= ${minScore}` : ''}${typeof scanned !== "undefined" ? ` (${scanned ? 'scanned' : 'not scanned'})` : ''}` 
-						},
-						{
-							type: "text",
-							text: JSON.stringify({ jobs }, null, 2)
-						}
-					],
-					structuredContent: { jobs },
-				};
-			},
-			{
-				title: "Get Jobs",
-				readOnlyHint: true,
-				openWorldHint: false
-			}
-		);
+      const browser = await launch(this.env.BROWSER);
+      const page = await browser.newPage();
 
-		// Status endpoint - Get current status of the job search service
-		this.server.tool(
-			"status",
-			"Get the current status of the job search service",
-			{},
-			async () => {
-				// Stub implementation
-				const status = {
-					totalJobs: 10,
-					scannedJobs: 8,
-					matchedJobs: 5,
-					searchTerms: ["software engineer", "frontend developer"],
-					lastUpdate: new Date().toISOString(),
-					mockMode: false,
-					version: '1.0.0',
-					serverTime: new Date().toISOString(),
-					uptime: '120s',
-					// Add background job status
-					backgroundJobs: {
-						scan: { ...backgroundJobs.scan },
-						rescan: { ...backgroundJobs.rescan }
-					}
-				};
-				
-				// Build status text
-				let statusText = `Job Search Service Status:\n\nTotal Jobs: ${status.totalJobs}\nScanned Jobs: ${status.scannedJobs}\nMatched Jobs: ${status.matchedJobs}\nSearch Terms: ${status.searchTerms.join(', ')}\nLast Update: ${status.lastUpdate}\nMock Mode: ${status.mockMode ? 'ON' : 'OFF'}\nVersion: ${status.version}\nServer Time: ${status.serverTime}\nUptime: ${status.uptime}`;
-				
-				return {
-					content: [
-						{ 
-							type: "text", 
-							text: statusText
-						},
-						{
-							type: "text",
-							text: JSON.stringify(status, null, 2)
-						}
-					],
-					structuredContent: status,
-				};
-			},
-			{
-				title: "Service Status",
-				readOnlyHint: true,
-				openWorldHint: false
-			}
-		);
+      // Login once
+      console.log('Attempting to log in to LinkedIn...');
+      await page.goto("https://www.linkedin.com/login");
+      await page.type("#username", this.env.LINKEDIN_EMAIL);
+      await page.type("#password", this.env.LINKEDIN_PASSWORD);
+      await page.click("[type=submit]");
+      await page.waitForNavigation({ waitUntil: 'networkidle' }).catch(() => console.log('Navigation timeout after login, continuing...'));
+      console.log('Login successful or timed out. Waiting for page to settle...');
+      await page.waitForTimeout(3000); // Add a 3-second wait for the page to settle
 
-		// Reset job index
-		this.server.tool(
-			"reset_job_index",
-			"Reset the job index to start fresh",
-			{},
-			async () => {
-				// Stub implementation
-				return {
-					content: [{ type: "text", text: "Job index has been reset successfully. All jobs have been removed." }],
-					structuredContent: { success: true },
-				};
-			},
-			{
-				title: "Reset Job Index",
-				readOnlyHint: false,
-				openWorldHint: false
-			}
-		);
+      for (const scanUrl of urlsToProcess) {
+        console.log(`Scanning URL: ${scanUrl.url}`);
+        await page.goto(scanUrl.url, { waitUntil: "domcontentloaded" });
 
-		// Send digest email
-		this.server.tool(
-			"send_digest",
-			"Send digest email with job matches to the specified email address",
-			{
-				email: z.string().describe("Email address to send digest to")
-			},
-			async ({ email }) => {
-				// Stub implementation
-				return {
-					content: [{ type: "text", text: `Sent digest email to ${email} with 5 job matches` }],
-					structuredContent: { sent: 5, email },
-				};
-			},
-			{
-				title: "Send Job Digest Email",
-				readOnlyHint: false,
-				openWorldHint: false
-			}
-		);
-	}
+        // Log the page title and URL to see where we landed
+        const pageTitle = await page.title();
+        const pageUrl = page.url();
+        console.log(`Landed on page: "${pageTitle}" at URL: ${pageUrl}`);
+
+        // This selector targets the main list of jobs.
+        const jobListSelector = 'ul.scaffold-layout__list-container';
+        try {
+          await page.waitForSelector(jobListSelector, { timeout: 10000 });
+          // This selector targets individual job cards within the list.
+          const jobSelector = 'li.jobs-search-results__list-item';
+          const jobs = await page.$$eval(jobSelector, (els) => els.map(el => ({
+            title: el.querySelector('.job-card-list__title, .job-card-container__title')?.innerText.trim(),
+            company: el.querySelector('.job-card-container__primary-description, .job-card-container__company-name')?.innerText.trim(),
+            location: el.querySelector('.job-card-container__metadata-item')?.innerText.trim(),
+            url: el.querySelector('a')?.href,
+          })));
+          
+          console.log(`Found ${jobs.length} jobs on this page.`);
+          this.backgroundJobs.scan.totalJobsFound += jobs.length;
+
+        } catch (selectorError) {
+            console.log(`Could not find job list selector.`);
+            this.backgroundJobs.scan.error = `Failed to find job list selector on page. The page layout may have changed.`;
+        }
+
+        this.backgroundJobs.scan.scannedUrls.push(scanUrl.url);
+        console.log('Continuing to next step after trying to scrape...');
+      }
+
+      // Set status to completed before closing the browser to ensure state is updated.
+      this.backgroundJobs.scan.status = 'completed';
+      await browser.close();
+    } catch (e) {
+      console.error('Error during scan:', e);
+      this.backgroundJobs.scan.status = 'error';
+      this.backgroundJobs.scan.error = e.message;
+    } finally {
+      this.backgroundJobs.scan.inProgress = false;
+      this.backgroundJobs.scan.endTime = new Date().toISOString();
+    }
+  }
 
 	_generateSearchUrls(searchTerms, locations) {
 		const baseUrl = 'https://www.linkedin.com/jobs/search/';
