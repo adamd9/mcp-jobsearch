@@ -302,44 +302,78 @@ Respond with ONLY the JSON object. No additional text.`;
       const browser = await launch(this.env.BROWSER);
       const page = await browser.newPage();
 
-      // Login once
-      console.log('Attempting to log in to LinkedIn...');
-      await page.goto("https://www.linkedin.com/login");
-      await page.type("#username", this.env.LINKEDIN_EMAIL);
-      await page.type("#password", this.env.LINKEDIN_PASSWORD);
-      await page.click("[type=submit]");
-      await page.waitForNavigation({ waitUntil: 'networkidle' }).catch(() => console.log('Navigation timeout after login, continuing...'));
-      console.log('Login successful or timed out. Waiting for page to settle...');
-      await page.waitForTimeout(3000); // Add a 3-second wait for the page to settle
+      // Login once at the beginning of the scan.
+      console.log('Navigating to LinkedIn login page...');
+      await page.goto('https://www.linkedin.com/login', { waitUntil: 'domcontentloaded' });
+
+      console.log('Entering login credentials...');
+      await page.type('#username', this.env.LINKEDIN_EMAIL);
+      await page.type('#password', this.env.LINKEDIN_PASSWORD);
+
+      console.log('Submitting login form...');
+      await page.click('button[type="submit"]');
+
+      console.log('Waiting for login to complete...');
+      await page.waitForNavigation({ waitUntil: 'networkidle' }).catch(e => console.log('Navigation timeout after login, continuing...'));
+
+      // Check for security verification right after login attempt
+      const postLoginUrl = page.url();
+      if (postLoginUrl.includes('checkpoint') || postLoginUrl.includes('security-verification')) {
+        console.log(`LinkedIn security check detected at ${postLoginUrl}. The scraper may fail.`);
+        this.backgroundJobs.scan.error = 'LinkedIn security check detected. Manual login in a browser may be required.';
+        // It's probably not useful to continue if we hit a checkpoint.
+        throw new Error(this.backgroundJobs.scan.error);
+      }
 
       for (const scanUrl of urlsToProcess) {
-        console.log(`Scanning URL: ${scanUrl.url}`);
-        await page.goto(scanUrl.url, { waitUntil: "domcontentloaded" });
+        console.log(`Navigating to job search URL: ${scanUrl.url}`);
+        await page.goto(scanUrl.url, { waitUntil: 'domcontentloaded' });
 
-        // Log the page title and URL to see where we landed
         const pageTitle = await page.title();
         const pageUrl = page.url();
         console.log(`Landed on page: "${pageTitle}" at URL: ${pageUrl}`);
 
-        // This selector targets the main list of jobs.
-        const jobListSelector = 'ul.scaffold-layout__list-container';
         try {
-          await page.waitForSelector(jobListSelector, { timeout: 10000 });
-          // This selector targets individual job cards within the list.
-          const jobSelector = 'li.jobs-search-results__list-item';
-          const jobs = await page.$$eval(jobSelector, (els) => els.map(el => ({
-            title: el.querySelector('.job-card-list__title, .job-card-container__title')?.innerText.trim(),
-            company: el.querySelector('.job-card-container__primary-description, .job-card-container__company-name')?.innerText.trim(),
-            location: el.querySelector('.job-card-container__metadata-item')?.innerText.trim(),
-            url: el.querySelector('a')?.href,
-          })));
-          
-          console.log(`Found ${jobs.length} jobs on this page.`);
+          // Wait for the main job container to appear.
+          await page.waitForSelector('.jobs-search-results-list, .jobs-search__results-list', { timeout: 10000 });
+
+          // Use a robust, multi-selector strategy inspired by the reference implementation.
+          const jobCardSelectors = [
+            ".jobs-search-results__list-item",
+            ".job-search-card",
+            "ul.jobs-search-results__list li",
+            ".jobs-search-results-list__list-item",
+            ".jobs-search__results-list li"
+          ];
+
+          let jobs = [];
+          for (const selector of jobCardSelectors) {
+            const pageJobs = await page.$$eval(selector, (els) => {
+              // Define extraction logic inside $$eval
+              const extractText = (el, sel) => el.querySelector(sel)?.innerText.trim() || null;
+              const extractHref = (el, sel) => el.querySelector(sel)?.href.split('?')[0] || null;
+
+              return els.map(el => ({
+                title: extractText(el, '.base-search-card__title') || extractText(el, '.job-card-list__title'),
+                company: extractText(el, '.base-search-card__subtitle'),
+                location: extractText(el, '.job-search-card__location'),
+                url: extractHref(el, '.base-card__full-link') || extractHref(el, '.job-card-container__link'),
+              }));
+            });
+
+            if (pageJobs.length > 0) {
+              console.log(`Found ${pageJobs.length} jobs using selector: ${selector}`);
+              jobs = pageJobs;
+              break; // Found jobs, no need to try other selectors
+            }
+          }
+
+          console.log(`Found a total of ${jobs.length} jobs on this page.`);
           this.backgroundJobs.scan.totalJobsFound += jobs.length;
 
         } catch (selectorError) {
-            console.log(`Could not find job list selector.`);
-            this.backgroundJobs.scan.error = `Failed to find job list selector on page. The page layout may have changed.`;
+            console.log(`Could not find job list selector: ${selectorError.message}`);
+            this.backgroundJobs.scan.error = `Failed to find job list on page. The layout may have changed.`;
         }
 
         this.backgroundJobs.scan.scannedUrls.push(scanUrl.url);
