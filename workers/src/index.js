@@ -334,45 +334,33 @@ Respond with ONLY the JSON object. No additional text.`;
         console.log(`Landed on page: "${pageTitle}" at URL: ${pageUrl}`);
 
         try {
-          // Wait for the main job container to appear.
-          await page.waitForSelector('.jobs-search-results-list, .jobs-search__results-list', { timeout: 10000 });
+          // 1. Wait for the header to ensure the page is ready.
+          await page.waitForSelector('.jobs-search-results-list__header', { timeout: 10000 });
 
-          // Use a robust, multi-selector strategy inspired by the reference implementation.
-          const jobCardSelectors = [
-            ".jobs-search-results__list-item",
-            ".job-search-card",
-            "ul.jobs-search-results__list li",
-            ".jobs-search-results-list__list-item",
-            ".jobs-search__results-list li"
-          ];
+          // 2. Use the user-provided selector for job cards.
+          const jobSelector = '.job-card-list';
+          const jobs = await page.$$eval(jobSelector, (els) => {
+            // 3. Use the new data extraction logic based on the user's HTML.
+            return els.map(el => {
+              const titleEl = el.querySelector('a.job-card-list__title--link');
+              const companyEl = el.querySelector('.artdeco-entity-lockup__subtitle span');
+              // The location is in the first list item of the metadata.
+              const locationEl = el.querySelector('.job-card-container__metadata-wrapper li');
 
-          let jobs = [];
-          for (const selector of jobCardSelectors) {
-            const pageJobs = await page.$$eval(selector, (els) => {
-              // Define extraction logic inside $$eval
-              const extractText = (el, sel) => el.querySelector(sel)?.innerText.trim() || null;
-              const extractHref = (el, sel) => el.querySelector(sel)?.href.split('?')[0] || null;
-
-              return els.map(el => ({
-                title: extractText(el, '.base-search-card__title') || extractText(el, '.job-card-list__title'),
-                company: extractText(el, '.base-search-card__subtitle'),
-                location: extractText(el, '.job-search-card__location'),
-                url: extractHref(el, '.base-card__full-link') || extractHref(el, '.job-card-container__link'),
-              }));
+              return {
+                title: titleEl?.innerText.trim() || null,
+                company: companyEl?.innerText.trim() || null,
+                location: locationEl?.innerText.trim().replace(/\n/g, ' ').replace(/\s+/g, ' ').trim() || null,
+                url: titleEl?.href ? titleEl.href.split('?')[0] : null,
+              };
             });
+          });
 
-            if (pageJobs.length > 0) {
-              console.log(`Found ${pageJobs.length} jobs using selector: ${selector}`);
-              jobs = pageJobs;
-              break; // Found jobs, no need to try other selectors
-            }
-          }
-
-          console.log(`Found a total of ${jobs.length} jobs on this page.`);
+          console.log(`Found ${jobs.length} jobs on this page.`);
           this.backgroundJobs.scan.totalJobsFound += jobs.length;
 
         } catch (selectorError) {
-            console.log(`Could not find job list selector: ${selectorError.message}`);
+            console.log(`Could not find job list using the new selectors: ${selectorError.message}`);
             this.backgroundJobs.scan.error = `Failed to find job list on page. The layout may have changed.`;
         }
 
