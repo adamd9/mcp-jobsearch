@@ -16,6 +16,7 @@
     "zod": "^3.25.67"
   },
   "devDependencies": {
+    "@cloudflare/playwright": "^0.0.10",
     "@cloudflare/workers-types": "^4.20240320.1",
     "wrangler": "^4.24.3"
   }

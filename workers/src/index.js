@@ -2,6 +2,7 @@ import { McpAgent } from "agents/mcp";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
 import OpenAI from "openai";
+import { launch } from "@cloudflare/playwright";
 
 // Track background jobs
 const backgroundJobs = {
@@ -27,6 +28,11 @@ const backgroundJobs = {
 
 // Define our MCP agent with tools
 export class JobSearchMCP extends McpAgent {
+	constructor(state, env) {
+		super(state, env);
+		console.log("--- Durable Object Initialized ---");
+		console.log("Available environment keys:", Object.keys(env));
+	}
 	server = new McpServer({
 		name: "JobSearch MCP",
 		version: "1.0.0",
@@ -206,57 +212,62 @@ Respond with ONLY the JSON object. No additional text.`;
 		// Scan jobs without sending digest
 		this.server.tool(
 			"scan",
-			"Scan LinkedIn for jobs based on search terms in the plan. Can optionally send an email digest of new job matches after scanning completes. Can also disable deep scanning of job details.",
+			"Scans a specific URL for job listings using a headless browser.",
 			{
-				sendDigest: z.boolean().optional().describe('Send email digest after scan completes (default: true if SMTP configured)'),
-				deepScan: z.boolean().optional().describe('Perform deep scanning of job details (default: true)')
+				url: z.string().url().describe("The URL of the job search results page to scan.")
 			},
-			async ({ sendDigest, deepScan = true }) => {
-				// Stub implementation
-				// Reset scan job status
-				backgroundJobs.scan = {
-					inProgress: true,
-					startTime: Date.now(),
-					endTime: null,
-					status: 'running',
-					totalJobs: 10,
-					scannedJobs: 0,
-					error: null
-				};
-				
-				// Simulate background job
-				setTimeout(() => {
-					backgroundJobs.scan.status = 'completed';
-					backgroundJobs.scan.endTime = Date.now();
-					backgroundJobs.scan.inProgress = false;
-					backgroundJobs.scan.scannedJobs = 10;
-				}, 1000);
-				
-				// Return immediately with job started status
-				const structuredResult = { 
-					jobStarted: true,
-					mockMode: false,
-					jobType: 'scan'
-				};
-				
-				return {
-					content: [
-						{ 
-							type: "text", 
-							text: `Scan job started in the background. Use the 'status' tool to check progress.` 
-						},
-						{
-							type: "text",
-							text: JSON.stringify(structuredResult, null, 2)
-						}
-					],
-					structuredContent: structuredResult,
-				};
+			async ({ url }) => {
+				if (!this.env.BROWSER) {
+					return { content: [{ type: "text", text: "Browser binding not configured." }] };
+				}
+
+				console.log(`Starting scan for URL: ${url}`);
+				const browser = await launch(this.env.BROWSER);
+				const page = await browser.newPage();
+
+				try {
+					// Login to LinkedIn
+					console.log('Navigating to LinkedIn login page...');
+					await page.goto("https://www.linkedin.com/login");
+					console.log('Entering login credentials...');
+					await page.type("#username", this.env.LINKEDIN_EMAIL);
+					await page.type("#password", this.env.LINKEDIN_PASSWORD);
+					console.log('Submitting login form...');
+					await page.click("[type=submit]");
+					await page.waitForNavigation({ waitUntil: 'networkidle' }).catch(e => console.log('Navigation timeout after login, continuing...'));
+
+					console.log(`Navigating to ${url}...`);
+					await page.goto(url, { waitUntil: "domcontentloaded" });
+					await page.waitForSelector('.jobs-search-results-list, .jobs-search__results-list', { timeout: 10000 }).catch(() => console.log('Could not find job listings container, continuing anyway...'));
+
+					// Scrape job data
+					const jobSelector = ".jobs-search-results__list-item, .job-search-card, ul.jobs-search-results__list li, .jobs-search-results-list__list-item, .jobs-search__results-list li";
+					const jobs = await page.$$eval(jobSelector, els =>
+						els.map(el => {
+							const title = el.querySelector('h3, .job-card-list__title')?.innerText.trim();
+							const link = el.querySelector('a')?.href.split('?')[0];
+							const posted = el.querySelector('time')?.innerText.trim();
+							return { title, link, posted };
+						})
+					);
+
+					console.log(`Found ${jobs.length} job listings.`);
+					await browser.close();
+
+					return { 
+						content: [{ type: "text", text: `Found ${jobs.length} jobs.` }],
+						structuredContent: { jobs }
+					};
+				} catch (error) {
+					console.error(`Error during scan: ${error.message}`);
+					await browser.close();
+					return { content: [{ type: "text", text: `Failed to scan URL: ${url}. Error: ${error.message}` }] };
+				}
 			},
 			{
-				title: "Scan LinkedIn Jobs",
+				title: "Scan URL for Jobs",
 				readOnlyHint: false,
-				openWorldHint: false
+				openWorldHint: true
 			}
 		);
 

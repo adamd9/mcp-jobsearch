@@ -26,6 +26,9 @@ id = "your-kv-namespace-id-here" # Replace with actual KV namespace ID after cre
 OPENAI_API_KEY = ""
 OPENAI_MODEL = "gpt-4o"
 ACCESS_TOKEN = ""
+LINKEDIN_EMAIL = ""
+LINKEDIN_PASSWORD = ""
 
 # Enable browser rendering
-browser = { binding = "BROWSER" }
+[browser]
+binding = "BROWSER"
