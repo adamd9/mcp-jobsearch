@@ -143,28 +143,57 @@ Respond with ONLY the JSON object. No additional text.`;
 
 		this.server.tool(
 			"update_plan",
-			"Update the existing job search plan with new values",
-			z.union([
-				z.object({
-					description: z.string().describe("Natural language description of the changes to make to the plan")
-				}),
-				z.record(z.any()).describe("Fields to update in the job search plan")
-			]),
-			async (input) => {
-				// Stub implementation
-				const updated = {
-					searchTerms: ["software engineer", "frontend developer", "react developer"],
-					searchUrls: [
-						{ url: "https://www.linkedin.com/jobs/search/?keywords=software%20engineer", term: "software engineer", location: "remote" },
-						{ url: "https://www.linkedin.com/jobs/search/?keywords=react%20developer", term: "react developer", location: "remote" }
+			"Update the job search plan based on a description of the changes.",
+			{
+				description: z.string().describe("A description of the changes to make to the plan."),
+			},
+			async ({ description }) => {
+				const currentPlanJSON = await this.env.JOB_STORAGE.get("plan");
+				const currentPlan = currentPlanJSON ? JSON.parse(currentPlanJSON) : {};
+
+				const prompt = `Update the following job search plan based on this change request: "${description}"
+
+				Current plan:
+				${JSON.stringify(currentPlan, null, 2)}
+
+				Provide a complete updated JSON plan with these fields:
+				- "profile": A concise summary of the job seeker's profile
+				- "searchTerms": Array of search terms/keywords (each item should be a complete search query)
+				- "locations": Array of location objects, each with:
+				  - "name": Location name (city, state, country)
+				  - "geoId": LinkedIn geographic ID if known (optional)
+				  - "type": "city", "country", or "remote"
+				  - "distance": Search radius in miles (for city searches, optional)
+				- "scanPrompt": Instructions for evaluating job matches
+
+				Incorporate the requested changes while preserving relevant existing information.
+				Respond with ONLY the JSON object. No additional text.`;
+
+				const aiResponse = await this.openai.chat.completions.create({
+					model: this.env.OPENAI_MODEL || 'gpt-4o',
+					messages: [
+						{ role: 'system', content: 'You update structured job search plans based on user requests.' },
+						{ role: 'user', content: prompt }
 					],
-					profile: "Updated profile text",
-					scanPrompt: "Updated scan prompt"
-				};
-				
+					temperature: 0.2
+				});
+
+				const content = aiResponse.choices[0].message.content;
+				const jsonMatch = content.match(/\{[\s\S]*\}/);
+				let updatedPlan;
+				try {
+					updatedPlan = jsonMatch ? JSON.parse(jsonMatch[0]) : {};
+				} catch (e) {
+					updatedPlan = { ...currentPlan };
+				}
+
+				updatedPlan.searchUrls = this._generateSearchUrls(updatedPlan.searchTerms, updatedPlan.locations);
+				updatedPlan.feedback = await this._generatePlanFeedback(updatedPlan);
+
+				await this.env.JOB_STORAGE.put("plan", JSON.stringify(updatedPlan));
 				return {
-					content: [{ type: "text", text: JSON.stringify(updated, null, 2) }],
-					structuredContent: updated,
+					content: [{ type: "text", text: "Plan updated." }],
+					structuredContent: updatedPlan,
 				};
 			},
 			{
