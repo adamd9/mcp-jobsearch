@@ -1,6 +1,7 @@
 import { McpAgent } from "agents/mcp";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
+import OpenAI from "openai";
 
 // Track background jobs
 const backgroundJobs = {
@@ -31,25 +32,32 @@ export class JobSearchMCP extends McpAgent {
 		version: "1.0.0",
 	});
 
+	openai = null;
+
 	async init() {
-		// Add authentication handler to MCP server
-		// Note: This will be implemented in the next phase
-		
+		this.openai = new OpenAI({
+			apiKey: this.env.OPENAI_API_KEY,
+		});
+
 		// Plan tools
 		this.server.tool(
 			"get_plan",
 			"Get the current job search plan",
 			async () => {
-				// Stub implementation
-				const plan = { 
-					searchTerms: ["software engineer", "frontend developer"],
-					searchUrls: [
-						{ url: "https://www.linkedin.com/jobs/search/?keywords=software%20engineer", term: "software engineer", location: "remote" }
-					],
-					profile: "Stub profile text",
-					scanPrompt: "Stub scan prompt"
-				};
-				
+				const plan = await this.env.JOB_STORAGE.get("plan", "json");
+				if (!plan) {
+					return {
+						content: [{ type: "text", text: "No plan found." }],
+						structuredContent: { 
+							profile: '', 
+							searchTerms: [], 
+							locations: [],
+							scanPrompt: '',
+							searchUrls: []
+						},
+					};
+				}
+
 				return {
 					content: [{ type: "text", text: JSON.stringify(plan, null, 2) }],
 					structuredContent: plan,
@@ -69,16 +77,58 @@ export class JobSearchMCP extends McpAgent {
 				description: z.string().describe("Description of the job search plan")
 			},
 			async ({ description }) => {
-				// Stub implementation
-				const plan = {
-					searchTerms: ["software engineer", "frontend developer"],
-					searchUrls: [
-						{ url: "https://www.linkedin.com/jobs/search/?keywords=software%20engineer", term: "software engineer", location: "remote" }
+				const prompt = `Convert the following description into a JSON job search plan with these fields:
+- "profile": A concise summary of the job seeker's profile
+- "searchTerms": Array of search terms/keywords (each item should be a complete search query)
+- "locations": Array of location objects, each with:
+  - "name": Location name (city, state, country)
+  - "geoId": LinkedIn geographic ID if known (optional)
+  - "type": "city", "country", or "remote"
+  - "distance": Search radius in miles (for city searches, optional)
+- "scanPrompt": Instructions for evaluating job matches
+
+Description:
+${description}
+
+Respond with ONLY the JSON object. No additional text.`;
+
+				console.log("--- AI PROMPT ---");
+				console.log(prompt);
+
+				const aiResponse = await this.openai.chat.completions.create({
+					model: this.env.OPENAI_MODEL || 'gpt-4.1-mini',
+					messages: [
+						{ role: 'system', content: 'You create structured job search plans.' },
+						{ role: 'user', content: prompt }
 					],
-					profile: "Generated from: " + description,
-					scanPrompt: "Default scan prompt"
-				};
-				
+					temperature: 0.2
+				});
+
+				const content = aiResponse.choices[0].message.content;
+				console.log("--- AI RAW RESPONSE ---");
+				console.log(content);
+
+				const jsonMatch = content.match(/\{[\s\S]*\}/);
+				let plan;
+				try {
+					plan = jsonMatch ? JSON.parse(jsonMatch[0]) : {};
+					console.log("--- PARSED PLAN ---");
+					console.log(JSON.stringify(plan, null, 2));
+				} catch (e) {
+					console.error("--- JSON PARSE ERROR ---", e);
+					plan = {};
+				}
+
+				plan.profile = plan.profile || description;
+				plan.searchTerms = plan.searchTerms || [];
+				plan.locations = plan.locations || [];
+				plan.scanPrompt = plan.scanPrompt || description;
+
+				plan.searchUrls = this._generateSearchUrls(plan.searchTerms, plan.locations);
+				plan.feedback = await this._generatePlanFeedback(plan);
+
+				await this.env.JOB_STORAGE.put("plan", JSON.stringify(plan));
+
 				return {
 					content: [{ type: "text", text: JSON.stringify(plan, null, 2) }],
 					structuredContent: plan,
@@ -378,6 +428,88 @@ export class JobSearchMCP extends McpAgent {
 				openWorldHint: false
 			}
 		);
+	}
+
+	_generateSearchUrls(searchTerms, locations) {
+		const baseUrl = 'https://www.linkedin.com/jobs/search/';
+		const urls = [];
+
+		if (!locations || locations.length === 0) {
+			searchTerms.forEach(term => {
+				urls.push({
+					term,
+					location: 'Any',
+					url: `${baseUrl}?keywords=${encodeURIComponent(term)}&sortBy=DD`
+				});
+			});
+			return urls;
+		}
+
+		searchTerms.forEach(term => {
+			locations.forEach(loc => {
+				let url = `${baseUrl}?keywords=${encodeURIComponent(term)}`;
+				if (loc.name && loc.name !== 'Remote') {
+					url += `&location=${encodeURIComponent(loc.name)}`;
+					if (loc.type === 'city' && loc.distance) {
+						url += `&distance=${loc.distance}`;
+					}
+				} else if (loc.name === 'Remote') {
+					const countryLocation = locations.find(l => l.type === 'country');
+					if (countryLocation && countryLocation.name) {
+						url += `&f_WT=2&location=${encodeURIComponent(countryLocation.name)}`;
+					} else {
+						url += '&f_WT=2';
+					}
+				}
+				url += '&sortBy=DD';
+				urls.push({
+					term,
+					location: loc.name,
+					url
+				});
+			});
+		});
+
+		return urls;
+	}
+
+	async _generatePlanFeedback(plan) {
+		const prompt = `Analyze this job search plan and provide specific, actionable feedback on how it could be improved:\n\n${JSON.stringify(plan, null, 2)}\n\nFocus on:\n1. Search term quality (specificity, relevance, Boolean operators)\n2. Location coverage (missing important areas?)\n3. Profile completeness (skills, experience level, industry focus)\n4. Scan prompt effectiveness\n\nRespond with a JSON object with these fields:\n- "searchTermsFeedback": String with suggestions for search terms\n- "locationsFeedback": String with suggestions for locations\n- "profileFeedback": String with suggestions for profile\n- "scanPromptFeedback": String with suggestions for scan prompt\n- "overallRating": Number from 1-10 indicating plan quality\n\nKeep each feedback field concise (1-2 sentences).`;
+
+		console.log("--- FEEDBACK AI PROMPT ---");
+		console.log(prompt);
+
+		const response = await this.openai.chat.completions.create({
+			model: this.env.OPENAI_MODEL || 'gpt-4o',
+			messages: [
+				{ role: 'system', content: 'You analyze job search plans and provide concise, actionable feedback.' },
+				{ role: 'user', content: prompt }
+			],
+			temperature: 0.3
+		});
+
+		const content = response.choices[0].message.content;
+		console.log("--- FEEDBACK AI RAW RESPONSE ---");
+		console.log(content);
+
+		const jsonMatch = content.match(/\{[\s\S]*\}/);
+		let feedback;
+		try {
+			feedback = jsonMatch ? JSON.parse(jsonMatch[0]) : {};
+			console.log("--- PARSED FEEDBACK ---");
+			console.log(JSON.stringify(feedback, null, 2));
+		} catch (e) {
+			console.error("--- FEEDBACK JSON PARSE ERROR ---", e);
+			feedback = {
+				searchTermsFeedback: "Unable to analyze search terms.",
+				locationsFeedback: "Unable to analyze locations.",
+				profileFeedback: "Unable to analyze profile.",
+				scanPromptFeedback: "Unable to analyze scan prompt.",
+				overallRating: 0
+			};
+		}
+
+		return feedback;
 	}
 }
 

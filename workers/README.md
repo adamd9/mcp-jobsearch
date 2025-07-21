@@ -40,7 +40,7 @@ The following tools are available on the MCP server:
 
 ## Next Steps: Tool Implementation
 
-The next phase of the project is to implement the tools with real functionality. Here is a suggested order for implementation:
+The next phase of the project is to implement the tools with real functionality. You MUST replicate / reimplement the logic from the src folder, as it is known to be working (but adapt for clouldflare for eg, in terms of storage). Here is a suggested order for implementation:
 
 1.  **`get_plan` / `create_plan` / `update_plan`**: These tools will manage the job search plan. We will need to decide where to store the plan data (e.g., in a database, a file, or a key-value store). The original implementation in `src/plan.js` uses a local `plan.json` file. We can adapt the `getPlan`, `createPlanFromDescription`, and `updatePlanFromDescription` functions for the worker, using Cloudflare KV for storage.
 STOP IMPLEMENTING ONCE THIS IS DONE SO THE USER CAN TEST
