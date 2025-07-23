@@ -77,6 +77,83 @@ export class JobSearchMCP extends McpAgent {
     const rescanTool = getRescanTool(this);
     this.server.tool(rescanTool.name, rescanTool.description, rescanTool.args, rescanTool.handler, rescanTool.options);
 
+    // Manual deep scan tool for debugging
+    this.server.tool(
+      "deep_scan_job",
+      "Manually deep scan a specific LinkedIn job URL for testing and debugging",
+      {
+        url: z.string().url().describe("LinkedIn job URL to deep scan")
+      },
+      async ({ url }) => {
+        try {
+          console.log(`Manual deep scan requested for: ${url}`);
+          
+          // Get plan for profile
+          const plan = await this.env.JOB_STORAGE.get('plan', 'json');
+          if (!plan || !plan.profile) {
+            return {
+              content: [{ type: "text", text: "No profile found in plan. Create a plan first." }],
+              isError: true
+            };
+          }
+
+          // Create a mock job object for the URL
+          const mockJob = {
+            id: this._generateJobId(url),
+            url: url,
+            title: 'Manual Deep Scan',
+            company: 'Unknown',
+            location: 'Unknown'
+          };
+
+          // Launch browser for single job scan
+          const browser = await launch(this.env.BROWSER);
+          const page = await browser.newPage();
+
+          try {
+            const scanResult = await this._deepScanSingleJob(page, mockJob, plan.profile, plan.scanPrompt || '');
+            
+            await browser.close();
+            
+            return {
+              content: [{ 
+                type: "text", 
+                text: `Deep scan completed for ${url}\n\nMatch Score: ${scanResult.matchScore}\nMatch Reason: ${scanResult.matchReason}\n\nJob Details:\nTitle: ${scanResult.title}\nCompany: ${scanResult.company}\nLocation: ${scanResult.location}\n\nDescription: ${scanResult.description?.substring(0, 500)}...` 
+              }],
+              structuredContent: {
+                url,
+                scanResult,
+                success: true
+              }
+            };
+          } catch (scanError) {
+            await browser.close();
+            throw scanError;
+          }
+        } catch (error) {
+          console.error('Manual deep scan error:', error);
+          return {
+            content: [{ 
+              type: "text", 
+              text: `Deep scan failed for ${url}\n\nError: ${error.message}\nError Type: ${error.name}` 
+            }],
+            structuredContent: {
+              url,
+              error: error.message,
+              errorType: error.name,
+              success: false
+            },
+            isError: true
+          };
+        }
+      },
+      {
+        title: "Manual Deep Scan Job",
+        readOnlyHint: false,
+        openWorldHint: true
+      }
+    );
+
     // Removed duplicate inline scan block
 
         // Job Indexing and Digests
@@ -198,6 +275,21 @@ if (url) {
           console.log(`Found ${jobs.length} jobs on this page.`);
           this.backgroundJobs.scan.totalJobsFound += jobs.length;
 
+          // Store jobs for deep scanning
+          if (jobs.length > 0) {
+            const jobsWithId = jobs.map(job => ({
+              ...job,
+              id: this._generateJobId(job.url),
+              searchUrl: scanUrl.url,
+              scanned: false,
+              scanDate: null,
+              matchScore: null
+            }));
+            
+            // Store jobs in KV for later deep scan
+            await this._storeJobsForDeepScan(jobsWithId);
+          }
+
         } catch (selectorError) {
             console.log(`Could not find job list using the new selectors: ${selectorError.message}`);
             this.backgroundJobs.scan.error = `Failed to find job list on page. The layout may have changed.`;
@@ -207,6 +299,12 @@ if (url) {
         console.log('Continuing to next step after trying to scrape...');
       }
 
+      // After all search URLs are processed, start deep scan phase
+      console.log('Starting deep scan phase...');
+      this.backgroundJobs.scan.status = 'deep_scanning';
+      
+      await this._performDeepScan(page);
+      
       // Set status to completed before closing the browser to ensure state is updated.
       this.backgroundJobs.scan.status = 'completed';
       await browser.close();
@@ -217,6 +315,253 @@ if (url) {
     } finally {
       this.backgroundJobs.scan.inProgress = false;
       this.backgroundJobs.scan.endTime = new Date().toISOString();
+    }
+  }
+
+  // Generate a unique job ID from URL
+  _generateJobId(jobUrl) {
+    if (!jobUrl) return null;
+    // Extract job ID from LinkedIn URL (e.g., /view/123456/)
+    const match = jobUrl.match(/\/view\/(\d+)\//); 
+    return match ? match[1] : jobUrl.split('/').pop().split('?')[0];
+  }
+
+  // Store jobs for later deep scanning
+  async _storeJobsForDeepScan(jobs) {
+    try {
+      // Get existing job index
+      const existingJobs = await this.env.JOB_STORAGE.get('job_index', 'json') || { jobs: [] };
+      
+      // Add new jobs, avoiding duplicates
+      const existingIds = new Set(existingJobs.jobs.map(j => j.id));
+      const newJobs = jobs.filter(job => job.id && !existingIds.has(job.id));
+      
+      if (newJobs.length > 0) {
+        existingJobs.jobs.push(...newJobs);
+        existingJobs.lastUpdate = new Date().toISOString();
+        
+        await this.env.JOB_STORAGE.put('job_index', JSON.stringify(existingJobs));
+        console.log(`Stored ${newJobs.length} new jobs for deep scanning`);
+      }
+    } catch (error) {
+      console.error('Error storing jobs for deep scan:', error);
+    }
+  }
+
+  // Perform deep scan on collected jobs
+  async _performDeepScan(page) {
+    try {
+      // Get jobs that need deep scanning
+      const jobIndex = await this.env.JOB_STORAGE.get('job_index', 'json');
+      if (!jobIndex || !jobIndex.jobs) {
+        console.log('No jobs found for deep scanning');
+        return;
+      }
+
+      const jobsToScan = jobIndex.jobs.filter(job => !job.scanned);
+      console.log(`Found ${jobsToScan.length} jobs to deep scan`);
+      
+      if (jobsToScan.length === 0) {
+        return;
+      }
+
+      // Get plan for profile and scan prompt
+      const plan = await this.env.JOB_STORAGE.get('plan', 'json');
+      if (!plan || !plan.profile) {
+        console.log('No profile found in plan for deep scanning');
+        return;
+      }
+
+      // Limit deep scan to avoid timeouts (max 10 jobs)
+      const limitedJobs = jobsToScan.slice(0, 10);
+      console.log(`Deep scanning ${limitedJobs.length} jobs...`);
+
+      for (const job of limitedJobs) {
+        try {
+          console.log(`Deep scanning job: ${job.title} at ${job.company}`);
+          
+          const scanResult = await this._deepScanSingleJob(page, job, plan.profile, plan.scanPrompt || '');
+          
+          // Update job with scan results
+          job.scanned = true;
+          job.scanDate = new Date().toISOString();
+          job.matchScore = scanResult.matchScore || 0;
+          job.matchReason = scanResult.matchReason || '';
+          job.description = scanResult.description || job.description;
+          job.requirements = scanResult.requirements || [];
+          job.salary = scanResult.salary || null;
+          job.scanStatus = 'completed';
+          
+          console.log(`✓ Job scan complete. Match score: ${job.matchScore}`);
+          
+        } catch (jobError) {
+          console.error(`✗ Error scanning job ${job.id} (${job.title}):`, jobError.message);
+          
+          // Mark job as scanned but with error details
+          job.scanned = true;
+          job.scanDate = new Date().toISOString();
+          job.matchScore = 0;
+          job.matchReason = 'Scan failed due to error';
+          job.scanStatus = 'error';
+          job.scanError = {
+            type: jobError.name || 'Error',
+            message: jobError.message,
+            timestamp: new Date().toISOString()
+          };
+          
+          // Log specific error types for debugging
+          if (jobError.name === 'TimeoutError') {
+            console.log(`  → Timeout accessing job page (likely expired or restricted)`);
+            job.scanError.reason = 'page_timeout';
+          } else if (jobError.message.includes('parsing')) {
+            console.log(`  → AI response parsing failed`);
+            job.scanError.reason = 'ai_parsing_error';
+          } else {
+            job.scanError.reason = 'unknown';
+          }
+          
+          console.log(`  → Continuing with next job...`);
+        }
+      }
+
+      // Save updated job index with scan statistics
+      const completedJobs = limitedJobs.filter(j => j.scanStatus === 'completed').length;
+      const errorJobs = limitedJobs.filter(j => j.scanStatus === 'error').length;
+      
+      await this.env.JOB_STORAGE.put('job_index', JSON.stringify(jobIndex));
+      
+      console.log(`Deep scan phase completed:`);
+      console.log(`  ✓ Successfully scanned: ${completedJobs} jobs`);
+      console.log(`  ✗ Failed to scan: ${errorJobs} jobs`);
+      
+      if (errorJobs > 0) {
+        const errorTypes = {};
+        limitedJobs.filter(j => j.scanStatus === 'error').forEach(job => {
+          const reason = job.scanError?.reason || 'unknown';
+          errorTypes[reason] = (errorTypes[reason] || 0) + 1;
+        });
+        console.log(`  Error breakdown:`, errorTypes);
+      }
+      
+    } catch (error) {
+      console.error('Error in deep scan phase:', error);
+    }
+  }
+
+  // Deep scan a single job
+  async _deepScanSingleJob(page, job, profile, scanPrompt) {
+    if (!job.url) {
+      throw new Error('Job URL is required for deep scanning');
+    }
+
+    console.log(`  → Navigating to job URL: ${job.url}`);
+    const startTime = Date.now();
+    
+    try {
+      await page.goto(job.url, { waitUntil: 'domcontentloaded', timeout: 10000 });
+      const loadTime = Date.now() - startTime;
+      console.log(`  → Page loaded in ${loadTime}ms`);
+    } catch (navError) {
+      const loadTime = Date.now() - startTime;
+      console.log(`  → Page failed to load after ${loadTime}ms`);
+      throw navError;
+    }
+
+    // Extract job details from the page
+    const jobDetails = await page.evaluate((fallbackJob) => {
+      const getTextContent = (selector) => {
+        const el = document.querySelector(selector);
+        return el ? el.textContent.trim() : null;
+      };
+
+      return {
+        description: getTextContent('.jobs-description-content__text') || 
+                    getTextContent('.jobs-box__html-content') ||
+                    getTextContent('[data-job-id] .jobs-description') ||
+                    'No description found',
+        company: getTextContent('.jobs-unified-top-card__company-name') ||
+                getTextContent('.job-details-company-name') ||
+                fallbackJob.company,
+        title: getTextContent('.jobs-unified-top-card__job-title') ||
+               getTextContent('h1') ||
+               fallbackJob.title,
+        location: getTextContent('.jobs-unified-top-card__bullet') ||
+                 getTextContent('.job-details-location') ||
+                 fallbackJob.location
+      };
+    }, job);
+
+    // Use OpenAI to match job against profile
+    const matchResult = await this._matchJobToProfile(jobDetails, profile, scanPrompt);
+    
+    return {
+      ...jobDetails,
+      ...matchResult
+    };
+  }
+
+  // Match job to profile using OpenAI
+  async _matchJobToProfile(jobDetails, profile, scanPrompt) {
+    try {
+      const prompt = `
+Analyze this job posting and determine how well it matches the candidate profile.
+
+Candidate Profile:
+${profile}
+
+Additional Criteria:
+${scanPrompt || 'None'}
+
+Job Details:
+Title: ${jobDetails.title}
+Company: ${jobDetails.company}
+Location: ${jobDetails.location}
+Description: ${jobDetails.description}
+
+Provide a match score from 0.0 to 1.0 and a brief explanation.
+Respond in JSON format: {"matchScore": 0.8, "matchReason": "explanation"}`;
+
+      const response = await this.env.AI.run('@cf/meta/llama-3.1-8b-instruct', {
+        messages: [{ role: 'user', content: prompt }]
+      });
+
+      try {
+        // Clean the response by removing control characters and fixing common issues
+        let cleanResponse = response.response
+          .replace(/[\x00-\x1F\x7F-\x9F]/g, '') // Remove control characters
+          .replace(/\\n/g, '\n') // Fix escaped newlines
+          .replace(/\\t/g, '\t') // Fix escaped tabs
+          .trim();
+        
+        // Try to extract JSON from the response if it's wrapped in other text
+        const jsonMatch = cleanResponse.match(/\{[^}]*"matchScore"[^}]*\}/i);
+        if (jsonMatch) {
+          cleanResponse = jsonMatch[0];
+        }
+        
+        console.log('Cleaned AI response:', cleanResponse);
+        const result = JSON.parse(cleanResponse);
+        
+        return {
+          matchScore: Math.max(0, Math.min(1, result.matchScore || 0)),
+          matchReason: result.matchReason || 'No reason provided'
+        };
+      } catch (parseError) {
+        console.error('Error parsing AI response:', parseError);
+        console.error('Raw AI response:', response.response);
+        
+        // Try to extract a numeric score from the response as fallback
+        const scoreMatch = response.response.match(/(?:score|rating)[:\s]*([0-9.]+)/i);
+        const fallbackScore = scoreMatch ? parseFloat(scoreMatch[1]) : 0;
+        
+        return { 
+          matchScore: Math.max(0, Math.min(1, fallbackScore)), 
+          matchReason: 'Could not parse structured response, extracted fallback score' 
+        };
+      }
+    } catch (error) {
+      console.error('Error in AI matching:', error);
+      return { matchScore: 0, matchReason: `Error: ${error.message}` };
     }
   }
 
