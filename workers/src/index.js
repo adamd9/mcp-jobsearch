@@ -122,7 +122,8 @@ export class JobSearchMCP extends McpAgent {
   async _runScan(url) {
     try {
       let urlsToProcess = [];
-      if (url) {
+      console.log('--- _runScan invoked ---');
+if (url) {
         urlsToProcess.push({ url }); // Match the structure of plan.searchUrls
       } else {
         const plan = await this.env.JOB_STORAGE.get('plan', 'json');
@@ -130,6 +131,8 @@ export class JobSearchMCP extends McpAgent {
           throw new Error('No URL provided and no searches found in the current plan.');
         }
         urlsToProcess = plan.searchUrls;
+  console.log('URLs to scan:', urlsToProcess.map(u => u.url));
+  console.log(`Loaded plan with ${plan.searchUrls.length} search URLs`);
       }
 
       this.backgroundJobs.scan.status = 'running';

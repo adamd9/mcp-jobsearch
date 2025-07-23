@@ -26,11 +26,21 @@ export function getScanTool(agent) {
         error: null
       };
 
+      // Determine URLs list for response
+      let urlsList;
+      if (url) {
+        urlsList = [url];
+      } else {
+        const plan = await env.JOB_STORAGE.get("plan", "json");
+        urlsList = plan && plan.searchUrls ? plan.searchUrls.map(u => u.url) : [];
+      }
+
       // Kick off scan in background (don't await)
       agent._runScan(url);
 
       return {
-        content: [{ type: "text", text: "Scan job started in the background. Use the 'status' tool to check progress." }]
+        content: [{ type: "text", text: `Scan job started in background. URLs queued:\n${urlsList.join('\n')}\nUse the 'status' tool to check progress.` }],
+        structuredContent: { queuedUrls: urlsList }
       };
     },
     options: {
@@ -53,6 +63,10 @@ export function getRescanTool(agent) {
           content: [{ type: "text", text: "A scan is already in progress. Please wait for it to complete before starting a new one." }]
         };
       }
+      // Determine URLs list
+      const plan = await agent.env.JOB_STORAGE.get("plan", "json");
+      const urlsList = plan && plan.searchUrls ? plan.searchUrls.map(u => u.url) : [];
+
       // Kick off scan again with no specific URL to use plan URLs
       backgroundJobs.scan = {
         inProgress: true,
@@ -65,7 +79,8 @@ export function getRescanTool(agent) {
       };
       agent._runScan();
       return {
-        content: [{ type: "text", text: "Rescan started in background." }]
+        content: [{ type: "text", text: `Rescan started. URLs queued:\n${urlsList.join('\n')}` }],
+        structuredContent: { queuedUrls: urlsList }
       };
     },
     options: {
