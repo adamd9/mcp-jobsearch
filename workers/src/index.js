@@ -4,6 +4,7 @@ import { z } from "zod";
 import OpenAI from "openai";
 import { launch } from "@cloudflare/playwright";
 import { getPlanTool, createPlanTool, updatePlanTool } from "./plan.js";
+import { getScanTool, getRescanTool } from "./scan.js";
 
 // Define our MCP agent with tools
 
@@ -69,42 +70,14 @@ export class JobSearchMCP extends McpAgent {
       }
     }
 
-    this.server.tool(
-      "scan",
-      "Scans for jobs. If a URL is provided, it scans that specific page. Otherwise, it scans all job search URLs defined in the current plan.",
-      {
-        url: z.string().url().optional().describe("An optional URL of a job search results page to scan.")
-      },
-      async ({ url }) => {
-        if (this.backgroundJobs.scan.inProgress) {
-          return { content: [{ type: "text", text: "A scan is already in progress. Please wait for it to complete before starting a new one." }] };
-        }
+    // Scan & Rescan tools (from scan.js)
+    const scanTool = getScanTool(this);
+    this.server.tool(scanTool.name, scanTool.description, scanTool.args, scanTool.handler, scanTool.options);
 
-        // Reset scan job status and kick off in the background
-        this.backgroundJobs.scan = {
-          inProgress: true,
-          startTime: new Date().toISOString(),
-          endTime: null,
-          status: 'starting',
-          urlsToScan: [],
-          scannedUrls: [],
-          totalJobsFound: 0,
-          error: null
-        };
+    const rescanTool = getRescanTool(this);
+    this.server.tool(rescanTool.name, rescanTool.description, rescanTool.args, rescanTool.handler, rescanTool.options);
 
-        // Do not await this call
-        this._runScan(url);
-
-        return {
-          content: [{ type: "text", text: "Scan job started in the background. Use the 'status' tool to check progress." }]
-        };
-      },
-      {
-        title: "Scan for LinkedIn Jobs",
-        readOnlyHint: false,
-        openWorldHint: true
-      }
-    );
+    // Removed duplicate inline scan block
 
         // Job Indexing and Digests
     this.server.tool(
