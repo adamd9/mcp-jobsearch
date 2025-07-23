@@ -3,6 +3,7 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
 import OpenAI from "openai";
 import { launch } from "@cloudflare/playwright";
+import { getPlanTool, createPlanTool, updatePlanTool } from "./plan.js";
 
 // Define our MCP agent with tools
 
@@ -26,7 +27,7 @@ export class JobSearchMCP extends McpAgent {
       apiKey: this.env.OPENAI_API_KEY,
     });
 
-    // Plan tools
+    // Status tool
     this.server.tool(
       "status",
       "Check the status of a background job, such as a scan.",
@@ -43,168 +44,30 @@ export class JobSearchMCP extends McpAgent {
       }
     );
 
-    this.server.tool(
-      "get_plan",
-      "Get the current job search plan",
-      async () => {
-        const plan = await this.env.JOB_STORAGE.get("plan", "json");
-        if (!plan) {
-          return {
-            content: [{ type: "text", text: "No plan found." }],
-            structuredContent: { 
-              profile: '', 
-              searchTerms: [], 
-              locations: [],
-              scanPrompt: '',
-              searchUrls: []
-            },
-          };
-        }
-
-        return {
-          content: [{ type: "text", text: JSON.stringify(plan, null, 2) }],
-          structuredContent: plan,
-        };
-      },
-      {
-        title: "Get Job Search Plan",
-        readOnlyHint: true,
-        openWorldHint: false
+    // Plan tools (from plan.js)
+    const planTools = [
+      getPlanTool(this.env),
+      createPlanTool(this.env, this.openai),
+      updatePlanTool(this.env, this.openai),
+    ];
+    for (const tool of planTools) {
+      if (tool.args) {
+        this.server.tool(
+          tool.name,
+          tool.description,
+          tool.args,
+          tool.handler,
+          tool.options
+        );
+      } else {
+        this.server.tool(
+          tool.name,
+          tool.description,
+          tool.handler,
+          tool.options
+        );
       }
-    );
-
-    this.server.tool(
-      "create_plan",
-      "Create a new job search plan from a description",
-      {
-        description: z.string().describe("Description of the job search plan")
-      },
-      async ({ description }) => {
-        const prompt = `Convert the following description into a JSON job search plan with these fields:
-- "profile": A concise summary of the job seeker's profile
-- "searchTerms": Array of search terms/keywords (each item should be a complete search query)
-- "locations": Array of location objects, each with:
-  - "name": Location name (city, state, country)
-  - "geoId": LinkedIn geographic ID if known (optional)
-  - "type": "city", "country", or "remote"
-  - "distance": Search radius in miles (for city searches, optional)
-- "scanPrompt": Instructions for evaluating job matches
-
-Description:
-${description}
-
-Respond with ONLY the JSON object. No additional text.`;
-
-        console.log("--- AI PROMPT ---");
-        console.log(prompt);
-
-        const aiResponse = await this.openai.chat.completions.create({
-          model: this.env.OPENAI_MODEL || 'gpt-4.1-mini',
-          messages: [
-            { role: 'system', content: 'You create structured job search plans.' },
-            { role: 'user', content: prompt }
-          ],
-          temperature: 0.2
-        });
-
-        const content = aiResponse.choices[0].message.content;
-        console.log("--- AI RAW RESPONSE ---");
-        console.log(content);
-
-        const jsonMatch = content.match(/\{[\s\S]*\}/);
-        let plan;
-        try {
-          plan = jsonMatch ? JSON.parse(jsonMatch[0]) : {};
-          console.log("--- PARSED PLAN ---");
-          console.log(JSON.stringify(plan, null, 2));
-        } catch (e) {
-          console.error("--- JSON PARSE ERROR ---", e);
-          plan = {};
-        }
-
-        plan.profile = plan.profile || description;
-        plan.searchTerms = plan.searchTerms || [];
-        plan.locations = plan.locations || [];
-        plan.scanPrompt = plan.scanPrompt || description;
-
-        plan.searchUrls = this._generateSearchUrls(plan.searchTerms, plan.locations);
-        plan.feedback = await this._generatePlanFeedback(plan);
-
-        await this.env.JOB_STORAGE.put("plan", JSON.stringify(plan));
-
-        return {
-          content: [{ type: "text", text: JSON.stringify(plan, null, 2) }],
-          structuredContent: plan,
-        };
-      },
-      {
-        title: "Create Job Search Plan",
-        readOnlyHint: false,
-        openWorldHint: false
-      }
-    );
-
-    this.server.tool(
-      "update_plan",
-      "Update the job search plan based on a description of the changes.",
-      {
-        description: z.string().describe("A description of the changes to make to the plan."),
-      },
-      async ({ description }) => {
-        const currentPlanJSON = await this.env.JOB_STORAGE.get("plan");
-        const currentPlan = currentPlanJSON ? JSON.parse(currentPlanJSON) : {};
-
-        const prompt = `Update the following job search plan based on this change request: "${description}"
-
-        Current plan:
-        ${JSON.stringify(currentPlan, null, 2)}
-
-        Provide a complete updated JSON plan with these fields:
-        - "profile": A concise summary of the job seeker's profile
-        - "searchTerms": Array of search terms/keywords (each item should be a complete search query)
-        - "locations": Array of location objects, each with:
-          - "name": Location name (city, state, country)
-          - "geoId": LinkedIn geographic ID if known (optional)
-          - "type": "city", "country", or "remote"
-          - "distance": Search radius in miles (for city searches, optional)
-        - "scanPrompt": Instructions for evaluating job matches
-
-        Incorporate the requested changes while preserving relevant existing information.
-        Respond with ONLY the JSON object. No additional text.`;
-
-        const aiResponse = await this.openai.chat.completions.create({
-          model: this.env.OPENAI_MODEL || 'gpt-4o',
-          messages: [
-            { role: 'system', content: 'You update structured job search plans based on user requests.' },
-            { role: 'user', content: prompt }
-          ],
-          temperature: 0.2
-        });
-
-        const content = aiResponse.choices[0].message.content;
-        const jsonMatch = content.match(/\{[\s\S]*\}/);
-        let updatedPlan;
-        try {
-          updatedPlan = jsonMatch ? JSON.parse(jsonMatch[0]) : {};
-        } catch (e) {
-          updatedPlan = { ...currentPlan };
-        }
-
-        updatedPlan.searchUrls = this._generateSearchUrls(updatedPlan.searchTerms, updatedPlan.locations);
-        updatedPlan.feedback = await this._generatePlanFeedback(updatedPlan);
-
-        await this.env.JOB_STORAGE.put("plan", JSON.stringify(updatedPlan));
-        return {
-          content: [{ type: "text", text: "Plan updated." }],
-          structuredContent: updatedPlan,
-        };
-      },
-      {
-        title: "Update Job Search Plan",
-        readOnlyHint: false,
-        openWorldHint: true
-      }
-    );
+    }
 
     this.server.tool(
       "scan",
