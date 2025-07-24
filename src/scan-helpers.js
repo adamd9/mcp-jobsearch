@@ -35,6 +35,8 @@ export async function storeJobsForDeepScan(env, jobs) {
 // Main scan function
 export async function runScan(agent, url, options = {}) {
   const { sendDigest = true } = options;
+  let browser = null;
+  
   try {
     let urlsToProcess = [];
     console.log('--- runScan invoked ---');
@@ -53,7 +55,9 @@ export async function runScan(agent, url, options = {}) {
     agent.backgroundJobs.scan.status = 'running';
     agent.backgroundJobs.scan.urlsToScan = urlsToProcess.map(u => u.url);
 
-    const browser = await launch(agent.env.BROWSER);
+    // Create browser instance that will be reused throughout scan and deep scan
+    console.log('Launching browser for scan and deep scan phases...');
+    browser = await launch(agent.env.BROWSER);
     const page = await browser.newPage();
 
     // Login once at the beginning of the scan.
@@ -138,17 +142,16 @@ export async function runScan(agent, url, options = {}) {
     }
 
     // After all search URLs are processed, start deep scan phase
-    console.log('Starting deep scan phase...');
+    console.log('Starting deep scan phase with reused browser...');
     agent.backgroundJobs.scan.status = 'deep_scanning';
     
-    await performDeepScan(agent);
+    // Pass the browser instance to deep scan to reuse it
+    await performDeepScan(agent, browser);
     
     // Set status to completed before closing the browser to ensure state is updated.
     agent.backgroundJobs.scan.status = 'completed';
     agent.backgroundJobs.scan.endTime = new Date().toISOString();
     agent.backgroundJobs.scan.inProgress = false;
-    
-    await browser.close();
     
     console.log('Scan completed successfully');
     
@@ -162,13 +165,26 @@ export async function runScan(agent, url, options = {}) {
       }
     }
   } catch (error) {
+    console.error('Error in runScan:', error);
+    agent.backgroundJobs.scan.error = error.message;
     agent.backgroundJobs.scan.inProgress = false;
     agent.backgroundJobs.scan.endTime = new Date().toISOString();
+  } finally {
+    // Ensure browser is always closed, even on error
+    if (browser) {
+      try {
+        console.log('Closing browser...');
+        await browser.close();
+        console.log('Browser closed successfully');
+      } catch (closeError) {
+        console.error('Error closing browser:', closeError.message);
+      }
+    }
   }
 }
 
-// Perform deep scan on collected jobs
-export async function performDeepScan(agent) {
+// Perform deep scan on collected jobs using shared browser
+export async function performDeepScan(agent, browser) {
   try {
     // Get jobs that need deep scanning
     const jobIndex = await agent.env.JOB_STORAGE.get('job_index', 'json');
@@ -193,53 +209,66 @@ export async function performDeepScan(agent) {
 
     // Limit deep scan to avoid timeouts (max 10 jobs)
     const limitedJobs = jobsToScan.slice(0, 10);
-    console.log(`Deep scanning ${limitedJobs.length} jobs...`);
+    console.log(`Deep scanning ${limitedJobs.length} jobs using shared browser...`);
 
-    for (const job of limitedJobs) {
-      try {
-        console.log(`Deep scanning job: ${job.title} at ${job.company}`);
-        
-        const scanResult = await performSingleJobDeepScan(agent, job, plan.profile, plan.scanPrompt || '');
-        
-        // Update job with scan results
-        job.scanned = true;
-        job.scanDate = new Date().toISOString();
-        job.matchScore = scanResult.matchScore || 0;
-        job.matchReason = scanResult.matchReason || '';
-        job.description = scanResult.description || job.description;
-        job.requirements = scanResult.requirements || [];
-        job.salary = scanResult.salary || null;
-        job.scanStatus = 'completed';
-        
-        console.log(`✓ Job scan complete. Match score: ${job.matchScore}`);
-        
-      } catch (jobError) {
-        console.error(`✗ Error scanning job ${job.id} (${job.title}):`, jobError.message);
-        
-        // Mark job as scanned but with error details
-        job.scanned = true;
-        job.scanDate = new Date().toISOString();
-        job.matchScore = 0;
-        job.matchReason = 'Scan failed due to error';
-        job.scanStatus = 'error';
-        job.scanError = {
-          type: jobError.name || 'Error',
-          message: jobError.message,
-          timestamp: new Date().toISOString()
-        };
-        
-        // Log specific error types for debugging
-        if (jobError.name === 'TimeoutError') {
-          console.log(`  → Timeout accessing job page (likely expired or restricted)`);
-          job.scanError.reason = 'page_timeout';
-        } else if (jobError.message.includes('parsing')) {
-          console.log(`  → AI response parsing failed`);
-          job.scanError.reason = 'ai_parsing_error';
-        } else {
-          job.scanError.reason = 'unknown';
+    // Create a new page for deep scanning (reusing the browser)
+    const deepScanPage = await browser.newPage();
+    
+    try {
+      for (const job of limitedJobs) {
+        try {
+          console.log(`Deep scanning job: ${job.title} at ${job.company}`);
+          
+          const scanResult = await performSingleJobDeepScan(agent, deepScanPage, job, plan.profile, plan.scanPrompt || '');
+          
+          // Update job with scan results
+          job.scanned = true;
+          job.scanDate = new Date().toISOString();
+          job.matchScore = scanResult.matchScore || 0;
+          job.matchReason = scanResult.matchReason || '';
+          job.description = scanResult.description || job.description;
+          job.requirements = scanResult.requirements || [];
+          job.salary = scanResult.salary || null;
+          job.scanStatus = 'completed';
+          
+          console.log(`✓ Job scan complete. Match score: ${job.matchScore}`);
+          
+        } catch (jobError) {
+          console.error(`✗ Error scanning job ${job.id} (${job.title}):`, jobError.message);
+          
+          // Mark job as scanned but with error details
+          job.scanned = true;
+          job.scanDate = new Date().toISOString();
+          job.matchScore = 0;
+          job.matchReason = 'Scan failed due to error';
+          job.scanStatus = 'error';
+          job.scanError = {
+            type: jobError.name || 'Error',
+            message: jobError.message,
+            timestamp: new Date().toISOString()
+          };
+          
+          // Log specific error types for debugging
+          if (jobError.name === 'TimeoutError') {
+            console.log(`  → Timeout accessing job page (likely expired or restricted)`);
+            job.scanError.reason = 'page_timeout';
+          } else if (jobError.message.includes('parsing')) {
+            console.log(`  → AI response parsing failed`);
+            job.scanError.reason = 'ai_parsing_error';
+          } else {
+            job.scanError.reason = 'unknown';
+          }
+          
+          console.log(`  → Continuing with next job...`);
         }
-        
-        console.log(`  → Continuing with next job...`);
+      }
+    } finally {
+      // Close the deep scan page when done
+      try {
+        await deepScanPage.close();
+        console.log('Deep scan page closed');
+      } catch (pageCloseError) {
+        console.error('Error closing deep scan page:', pageCloseError.message);
       }
     }
 
@@ -267,13 +296,10 @@ export async function performDeepScan(agent) {
   }
 }
 
-// Shared method for deep scanning a single job (handles browser management)
-export async function performSingleJobDeepScan(agent, job, profile, scanPrompt) {
+// Shared method for deep scanning a single job using provided page (no browser management)
+export async function performSingleJobDeepScan(agent, page, job, profile, scanPrompt) {
   console.log(`DEBUG: performSingleJobDeepScan called for ${job.url}`);
   
-  let browser = null;
-  let page = null;
-
   try {
     console.log(`DEBUG: Setting up timeout promise...`);
     // Add overall timeout wrapper to prevent hanging
@@ -284,13 +310,9 @@ export async function performSingleJobDeepScan(agent, job, profile, scanPrompt) 
       }, 60000);
     });
 
-    console.log(`DEBUG: Setting up scan promise...`);
+    console.log(`DEBUG: Setting up scan promise using provided page...`);
     const scanPromise = (async () => {
-      console.log(`DEBUG: Launching browser...`);
-      browser = await launch(agent.env.BROWSER);
-      console.log(`DEBUG: Browser launched, creating new page...`);
-      page = await browser.newPage();
-      console.log(`DEBUG: Page created, starting deep scan...`);
+      console.log(`DEBUG: Using provided page, starting deep scan...`);
       const result = await deepScanSingleJob(agent, page, job, profile, scanPrompt);
       console.log(`DEBUG: Deep scan completed, result ready`);
       return result;
@@ -303,35 +325,5 @@ export async function performSingleJobDeepScan(agent, job, profile, scanPrompt) 
   } catch (error) {
     console.error(`DEBUG: Deep scan error for ${job.url}:`, error.message);
     throw error;
-  } finally {
-    console.log(`DEBUG: Entering finally block for cleanup...`);
-    // Ensure browser is always closed
-    try {
-      if (page) {
-        console.log(`DEBUG: Closing page...`);
-        await page.close();
-        console.log(`DEBUG: Page closed`);
-      }
-      if (browser) {
-        console.log(`DEBUG: Closing browser...`);
-        try {
-          // Add timeout to browser.close() to prevent hanging
-          await Promise.race([
-            browser.close(),
-            new Promise((_, reject) => 
-              setTimeout(() => reject(new Error('Browser close timeout')), 5000)
-            )
-          ]);
-          console.log(`DEBUG: Browser closed`);
-        } catch (closeTimeout) {
-          console.log(`DEBUG: Browser close timed out, forcing cleanup: ${closeTimeout.message}`);
-          // Force browser cleanup - don't wait for it
-          browser.close().catch(() => {});
-        }
-      }
-      console.log(`DEBUG: Cleanup completed`);
-    } catch (closeError) {
-      console.error('DEBUG: Error closing browser:', closeError.message);
-    }
   }
 }
