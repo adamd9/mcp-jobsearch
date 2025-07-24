@@ -461,13 +461,13 @@ export class JobSearchMCP extends McpAgent {
       "Send digest email with job matches to the specified email address",
       {
         email: z.string().optional().describe("Email address to send digest to (uses DIGEST_TO env var if not provided)"),
-        includeAlreadySent: z.boolean().optional().describe("Include jobs that were already sent in previous digests"),
+        includePreviouslySent: z.boolean().optional().describe("Include previously sent jobs along with new ones"),
         minMatchScore: z.number().optional().describe("Minimum match score to include jobs (0.0-1.0, default: 0.0)"),
         subject: z.string().optional().describe("Custom email subject line"),
         test: z.boolean().optional().describe("Test mode - sends a sample email with mock job data")
       },
-      async ({ email, includeAlreadySent = false, minMatchScore = 0.0, subject, test = false }) => {
-        const onlyNew = !includeAlreadySent;
+      async ({ email, includePreviouslySent = false, minMatchScore = 0.0, subject, test = false }) => {
+        const onlyNew = !includePreviouslySent;
         try {
           // Check SMTP configuration
           const smtpCheck = checkSmtpConfiguration(this.env);
