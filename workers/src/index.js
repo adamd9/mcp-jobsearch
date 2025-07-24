@@ -486,9 +486,14 @@ export class JobSearchMCP extends McpAgent {
           type: "string",
           description: "Custom email subject line",
           required: false
+        },
+        test: {
+          type: "boolean",
+          description: "Test mode - sends a sample email with mock job data (default: false)",
+          required: false
         }
       },
-      async ({ email, onlyNew = true, minMatchScore = 0.0, subject }) => {
+      async ({ email, onlyNew = true, minMatchScore = 0.0, subject, test = false }) => {
         try {
           // Check SMTP configuration
           const smtpCheck = checkSmtpConfiguration(this.env);
@@ -523,23 +528,74 @@ export class JobSearchMCP extends McpAgent {
             };
           }
           
-          // Get job index
-          const jobIndex = await this.env.JOB_STORAGE.get('job_index', 'json');
-          if (!jobIndex || !jobIndex.jobs || jobIndex.jobs.length === 0) {
-            return {
-              content: [{ 
-                type: "text", 
-                text: "No jobs found in index. Run a scan first to generate job matches." 
-              }],
-              structuredContent: { 
-                success: false, 
-                error: 'No jobs in index'
-              }
-            };
-          }
+          let jobsToSend;
           
-          // Filter jobs based on criteria
-          const jobsToSend = filterJobsForDigest(jobIndex.jobs, { onlyNew, minMatchScore });
+          // Handle test mode with mock data
+          if (test) {
+            jobsToSend = [
+              {
+                id: 'test-job-1',
+                title: 'Senior Software Engineer',
+                company: 'TechCorp Inc.',
+                location: 'San Francisco, CA',
+                url: 'https://linkedin.com/jobs/view/test123',
+                matchScore: 0.92,
+                matchReason: 'Strong match for Python, React, and cloud architecture experience',
+                description: 'We are seeking a Senior Software Engineer to join our growing team...',
+                salary: '$150,000 - $200,000',
+                scanned: true,
+                scanStatus: 'completed'
+              },
+              {
+                id: 'test-job-2',
+                title: 'Full Stack Developer',
+                company: 'StartupCo',
+                location: 'Remote',
+                url: 'https://linkedin.com/jobs/view/test456',
+                matchScore: 0.85,
+                matchReason: 'Good fit for JavaScript, Node.js, and database skills',
+                description: 'Join our innovative startup as a Full Stack Developer...',
+                salary: '$120,000 - $160,000',
+                scanned: true,
+                scanStatus: 'completed'
+              },
+              {
+                id: 'test-job-3',
+                title: 'DevOps Engineer',
+                company: 'CloudTech Solutions',
+                location: 'Austin, TX',
+                url: 'https://linkedin.com/jobs/view/test789',
+                matchScore: 0.78,
+                matchReason: 'Matches AWS, Docker, and Kubernetes requirements',
+                description: 'Looking for a DevOps Engineer to manage our cloud infrastructure...',
+                salary: '$130,000 - $170,000',
+                scanned: true,
+                scanStatus: 'completed'
+              }
+            ];
+            
+            console.log('Test mode: Using mock job data for digest email');
+          } else {
+            // Normal mode: get real job data
+          
+            // Get job index
+            const jobIndex = await this.env.JOB_STORAGE.get('job_index', 'json');
+            if (!jobIndex || !jobIndex.jobs || jobIndex.jobs.length === 0) {
+              return {
+                content: [{ 
+                  type: "text", 
+                  text: "No jobs found in index. Run a scan first to generate job matches." 
+                }],
+                structuredContent: { 
+                  success: false, 
+                  error: 'No jobs in index'
+                }
+              };
+            }
+            
+            // Filter jobs based on criteria
+            jobsToSend = filterJobsForDigest(jobIndex.jobs, { onlyNew, minMatchScore });
+          }
           
           if (jobsToSend.length === 0) {
             const message = onlyNew ? 'No new job matches to send in digest email' : 'No job matches meet the specified criteria';
@@ -562,28 +618,31 @@ export class JobSearchMCP extends McpAgent {
           
           // Send email using external digest module
           const emailResult = await sendDigestEmail(toEmail, jobsToSend, this.env, {
-            subject,
-            onlyNew,
-            source: 'manual'
+            subject: subject || (test ? 'Test Digest Email - Sample Job Matches' : undefined),
+            onlyNew: test ? false : onlyNew, // Don't apply onlyNew filter in test mode
+            source: test ? 'test' : 'manual'
           });
           
           if (emailResult.success) {
-            // Mark jobs as sent if onlyNew is true
-            if (onlyNew) {
+            // Mark jobs as sent if onlyNew is true and not in test mode
+            if (onlyNew && !test) {
               await markJobsAsSent(this.env);
             }
+            
+            const testModeText = test ? ' (TEST MODE - mock data)' : (onlyNew ? ' (new)' : '');
             
             return {
               content: [{ 
                 type: "text", 
-                text: `Successfully sent digest email to ${toEmail} with ${jobsToSend.length} job matches${onlyNew ? ' (new)' : ''}` 
+                text: `Successfully sent digest email to ${toEmail} with ${jobsToSend.length} job matches${testModeText}${test ? '\n\nThis was a test email with sample job data to verify your email configuration.' : ''}` 
               }],
               structuredContent: { 
                 success: true,
                 email: toEmail,
                 jobsSent: jobsToSend.length,
-                onlyNew,
-                minMatchScore
+                onlyNew: test ? false : onlyNew,
+                minMatchScore,
+                testMode: test
               }
             };
           } else {
