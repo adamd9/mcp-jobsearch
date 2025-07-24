@@ -32,6 +32,12 @@ OPENAI_MODEL = "gpt-4o"
 ACCESS_TOKEN = ""
 LINKEDIN_EMAIL = ""
 LINKEDIN_PASSWORD = ""
+SMTP_HOST = ""
+SMTP_PORT = ""
+SMTP_USER = ""
+SMTP_PASS = ""
+DIGEST_TO = ""
+TIMEZONE = ""
 
 # Enable browser rendering
 [browser]
