@@ -293,6 +293,133 @@ export class JobSearchMCP extends McpAgent {
     );
 
     this.server.tool(
+      "get_job_index",
+      "Get the current raw job index data for inspection",
+      {
+        includeJobDetails: {
+          type: "boolean",
+          description: "Include full job details in output (default: true)",
+          required: false
+        },
+        maxJobs: {
+          type: "number", 
+          description: "Maximum number of jobs to include (default: all)",
+          required: false
+        }
+      },
+      async ({ includeJobDetails = true, maxJobs }) => {
+        try {
+          const jobIndex = await this.env.JOB_STORAGE.get('job_index', 'json');
+          
+          if (!jobIndex) {
+            return {
+              content: [{ 
+                type: "text", 
+                text: "No job index found. Run a scan first to create the job index." 
+              }],
+              structuredContent: { 
+                exists: false,
+                jobs: [],
+                totalJobs: 0
+              }
+            };
+          }
+
+          const totalJobs = jobIndex.jobs?.length || 0;
+          let jobsToShow = jobIndex.jobs || [];
+          
+          // Limit number of jobs if specified
+          if (maxJobs && maxJobs > 0) {
+            jobsToShow = jobsToShow.slice(0, maxJobs);
+          }
+          
+          // Create summary stats
+          const scannedJobs = jobIndex.jobs?.filter(j => j.scanned) || [];
+          const errorJobs = jobIndex.jobs?.filter(j => j.scanStatus === 'error') || [];
+          const completedJobs = jobIndex.jobs?.filter(j => j.scanStatus === 'completed') || [];
+          
+          const stats = {
+            totalJobs,
+            scannedJobs: scannedJobs.length,
+            completedScans: completedJobs.length,
+            errorScans: errorJobs.length,
+            pendingScans: totalJobs - scannedJobs.length,
+            lastScanDate: jobIndex.lastScanDate,
+            lastUpdate: jobIndex.lastUpdate,
+            profileHash: jobIndex.profileHash
+          };
+          
+          let responseText = `Job Index Summary:\n`;
+          responseText += `• Total Jobs: ${stats.totalJobs}\n`;
+          responseText += `• Scanned: ${stats.scannedJobs} (${stats.completedScans} completed, ${stats.errorScans} errors)\n`;
+          responseText += `• Pending: ${stats.pendingScans}\n`;
+          responseText += `• Last Scan: ${stats.lastScanDate || 'Never'}\n`;
+          responseText += `• Last Update: ${stats.lastUpdate || 'Never'}\n\n`;
+          
+          if (maxJobs && totalJobs > maxJobs) {
+            responseText += `Showing first ${maxJobs} of ${totalJobs} jobs:\n\n`;
+          }
+          
+          // Add job details if requested
+          if (includeJobDetails && jobsToShow.length > 0) {
+            jobsToShow.forEach((job, i) => {
+              responseText += `${i + 1}. ${job.title} at ${job.company}\n`;
+              responseText += `   URL: ${job.url}\n`;
+              responseText += `   Location: ${job.location || 'Unknown'}\n`;
+              responseText += `   Scanned: ${job.scanned ? 'Yes' : 'No'}`;
+              if (job.scanned) {
+                responseText += ` (${job.scanStatus || 'unknown'}, score: ${job.matchScore || 0})`;
+              }
+              responseText += `\n`;
+              if (job.scanError) {
+                responseText += `   Error: ${job.scanError.message}\n`;
+              }
+              responseText += `\n`;
+            });
+          }
+          
+          return {
+            content: [{ 
+              type: "text", 
+              text: responseText 
+            }],
+            structuredContent: {
+              exists: true,
+              stats,
+              jobs: includeJobDetails ? jobsToShow : jobsToShow.map(j => ({
+                id: j.id,
+                title: j.title,
+                company: j.company,
+                scanned: j.scanned,
+                scanStatus: j.scanStatus,
+                matchScore: j.matchScore
+              })),
+              rawIndex: jobIndex
+            }
+          };
+        } catch (error) {
+          console.error('Error getting job index:', error);
+          return {
+            content: [{ 
+              type: "text", 
+              text: `Error retrieving job index: ${error.message}` 
+            }],
+            structuredContent: { 
+              exists: false,
+              error: error.message
+            },
+            isError: true
+          };
+        }
+      },
+      {
+        title: "Get Job Index",
+        readOnlyHint: true,
+        openWorldHint: false
+      }
+    );
+
+    this.server.tool(
       "send_digest",
       "Send digest email with job matches to the specified email address",
       {
