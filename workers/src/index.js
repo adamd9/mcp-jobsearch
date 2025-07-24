@@ -239,14 +239,51 @@ export class JobSearchMCP extends McpAgent {
         // Job Indexing and Digests
     this.server.tool(
       "reset_job_index",
-      "Reset the job index to start fresh",
+      "Reset the job index to start fresh - removes all stored jobs",
       {},
       async () => {
-        // Stub implementation
-        return {
-          content: [{ type: "text", text: "Job index has been reset successfully. All jobs have been removed." }],
-          structuredContent: { success: true },
-        };
+        try {
+          // Get current job index to see what we're resetting
+          const currentIndex = await this.env.JOB_STORAGE.get('job_index', 'json');
+          const jobCount = currentIndex?.jobs?.length || 0;
+          
+          // Reset the job index to empty state
+          const resetIndex = {
+            jobs: [],
+            lastUpdate: new Date().toISOString(),
+            lastScanDate: null,
+            profileHash: null
+          };
+          
+          await this.env.JOB_STORAGE.put('job_index', JSON.stringify(resetIndex));
+          
+          console.log(`Job index reset: removed ${jobCount} jobs`);
+          
+          return {
+            content: [{ 
+              type: "text", 
+              text: `Job index has been reset successfully. Removed ${jobCount} jobs from storage.` 
+            }],
+            structuredContent: { 
+              success: true,
+              removedJobs: jobCount,
+              resetTime: resetIndex.lastUpdate
+            },
+          };
+        } catch (error) {
+          console.error('Error resetting job index:', error);
+          return {
+            content: [{ 
+              type: "text", 
+              text: `Error resetting job index: ${error.message}` 
+            }],
+            structuredContent: { 
+              success: false,
+              error: error.message
+            },
+            isError: true
+          };
+        }
       },
       {
         title: "Reset Job Index",
