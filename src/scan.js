@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { runScan } from './scan-helpers.js';
 
 export function getScanTool(agent) {
   return {
@@ -38,7 +39,7 @@ export function getScanTool(agent) {
       }
 
       // Kick off scan in background (don't await)
-      agent._runScan(url, { sendDigest });
+      runScan(agent, url, { sendDigest });
 
       return {
         content: [{ type: "text", text: `Scan job started in background. URLs queued:\n${urlsList.join('\n')}\nUse the 'status' tool to check progress.` }],
@@ -84,7 +85,7 @@ export function getRescanTool(agent) {
       const urlsList = plan && plan.searchUrls ? plan.searchUrls.map(u => u.url) : [];
 
       // Kick off scan again with no specific URL to use plan URLs
-      agent._runScan(null, { sendDigest });
+      runScan(agent, null, { sendDigest });
       return {
         content: [{ type: "text", text: `Rescan started. URLs queued:\n${urlsList.join('\n')}` }],
         structuredContent: { queuedUrls: urlsList }
