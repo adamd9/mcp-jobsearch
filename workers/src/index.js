@@ -340,16 +340,8 @@ export class JobSearchMCP extends McpAgent {
       "get_job_index",
       "Get the current raw job index data for inspection",
       {
-        includeJobDetails: {
-          type: "boolean",
-          description: "Include full job details in output (default: true)",
-          required: false
-        },
-        maxJobs: {
-          type: "number", 
-          description: "Maximum number of jobs to include (default: all)",
-          required: false
-        }
+        includeJobDetails: z.boolean().optional().describe("Include full job details in output (default: true)"),
+        maxJobs: z.number().optional().describe("Maximum number of jobs to include (default: all)")
       },
       async ({ includeJobDetails = true, maxJobs }) => {
         try {
@@ -467,31 +459,11 @@ export class JobSearchMCP extends McpAgent {
       "send_digest",
       "Send digest email with job matches to the specified email address",
       {
-        email: {
-          type: "string",
-          description: "Email address to send digest to (uses DIGEST_TO env var if not provided)",
-          required: false
-        },
-        onlyNew: {
-          type: "boolean",
-          description: "Whether to only include new jobs not previously sent (default: true)",
-          required: false
-        },
-        minMatchScore: {
-          type: "number",
-          description: "Minimum match score to include jobs (0.0-1.0, default: 0.0)",
-          required: false
-        },
-        subject: {
-          type: "string",
-          description: "Custom email subject line",
-          required: false
-        },
-        test: {
-          type: "boolean",
-          description: "Test mode - sends a sample email with mock job data (default: false)",
-          required: false
-        }
+        email: z.string().optional().describe("Email address to send digest to (uses DIGEST_TO env var if not provided)"),
+        onlyNew: z.boolean().optional().describe("Whether to only include new jobs not previously sent (default: true)"),
+        minMatchScore: z.number().optional().describe("Minimum match score to include jobs (0.0-1.0, default: 0.0)"),
+        subject: z.string().optional().describe("Custom email subject line"),
+        test: z.boolean().optional().describe("Test mode - sends a sample email with mock job data (default: false)")
       },
       async ({ email, onlyNew = true, minMatchScore = 0.0, subject, test = false }) => {
         try {
