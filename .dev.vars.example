@@ -1,0 +1,21 @@
+# LinkedIn Credentials
+LINKEDIN_EMAIL=your-linkedin-email@example.com
+LINKEDIN_PASSWORD=your-linkedin-password
+
+# OpenAI API Key
+OPENAI_API_KEY=sk-proj-your-openai-api-key-here
+
+# SMTP Configuration for Email Notifications
+SMTP_HOST=smtp.your-email-provider.com
+SMTP_PORT=587
+SMTP_USER=your-smtp-username@example.com
+SMTP_PASS=your-smtp-password
+
+# Email Digest Configuration
+DIGEST_TO=recipient@example.com
+
+# Timezone for scheduling and timestamps (use IANA timezone identifiers like America/New_York, Europe/London, Australia/Sydney)
+TIMEZONE=America/New_York
+
+# API Authentication token - generate a random secure token
+ACCESS_TOKEN=generate-a-random-32-character-token-here
