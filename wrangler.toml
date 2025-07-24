@@ -3,6 +3,10 @@ main = "src/index.js"
 compatibility_date = "2025-03-10"
 compatibility_flags = ["nodejs_compat"]
 
+# Cron trigger - runs daily at 4am Australia/Sydney time (6pm UTC)
+[triggers]
+crons = ["0 18 * * *"]
+
 [[migrations]]
 tag = "v1"
 new_sqlite_classes = ["JobSearchMCP"]
