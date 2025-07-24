@@ -5,6 +5,14 @@ import OpenAI from "openai";
 import { launch } from "@cloudflare/playwright";
 import { getPlanTool, createPlanTool, updatePlanTool } from "./plan.js";
 import { getScanTool, getRescanTool } from "./scan.js";
+import { 
+  checkSmtpConfiguration, 
+  getJobsForDigest, 
+  markJobsAsSent, 
+  filterJobsForDigest, 
+  sendDigestEmail, 
+  autoSendDigest 
+} from './digest.js';
 
 // Define our MCP agent with tools
 
@@ -459,14 +467,152 @@ export class JobSearchMCP extends McpAgent {
       "send_digest",
       "Send digest email with job matches to the specified email address",
       {
-        email: z.string().describe("Email address to send digest to")
+        email: {
+          type: "string",
+          description: "Email address to send digest to (uses DIGEST_TO env var if not provided)",
+          required: false
+        },
+        onlyNew: {
+          type: "boolean",
+          description: "Whether to only include new jobs not previously sent (default: true)",
+          required: false
+        },
+        minMatchScore: {
+          type: "number",
+          description: "Minimum match score to include jobs (0.0-1.0, default: 0.0)",
+          required: false
+        },
+        subject: {
+          type: "string",
+          description: "Custom email subject line",
+          required: false
+        }
       },
-      async ({ email }) => {
-        // Stub implementation
-        return {
-          content: [{ type: "text", text: `Sent digest email to ${email} with 5 job matches` }],
-          structuredContent: { sent: 5, email },
-        };
+      async ({ email, onlyNew = true, minMatchScore = 0.0, subject }) => {
+        try {
+          // Check SMTP configuration
+          const smtpCheck = checkSmtpConfiguration(this.env);
+          if (!smtpCheck.isConfigured) {
+            return {
+              content: [{ 
+                type: "text", 
+                text: `SMTP not configured. Missing environment variables: ${smtpCheck.missingVars.join(', ')}` 
+              }],
+              structuredContent: { 
+                success: false, 
+                error: 'SMTP not configured',
+                missingVars: smtpCheck.missingVars
+              },
+              isError: true
+            };
+          }
+          
+          // Use provided email or fall back to DIGEST_TO env var
+          const toEmail = email || this.env.DIGEST_TO;
+          if (!toEmail) {
+            return {
+              content: [{ 
+                type: "text", 
+                text: "No email address provided and DIGEST_TO environment variable not set" 
+              }],
+              structuredContent: { 
+                success: false, 
+                error: 'No email address specified'
+              },
+              isError: true
+            };
+          }
+          
+          // Get job index
+          const jobIndex = await this.env.JOB_STORAGE.get('job_index', 'json');
+          if (!jobIndex || !jobIndex.jobs || jobIndex.jobs.length === 0) {
+            return {
+              content: [{ 
+                type: "text", 
+                text: "No jobs found in index. Run a scan first to generate job matches." 
+              }],
+              structuredContent: { 
+                success: false, 
+                error: 'No jobs in index'
+              }
+            };
+          }
+          
+          // Filter jobs based on criteria
+          const jobsToSend = filterJobsForDigest(jobIndex.jobs, { onlyNew, minMatchScore });
+          
+          if (jobsToSend.length === 0) {
+            const message = onlyNew ? 'No new job matches to send in digest email' : 'No job matches meet the specified criteria';
+            return {
+              content: [{ 
+                type: "text", 
+                text: message 
+              }],
+              structuredContent: { 
+                success: false, 
+                error: 'No jobs to send',
+                totalJobs: jobIndex.jobs.length,
+                filteredJobs: 0
+              }
+            };
+          }
+          
+          // Sort by match score descending
+          jobsToSend.sort((a, b) => (b.matchScore || 0) - (a.matchScore || 0));
+          
+          // Send email using external digest module
+          const emailResult = await sendDigestEmail(toEmail, jobsToSend, this.env, {
+            subject,
+            onlyNew,
+            source: 'manual'
+          });
+          
+          if (emailResult.success) {
+            // Mark jobs as sent if onlyNew is true
+            if (onlyNew) {
+              await markJobsAsSent(this.env);
+            }
+            
+            return {
+              content: [{ 
+                type: "text", 
+                text: `Successfully sent digest email to ${toEmail} with ${jobsToSend.length} job matches${onlyNew ? ' (new)' : ''}` 
+              }],
+              structuredContent: { 
+                success: true,
+                email: toEmail,
+                jobsSent: jobsToSend.length,
+                onlyNew,
+                minMatchScore
+              }
+            };
+          } else {
+            return {
+              content: [{ 
+                type: "text", 
+                text: `Failed to send digest email: ${emailResult.error}` 
+              }],
+              structuredContent: { 
+                success: false,
+                error: emailResult.error
+              },
+              isError: true
+            };
+          }
+        } catch (error) {
+          console.error('Error in send_digest tool:', error);
+          return {
+            content: [{ 
+              type: "text", 
+              text: `Error sending digest: ${error.message}` 
+            }],
+            structuredContent: { 
+              success: false,
+              error: error.message
+            },
+            isError: true
+          };
+        }
       },
       {
         title: "Send Job Digest Email",
@@ -476,11 +622,13 @@ export class JobSearchMCP extends McpAgent {
     );
   }
 
-  async _runScan(url) {
+  // Main scan method
+  async _runScan(url, options = {}) {
+    const { sendDigest = true } = options;
     try {
       let urlsToProcess = [];
       console.log('--- _runScan invoked ---');
-if (url) {
+      if (url) {
         urlsToProcess.push({ url }); // Match the structure of plan.searchUrls
       } else {
         const plan = await this.env.JOB_STORAGE.get('plan', 'json');
@@ -488,8 +636,8 @@ if (url) {
           throw new Error('No URL provided and no searches found in the current plan.');
         }
         urlsToProcess = plan.searchUrls;
-  console.log('URLs to scan:', urlsToProcess.map(u => u.url));
-  console.log(`Loaded plan with ${plan.searchUrls.length} search URLs`);
+        console.log('URLs to scan:', urlsToProcess.map(u => u.url));
+        console.log(`Loaded plan with ${plan.searchUrls.length} search URLs`);
       }
 
       this.backgroundJobs.scan.status = 'running';
@@ -587,12 +735,23 @@ if (url) {
       
       // Set status to completed before closing the browser to ensure state is updated.
       this.backgroundJobs.scan.status = 'completed';
+      this.backgroundJobs.scan.endTime = new Date().toISOString();
+      this.backgroundJobs.scan.inProgress = false;
+      
       await browser.close();
-    } catch (e) {
-      console.error('Error during scan:', e);
-      this.backgroundJobs.scan.status = 'error';
-      this.backgroundJobs.scan.error = e.message;
-    } finally {
+      
+      console.log('Scan completed successfully');
+      
+      // Auto-send digest if requested
+      if (sendDigest) {
+        const digestResult = await autoSendDigest(this.env, { source: 'scan' });
+        if (digestResult.success) {
+          console.log(`Auto-digest sent successfully: ${digestResult.jobsSent} jobs`);
+        } else {
+          console.log(`Auto-digest failed: ${digestResult.error}`);
+        }
+      }
+    } catch (error) {
       this.backgroundJobs.scan.inProgress = false;
       this.backgroundJobs.scan.endTime = new Date().toISOString();
     }

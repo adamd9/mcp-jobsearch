@@ -12,6 +12,7 @@
     "@cloudflare/puppeteer": "^0.0.5",
     "@modelcontextprotocol/sdk": "1.15.1",
     "agents": "^0.0.105",
+    "nodemailer": "^6.9.8",
     "openai": "^5.10.1",
     "zod": "^3.25.67"
   },
