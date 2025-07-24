@@ -135,15 +135,9 @@ export class JobSearchMCP extends McpAgent {
           // Update job index with scan results if the job exists in the index
           console.log(`Attempting to update job index for ${url}`);
           
-          // TEMPORARY: Skip job index update to test if this is causing the hang
-          console.log(`TEMPORARILY SKIPPING job index update for debugging`);
-          
-          // Define jobIndex as null since we're skipping the update
-          const jobIndex = null;
-          
-          /*
+          let jobIndex = null;
           try {
-            const jobIndex = await this.env.JOB_STORAGE.get('job_index', 'json');
+            jobIndex = await this.env.JOB_STORAGE.get('job_index', 'json');
             console.log(`Retrieved job index, has ${jobIndex?.jobs?.length || 0} jobs`);
             if (jobIndex && jobIndex.jobs) {
               console.log(`Job index exists, searching for job with URL: ${url}`);
@@ -183,7 +177,6 @@ export class JobSearchMCP extends McpAgent {
             console.error('Error updating job index with manual scan results:', indexError);
             // Don't fail the whole operation if index update fails
           }
-          */
           
           console.log(`Job index update section completed, preparing final result...`);
             
