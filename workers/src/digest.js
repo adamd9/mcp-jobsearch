@@ -161,7 +161,7 @@ export async function sendDigestEmail(toEmail, jobs, env, options = {}) {
     const html = generateDigestHtml(jobs, { source, onlyNew });
     
     // Create nodemailer transporter
-    const transporter = nodemailer.createTransporter({
+    const transporter = nodemailer.createTransport({
       host: env.SMTP_HOST,
       port: parseInt(env.SMTP_PORT),
       secure: env.SMTP_SECURE === 'true',
