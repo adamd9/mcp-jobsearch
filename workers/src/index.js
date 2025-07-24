@@ -114,17 +114,45 @@ export class JobSearchMCP extends McpAgent {
             location: 'Unknown'
           };
 
-          // Use the shared deep scan logic
-          const scanResult = await this._performSingleJobDeepScan(mockJob, plan.profile, plan.scanPrompt || '');
+          // Use the shared deep scan logic with timeout protection
+          console.log(`Starting deep scan with 60-second timeout...`);
+          console.log(`Mock job object:`, JSON.stringify(mockJob, null, 2));
+          
+          let scanResult;
+          try {
+            scanResult = await this._performSingleJobDeepScan(mockJob, plan.profile, plan.scanPrompt || '');
+            console.log(`CHECKPOINT 1: Deep scan method returned`);
+            console.log(`CHECKPOINT 2: About to log result for ${url}`);
+            console.log(`Deep scan method returned result for ${url}`);
+            console.log(`CHECKPOINT 3: About to stringify scan result`);
+            console.log(`Scan result object:`, JSON.stringify(scanResult, null, 2));
+            console.log(`CHECKPOINT 4: Scan result logged successfully`);
+          } catch (deepScanError) {
+            console.error(`Deep scan failed with error:`, deepScanError);
+            throw deepScanError;
+          }
           
           // Update job index with scan results if the job exists in the index
+          console.log(`Attempting to update job index for ${url}`);
+          
+          // TEMPORARY: Skip job index update to test if this is causing the hang
+          console.log(`TEMPORARILY SKIPPING job index update for debugging`);
+          
+          // Define jobIndex as null since we're skipping the update
+          const jobIndex = null;
+          
+          /*
           try {
             const jobIndex = await this.env.JOB_STORAGE.get('job_index', 'json');
+            console.log(`Retrieved job index, has ${jobIndex?.jobs?.length || 0} jobs`);
             if (jobIndex && jobIndex.jobs) {
+              console.log(`Job index exists, searching for job with URL: ${url}`);
               // Find existing job by URL
               const existingJobIndex = jobIndex.jobs.findIndex(j => j.url === url);
+              console.log(`Job search result: index ${existingJobIndex}`);
               
               if (existingJobIndex !== -1) {
+                console.log(`Found existing job at index ${existingJobIndex}, updating...`);
                 // Update existing job with scan results
                 const existingJob = jobIndex.jobs[existingJobIndex];
                 existingJob.scanned = true;
@@ -139,20 +167,27 @@ export class JobSearchMCP extends McpAgent {
                 existingJob.scanStatus = 'completed';
                 
                 // Save updated index
+                console.log(`Saving updated job index...`);
                 jobIndex.lastUpdate = new Date().toISOString();
                 await this.env.JOB_STORAGE.put('job_index', JSON.stringify(jobIndex));
+                console.log(`Job index saved successfully`);
                 
                 console.log(`Updated job index with manual deep scan results for: ${existingJob.title}`);
               } else {
                 console.log(`Job not found in index, scan results not persisted: ${url}`);
               }
+            } else {
+              console.log(`No job index found or jobs array missing`);
             }
           } catch (indexError) {
             console.error('Error updating job index with manual scan results:', indexError);
             // Don't fail the whole operation if index update fails
           }
+          */
+          
+          console.log(`Job index update section completed, preparing final result...`);
             
-          return {
+          const result = {
             content: [{ 
               type: "text", 
               text: `Deep scan completed for ${url}\n\nMatch Score: ${scanResult.matchScore}\nMatch Reason: ${scanResult.matchReason}\n\nJob Details:\nTitle: ${scanResult.title}\nCompany: ${scanResult.company}\nLocation: ${scanResult.location}\n\nDescription: ${scanResult.description?.substring(0, 500)}...\n\n${jobIndex && jobIndex.jobs.find(j => j.url === url) ? '✓ Job index updated with scan results' : 'ℹ Job not found in index - results not persisted'}` 
@@ -164,9 +199,12 @@ export class JobSearchMCP extends McpAgent {
               indexUpdated: jobIndex && jobIndex.jobs.find(j => j.url === url) ? true : false
             }
           };
+          
+          console.log(`Returning successful deep scan result to MCP client`);
+          return result;
         } catch (error) {
           console.error('Manual deep scan error:', error);
-          return {
+          const errorResult = {
             content: [{ 
               type: "text", 
               text: `Deep scan failed for ${url}\n\nError: ${error.message}\nError Type: ${error.name}` 
@@ -179,6 +217,9 @@ export class JobSearchMCP extends McpAgent {
             },
             isError: true
           };
+          
+          console.log(`Returning error result to MCP client: ${error.message}`);
+          return errorResult;
         }
       },
       {
@@ -922,16 +963,70 @@ export class JobSearchMCP extends McpAgent {
 
   // Shared method for deep scanning a single job (handles browser management)
   async _performSingleJobDeepScan(job, profile, scanPrompt) {
-    const browser = await launch(this.env.BROWSER);
-    const page = await browser.newPage();
+    console.log(`DEBUG: _performSingleJobDeepScan called for ${job.url}`);
+    
+    let browser = null;
+    let page = null;
 
     try {
-      const scanResult = await this._deepScanSingleJob(page, job, profile, scanPrompt);
-      await browser.close();
+      console.log(`DEBUG: Setting up timeout promise...`);
+      // Add overall timeout wrapper to prevent hanging
+      const timeoutPromise = new Promise((_, reject) => {
+        setTimeout(() => {
+          console.log(`DEBUG: Timeout triggered after 60 seconds`);
+          reject(new Error('Deep scan operation timed out after 60 seconds'));
+        }, 60000);
+      });
+
+      console.log(`DEBUG: Setting up scan promise...`);
+      const scanPromise = (async () => {
+        console.log(`DEBUG: Launching browser...`);
+        browser = await launch(this.env.BROWSER);
+        console.log(`DEBUG: Browser launched, creating new page...`);
+        page = await browser.newPage();
+        console.log(`DEBUG: Page created, starting deep scan...`);
+        const result = await this._deepScanSingleJob(page, job, profile, scanPrompt);
+        console.log(`DEBUG: Deep scan completed, result ready`);
+        return result;
+      })();
+
+      console.log(`DEBUG: Starting Promise.race...`);
+      const scanResult = await Promise.race([scanPromise, timeoutPromise]);
+      console.log(`DEBUG: Promise.race completed, about to return result`);
       return scanResult;
     } catch (error) {
-      await browser.close();
+      console.error(`DEBUG: Deep scan error for ${job.url}:`, error.message);
       throw error;
+    } finally {
+      console.log(`DEBUG: Entering finally block for cleanup...`);
+      // Ensure browser is always closed
+      try {
+        if (page) {
+          console.log(`DEBUG: Closing page...`);
+          await page.close();
+          console.log(`DEBUG: Page closed`);
+        }
+        if (browser) {
+          console.log(`DEBUG: Closing browser...`);
+          try {
+            // Add timeout to browser.close() to prevent hanging
+            await Promise.race([
+              browser.close(),
+              new Promise((_, reject) => 
+                setTimeout(() => reject(new Error('Browser close timeout')), 5000)
+              )
+            ]);
+            console.log(`DEBUG: Browser closed`);
+          } catch (closeTimeout) {
+            console.log(`DEBUG: Browser close timed out, forcing cleanup: ${closeTimeout.message}`);
+            // Force browser cleanup - don't wait for it
+            browser.close().catch(() => {});
+          }
+        }
+        console.log(`DEBUG: Cleanup completed`);
+      } catch (closeError) {
+        console.error('DEBUG: Error closing browser:', closeError.message);
+      }
     }
   }
 
@@ -1021,6 +1116,7 @@ export class JobSearchMCP extends McpAgent {
     // Send full page content to LLM for extraction and matching
     const analysisResult = await this._analyzeJobPageWithLLM(pageContent, job, profile, scanPrompt);
     
+    console.log(`  → Deep scan completed for ${job.url}, match score: ${analysisResult.matchScore}`);
     return analysisResult;
   }
 
@@ -1084,7 +1180,7 @@ Respond with ONLY this JSON format (no additional text):
         
         const result = JSON.parse(cleanResponse);
         
-        return {
+        const analysisResult = {
           title: result.title || job.title,
           company: result.company || job.company,
           location: result.location || job.location,
@@ -1093,6 +1189,9 @@ Respond with ONLY this JSON format (no additional text):
           matchScore: Math.max(0, Math.min(1, result.matchScore || 0)),
           matchReason: result.matchReason || 'No reason provided'
         };
+        
+        console.log(`  → AI analysis result prepared: ${analysisResult.title} at ${analysisResult.company}`);
+        return analysisResult;
         
       } catch (parseError) {
         console.error('Error parsing AI analysis:', parseError);
