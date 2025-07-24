@@ -1,7 +1,0 @@
-{
-  "mockMode": false,
-  "openaiModel": "gpt-4o",
-  "deepScanConcurrency": 2,
-  "timezone": "Australia/Sydney",
-  "jobIndexPath": "data/job-index.json"
-}
