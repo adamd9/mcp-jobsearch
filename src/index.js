@@ -5,6 +5,7 @@ import OpenAI from "openai";
 import { launch } from "@cloudflare/playwright";
 import { getPlanTool, createPlanTool, updatePlanTool } from "./plan.js";
 import { getScanTool, getRescanTool } from "./scan.js";
+import { getCancelScanTool } from "./cancel-scan.js";
 import { generateJobId, performSingleJobDeepScan } from "./scan-helpers.js";
 import { 
   checkSmtpConfiguration, 
@@ -43,9 +44,34 @@ export class JobSearchMCP extends McpAgent {
       "Check the status of a background job, such as a scan.",
       {},
       async () => {
+        const scanStatus = { ...this.backgroundJobs.scan };
+        
+        // Add computed progress information
+        if (scanStatus.deepScanProgress) {
+          scanStatus.progressSummary = {
+            phase: scanStatus.status,
+            completed: scanStatus.deepScanProgress.completed,
+            total: scanStatus.deepScanProgress.total,
+            errors: scanStatus.deepScanProgress.errors,
+            percentage: Math.round((scanStatus.deepScanProgress.completed / scanStatus.deepScanProgress.total) * 100),
+            currentJob: scanStatus.deepScanProgress.current
+          };
+        }
+        
+        // Add runtime information
+        if (scanStatus.startTime) {
+          const startTime = new Date(scanStatus.startTime);
+          const currentTime = new Date();
+          scanStatus.runtime = {
+            startedAt: scanStatus.startTime,
+            runningFor: Math.round((currentTime - startTime) / 1000) + ' seconds',
+            status: scanStatus.inProgress ? 'running' : 'completed'
+          };
+        }
+        
         return {
-          content: [{ type: "text", text: JSON.stringify(this.backgroundJobs.scan, null, 2) }],
-          structuredContent: this.backgroundJobs.scan
+          content: [{ type: "text", text: JSON.stringify(scanStatus, null, 2) }],
+          structuredContent: scanStatus
         };
       },
       {
@@ -85,6 +111,10 @@ export class JobSearchMCP extends McpAgent {
 
     const rescanTool = getRescanTool(this);
     this.server.tool(rescanTool.name, rescanTool.description, rescanTool.args, rescanTool.handler, rescanTool.options);
+
+    // Cancel scan tool
+    const cancelScanTool = getCancelScanTool(this);
+    this.server.tool(cancelScanTool.name, cancelScanTool.description, cancelScanTool.args, cancelScanTool.handler, cancelScanTool.options);
 
     // Manual deep scan tool for debugging
     this.server.tool(

@@ -210,14 +210,39 @@ export async function performDeepScan(agent, browser) {
     // Limit deep scan to avoid timeouts (max 10 jobs)
     const limitedJobs = jobsToScan.slice(0, 10);
     console.log(`Deep scanning ${limitedJobs.length} jobs using shared browser...`);
+    
+    // Initialize progress tracking
+    agent.backgroundJobs.scan.deepScanProgress = {
+      total: limitedJobs.length,
+      completed: 0,
+      current: null,
+      errors: 0
+    };
 
     // Create a new page for deep scanning (reusing the browser)
     const deepScanPage = await browser.newPage();
     
     try {
-      for (const job of limitedJobs) {
+      for (let i = 0; i < limitedJobs.length; i++) {
+        const job = limitedJobs[i];
+        
+        // Check for cancellation before each job
+        if (agent.backgroundJobs.scan.cancelled) {
+          console.log('Deep scan cancelled by user');
+          agent.backgroundJobs.scan.status = 'cancelled';
+          break;
+        }
+        
+        // Update progress tracking
+        agent.backgroundJobs.scan.deepScanProgress.current = {
+          index: i + 1,
+          title: job.title,
+          company: job.company,
+          url: job.url
+        };
+        
         try {
-          console.log(`Deep scanning job: ${job.title} at ${job.company}`);
+          console.log(`Deep scanning job ${i + 1}/${limitedJobs.length}: ${job.title} at ${job.company}`);
           
           const scanResult = await performSingleJobDeepScan(agent, deepScanPage, job, plan.profile, plan.scanPrompt || '');
           
@@ -231,10 +256,18 @@ export async function performDeepScan(agent, browser) {
           job.salary = scanResult.salary || null;
           job.scanStatus = 'completed';
           
+          agent.backgroundJobs.scan.deepScanProgress.completed++;
           console.log(`✓ Job scan complete. Match score: ${job.matchScore}`);
           
         } catch (jobError) {
           console.error(`✗ Error scanning job ${job.id} (${job.title}):`, jobError.message);
+          
+          // Check if error was due to cancellation
+          if (jobError.message.includes('cancelled')) {
+            console.log('Deep scan cancelled during job processing');
+            agent.backgroundJobs.scan.status = 'cancelled';
+            break;
+          }
           
           // Mark job as scanned but with error details
           job.scanned = true;
@@ -259,6 +292,7 @@ export async function performDeepScan(agent, browser) {
             job.scanError.reason = 'unknown';
           }
           
+          agent.backgroundJobs.scan.deepScanProgress.errors++;
           console.log(`  → Continuing with next job...`);
         }
       }
@@ -301,13 +335,18 @@ export async function performSingleJobDeepScan(agent, page, job, profile, scanPr
   console.log(`DEBUG: performSingleJobDeepScan called for ${job.url}`);
   
   try {
+    // Check if scan was cancelled before starting
+    if (agent.backgroundJobs.scan.cancelled) {
+      throw new Error('Scan was cancelled');
+    }
+    
     console.log(`DEBUG: Setting up timeout promise...`);
-    // Add overall timeout wrapper to prevent hanging
+    // Add overall timeout wrapper to prevent hanging - increased to 5 minutes for long-running jobs
     const timeoutPromise = new Promise((_, reject) => {
       setTimeout(() => {
-        console.log(`DEBUG: Timeout triggered after 60 seconds`);
-        reject(new Error('Deep scan operation timed out after 60 seconds'));
-      }, 60000);
+        console.log(`DEBUG: Timeout triggered after 5 minutes`);
+        reject(new Error('Deep scan operation timed out after 5 minutes'));
+      }, 300000); // 5 minutes
     });
 
     console.log(`DEBUG: Setting up scan promise using provided page...`);

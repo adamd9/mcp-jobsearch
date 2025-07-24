@@ -26,7 +26,9 @@ export function getScanTool(agent) {
         endTime: null,
         scannedUrls: [],
         totalJobsFound: 0,
-        error: null
+        error: null,
+        cancelled: false,
+        deepScanProgress: null
       };
 
       // Determine URLs list for response
@@ -77,7 +79,9 @@ export function getRescanTool(agent) {
         endTime: null,
         scannedUrls: [],
         totalJobsFound: 0,
-        error: null
+        error: null,
+        cancelled: false,
+        deepScanProgress: null
       };
       
       // Determine URLs list
