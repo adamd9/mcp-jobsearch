@@ -6,9 +6,10 @@ export function getScanTool(agent) {
     description: "Scans LinkedIn job pages. If a URL is provided, scans that page; otherwise scans URLs from the current plan.",
     args: {
       url: z.string().url().optional().describe("An optional LinkedIn job search results page URL to scan."),
-      sendDigest: z.boolean().optional().describe("Whether to automatically send a digest email after scan completion (default: true)")
+      skipDigest: z.boolean().optional().describe("Skip sending digest email after scan completion")
     },
-    handler: async ({ url, sendDigest = true }) => {
+    handler: async ({ url, skipDigest = false }) => {
+      const sendDigest = !skipDigest;
       const { backgroundJobs, env } = agent;
       if (backgroundJobs.scan.inProgress) {
         return {
@@ -57,9 +58,10 @@ export function getRescanTool(agent) {
     name: "rescan",
     description: "Rescans LinkedIn job pages using the URLs stored in the last scan job (if any) or current plan.",
     args: {
-      sendDigest: z.boolean().optional().describe("Whether to automatically send a digest email after rescan completion (default: true)")
+      skipDigest: z.boolean().optional().describe("Skip sending digest email after rescan completion")
     },
-    handler: async ({ sendDigest = true }) => {
+    handler: async ({ skipDigest = false }) => {
+      const sendDigest = !skipDigest;
       const { backgroundJobs } = agent;
       if (backgroundJobs.scan.inProgress) {
         return {

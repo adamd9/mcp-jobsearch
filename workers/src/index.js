@@ -340,10 +340,11 @@ export class JobSearchMCP extends McpAgent {
       "get_job_index",
       "Get the current raw job index data for inspection",
       {
-        includeJobDetails: z.boolean().optional().describe("Include full job details in output (default: true)"),
+        excludeJobDetails: z.boolean().optional().describe("Exclude job details from output (only show summary)"),
         maxJobs: z.number().optional().describe("Maximum number of jobs to include (default: all)")
       },
-      async ({ includeJobDetails = true, maxJobs }) => {
+      async ({ excludeJobDetails = false, maxJobs }) => {
+        const includeJobDetails = !excludeJobDetails;
         try {
           const jobIndex = await this.env.JOB_STORAGE.get('job_index', 'json');
           
@@ -460,12 +461,13 @@ export class JobSearchMCP extends McpAgent {
       "Send digest email with job matches to the specified email address",
       {
         email: z.string().optional().describe("Email address to send digest to (uses DIGEST_TO env var if not provided)"),
-        onlyNew: z.boolean().optional().describe("Whether to only include new jobs not previously sent (default: true)"),
+        includeAlreadySent: z.boolean().optional().describe("Include jobs that were already sent in previous digests"),
         minMatchScore: z.number().optional().describe("Minimum match score to include jobs (0.0-1.0, default: 0.0)"),
         subject: z.string().optional().describe("Custom email subject line"),
-        test: z.boolean().optional().describe("Test mode - sends a sample email with mock job data (default: false)")
+        test: z.boolean().optional().describe("Test mode - sends a sample email with mock job data")
       },
-      async ({ email, onlyNew = true, minMatchScore = 0.0, subject, test = false }) => {
+      async ({ email, includeAlreadySent = false, minMatchScore = 0.0, subject, test = false }) => {
+        const onlyNew = !includeAlreadySent;
         try {
           // Check SMTP configuration
           const smtpCheck = checkSmtpConfiguration(this.env);
