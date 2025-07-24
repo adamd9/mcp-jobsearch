@@ -1,5 +1,7 @@
 # MCP Job Search
 
+[![Deploy to Cloudflare Workers](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/adamd9/mcp-jobsearch)
+
 This project implements a LinkedIn job scraper with persistent job indexing, deep scanning, and filtering capabilities using Cloudflare Workers. It scrapes LinkedIn job listings, performs detailed analysis of each job against a candidate profile using OpenAI, stores matches in Cloudflare KV, and exposes MCP-compatible HTTP endpoints.
 
 ## Architecture
