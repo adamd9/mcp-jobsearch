@@ -108,16 +108,52 @@ export class JobSearchMCP extends McpAgent {
 
           // Use the shared deep scan logic
           const scanResult = await this._performSingleJobDeepScan(mockJob, plan.profile, plan.scanPrompt || '');
+          
+          // Update job index with scan results if the job exists in the index
+          try {
+            const jobIndex = await this.env.JOB_STORAGE.get('job_index', 'json');
+            if (jobIndex && jobIndex.jobs) {
+              // Find existing job by URL
+              const existingJobIndex = jobIndex.jobs.findIndex(j => j.url === url);
+              
+              if (existingJobIndex !== -1) {
+                // Update existing job with scan results
+                const existingJob = jobIndex.jobs[existingJobIndex];
+                existingJob.scanned = true;
+                existingJob.scanDate = new Date().toISOString();
+                existingJob.matchScore = scanResult.matchScore || 0;
+                existingJob.matchReason = scanResult.matchReason || '';
+                existingJob.description = scanResult.description || existingJob.description;
+                existingJob.title = scanResult.title || existingJob.title;
+                existingJob.company = scanResult.company || existingJob.company;
+                existingJob.location = scanResult.location || existingJob.location;
+                existingJob.salary = scanResult.salary || existingJob.salary;
+                existingJob.scanStatus = 'completed';
+                
+                // Save updated index
+                jobIndex.lastUpdate = new Date().toISOString();
+                await this.env.JOB_STORAGE.put('job_index', JSON.stringify(jobIndex));
+                
+                console.log(`Updated job index with manual deep scan results for: ${existingJob.title}`);
+              } else {
+                console.log(`Job not found in index, scan results not persisted: ${url}`);
+              }
+            }
+          } catch (indexError) {
+            console.error('Error updating job index with manual scan results:', indexError);
+            // Don't fail the whole operation if index update fails
+          }
             
           return {
             content: [{ 
               type: "text", 
-              text: `Deep scan completed for ${url}\n\nMatch Score: ${scanResult.matchScore}\nMatch Reason: ${scanResult.matchReason}\n\nJob Details:\nTitle: ${scanResult.title}\nCompany: ${scanResult.company}\nLocation: ${scanResult.location}\n\nDescription: ${scanResult.description?.substring(0, 500)}...` 
+              text: `Deep scan completed for ${url}\n\nMatch Score: ${scanResult.matchScore}\nMatch Reason: ${scanResult.matchReason}\n\nJob Details:\nTitle: ${scanResult.title}\nCompany: ${scanResult.company}\nLocation: ${scanResult.location}\n\nDescription: ${scanResult.description?.substring(0, 500)}...\n\n${jobIndex && jobIndex.jobs.find(j => j.url === url) ? '✓ Job index updated with scan results' : 'ℹ Job not found in index - results not persisted'}` 
             }],
             structuredContent: {
               url,
               scanResult,
-              success: true
+              success: true,
+              indexUpdated: jobIndex && jobIndex.jobs.find(j => j.url === url) ? true : false
             }
           };
         } catch (error) {
