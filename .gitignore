@@ -1,5 +1,5 @@
 node_modules/
 .env
 data/
-workers/.wrangler
-workers/.dev.vars
+.wrangler
+.dev.vars
