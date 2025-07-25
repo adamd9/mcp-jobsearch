@@ -224,9 +224,17 @@ export async function autoSendDigest(env, options = {}) {
     
     // Get jobs for digest
     const jobs = await getJobsForDigest(env);
-    if (jobs.length === 0) {
-      console.log('No new jobs to send in auto-digest');
+    
+    // Check if we should send digest even with zero jobs
+    const sendOnZeroJobs = env.SEND_DIGEST_ON_ZERO_JOBS === 'true';
+    
+    if (jobs.length === 0 && !sendOnZeroJobs) {
+      console.log('No new jobs to send in auto-digest and SEND_DIGEST_ON_ZERO_JOBS is disabled');
       return { success: false, error: 'No new jobs to send' };
+    }
+    
+    if (jobs.length === 0 && sendOnZeroJobs) {
+      console.log('No new jobs found, but SEND_DIGEST_ON_ZERO_JOBS is enabled - sending empty digest');
     }
     
     // Send digest email
@@ -252,6 +260,90 @@ export async function autoSendDigest(env, options = {}) {
     
   } catch (error) {
     console.error('Error in auto-send digest:', error);
+    return { success: false, error: error.message };
+  }
+}
+
+/**
+ * Send notification email when a scheduled trigger occurs
+ * @param {Object} env - Environment variables
+ * @param {Object} triggerInfo - Information about the trigger
+ * @param {string} triggerInfo.scheduledTime - When the trigger was scheduled
+ * @param {string} triggerInfo.cron - The cron pattern
+ * @returns {Object} - Result object with success status and message/error
+ */
+export async function sendScheduledTriggerNotification(env, triggerInfo = {}) {
+  try {
+    // Check if scheduled trigger emails are enabled
+    if (env.SCHEDULED_TRIGGER_EMAIL !== 'true') {
+      console.log('Scheduled trigger email notifications are disabled');
+      return { success: false, error: 'Scheduled trigger email notifications disabled' };
+    }
+    
+    // Check if DIGEST_TO is configured
+    if (!env.DIGEST_TO) {
+      console.log('DIGEST_TO not configured, cannot send scheduled trigger notification');
+      return { success: false, error: 'DIGEST_TO not configured' };
+    }
+    
+    // Check SMTP configuration
+    const smtpCheck = checkSmtpConfiguration(env);
+    if (!smtpCheck.isConfigured) {
+      console.log(`SMTP not configured, cannot send scheduled trigger notification. Missing: ${smtpCheck.missingVars.join(', ')}`);
+      return { success: false, error: 'SMTP not configured', missingVars: smtpCheck.missingVars };
+    }
+    
+    const { scheduledTime, cron } = triggerInfo;
+    const triggerDate = scheduledTime ? new Date(scheduledTime).toLocaleString() : 'Unknown';
+    
+    // Create email content
+    const subject = '🤖 Job Search Scan Started - Scheduled Trigger';
+    const htmlContent = `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+        <h2 style="color: #2563eb; margin-bottom: 20px;">📅 Scheduled Job Search Scan Started</h2>
+        
+        <div style="background-color: #f8fafc; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+          <p style="margin: 0; color: #475569;"><strong>Trigger Time:</strong> ${triggerDate}</p>
+          <p style="margin: 5px 0 0 0; color: #475569;"><strong>Cron Pattern:</strong> <code style="background-color: #e2e8f0; padding: 2px 4px; border-radius: 3px;">${cron || 'Unknown'}</code></p>
+        </div>
+        
+        <p style="color: #475569; line-height: 1.6;">Your automated job search scan has been triggered and is now running. You'll receive a digest email with the results once the scan completes.</p>
+        
+        <div style="background-color: #ecfdf5; border-left: 4px solid #10b981; padding: 15px; margin: 20px 0;">
+          <p style="margin: 0; color: #065f46; font-weight: 500;">💡 Tip: You can disable these trigger notifications by setting <code>SCHEDULED_TRIGGER_EMAIL=false</code> in your environment variables.</p>
+        </div>
+        
+        <hr style="border: none; border-top: 1px solid #e2e8f0; margin: 30px 0;">
+        <p style="color: #94a3b8; font-size: 14px; margin: 0;">This is an automated message from your MCP Job Search system.</p>
+      </div>
+    `;
+    
+    // Send email using nodemailer
+    const transporter = nodemailer.createTransporter({
+      host: env.SMTP_HOST,
+      port: parseInt(env.SMTP_PORT),
+      secure: parseInt(env.SMTP_PORT) === 465,
+      auth: {
+        user: env.SMTP_USER,
+        pass: env.SMTP_PASS
+      }
+    });
+    
+    const mailOptions = {
+      from: env.SMTP_USER,
+      to: env.DIGEST_TO,
+      subject: subject,
+      html: htmlContent
+    };
+    
+    console.log('Sending scheduled trigger notification email...');
+    await transporter.sendMail(mailOptions);
+    
+    console.log('Scheduled trigger notification email sent successfully');
+    return { success: true, message: 'Scheduled trigger notification sent' };
+    
+  } catch (error) {
+    console.error('Error sending scheduled trigger notification:', error);
     return { success: false, error: error.message };
   }
 }

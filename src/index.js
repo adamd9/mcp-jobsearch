@@ -13,7 +13,8 @@ import {
   markJobsAsSent, 
   filterJobsForDigest, 
   sendDigestEmail, 
-  autoSendDigest 
+  autoSendDigest,
+  sendScheduledTriggerNotification 
 } from './digest.js';
 
 // Define our MCP agent with tools
@@ -1152,6 +1153,63 @@ function validateEnv(env) {
 }
 
 export default {
+	async scheduled(controller, env, ctx) {
+		console.log('Cron trigger fired at:', new Date(controller.scheduledTime).toISOString());
+		
+		// Validate required environment variables
+		const envValidation = validateEnv(env);
+		if (!envValidation.valid) {
+			console.error("Cannot run scheduled scan: Missing required environment variables:", envValidation.missing.join(", "));
+			return;
+		}
+		
+		try {
+			// Send scheduled trigger notification email if enabled
+			const triggerNotificationResult = await sendScheduledTriggerNotification(env, {
+				scheduledTime: controller.scheduledTime,
+				cron: controller.cron
+			});
+			
+			if (triggerNotificationResult.success) {
+				console.log('Scheduled trigger notification sent successfully');
+			} else {
+				console.log('Scheduled trigger notification not sent:', triggerNotificationResult.error);
+			}
+			
+			// Get the Durable Object instance
+			const id = env.MCP_OBJECT.idFromName('default');
+			const mcpObject = env.MCP_OBJECT.get(id);
+			
+			// Create a mock request to trigger the scan
+			const scanRequest = new Request('https://worker.dev/scheduled-scan', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify({
+					action: 'scheduled_scan',
+					scheduledTime: controller.scheduledTime,
+					cron: controller.cron
+				})
+			});
+			
+			// Use waitUntil to ensure the scan completes even if the scheduled handler returns
+			ctx.waitUntil(
+				mcpObject.fetch(scanRequest).then(response => {
+					console.log('Scheduled scan initiated successfully');
+					return response;
+				}).catch(error => {
+					console.error('Error during scheduled scan:', error);
+					throw error;
+				})
+			);
+			
+		} catch (error) {
+			console.error('Error in scheduled handler:', error);
+			throw error;
+		}
+	},
+	
 	async fetch(request, env, ctx) {
 		const url = new URL(request.url);
 
@@ -1168,6 +1226,58 @@ export default {
 				status: 204,
 				headers: corsHeaders
 			});
+		}
+		
+		// Handle scheduled scan requests (from cron trigger)
+		if (request.method === 'POST' && url.pathname === '/scheduled-scan') {
+			try {
+				const body = await request.json();
+				if (body.action === 'scheduled_scan') {
+					console.log('Processing scheduled scan request:', {
+						scheduledTime: body.scheduledTime,
+						cron: body.cron
+					});
+					
+					// Check if a scan is already in progress
+					if (this.backgroundJobs.scan.inProgress) {
+						console.log('Scheduled scan skipped: scan already in progress');
+						return new Response(JSON.stringify({ 
+							status: 'skipped', 
+							reason: 'scan already in progress' 
+						}), {
+							status: 200,
+							headers: { 'Content-Type': 'application/json', ...corsHeaders }
+						});
+					}
+					
+					// Import runScan function
+					const { runScan } = await import('./scan-helpers.js');
+					
+					// Start the scan (no URL means use plan URLs, sendDigest = true for scheduled scans)
+					const scanPromise = runScan(this, null, { sendDigest: true });
+					
+					// Use waitUntil to ensure the scan completes
+					ctx.waitUntil(scanPromise);
+					
+					console.log('Scheduled scan initiated successfully');
+					return new Response(JSON.stringify({ 
+						status: 'started', 
+						message: 'Scheduled scan initiated successfully' 
+					}), {
+						status: 200,
+						headers: { 'Content-Type': 'application/json', ...corsHeaders }
+					});
+				}
+			} catch (error) {
+				console.error('Error processing scheduled scan request:', error);
+				return new Response(JSON.stringify({ 
+					status: 'error', 
+					error: error.message 
+				}), {
+					status: 500,
+					headers: { 'Content-Type': 'application/json', ...corsHeaders }
+				});
+			}
 		}
 
 		// Add a simple health check endpoint (no auth required)

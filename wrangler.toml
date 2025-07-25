@@ -38,6 +38,8 @@ SMTP_USER = ""
 SMTP_PASS = ""
 DIGEST_TO = ""
 TIMEZONE = ""
+SCHEDULED_TRIGGER_EMAIL = "false"
+SEND_DIGEST_ON_ZERO_JOBS = "false"
 
 # Enable browser rendering
 [browser]
