@@ -9,7 +9,7 @@
     "inspector": "mcp-inspector"
   },
   "dependencies": {
-    "@cloudflare/ai": "^1.0.0",
+    "@cloudflare/playwright": "^0.0.10",
     "@cloudflare/puppeteer": "^0.0.5",
     "@modelcontextprotocol/sdk": "1.15.1",
     "agents": "^0.0.105",
@@ -18,10 +18,8 @@
     "zod": "^3.25.67"
   },
   "devDependencies": {
-    "@cloudflare/playwright": "^0.0.10",
     "@cloudflare/workers-types": "^4.20240320.1",
     "@modelcontextprotocol/inspector": "^0.16.1",
-    "puppeteer": "^22.8.2",
     "wrangler": "^4.24.3"
   }
 }
