@@ -1,5 +1,5 @@
 import { launch } from "@cloudflare/playwright";
-import { autoSendDigest } from './digest.js';
+import { autoSendDigest, sendScanFailureNotification } from './digest.js';
 import { deepScanSingleJob } from './deep-scan.js';
 
 // Generate a unique job ID from URL
@@ -59,6 +59,27 @@ export async function runScan(agent, url, options = {}) {
     console.log('Launching browser for scan and deep scan phases...');
     browser = await launch(agent.env.BROWSER);
     const page = await browser.newPage();
+
+    // Block unnecessary resources to improve performance and reduce bandwidth
+    await page.route('**/*', (route) => {
+      const resourceType = route.request().resourceType();
+      const url = route.request().url();
+      
+      // Block images, stylesheets, fonts, and media files
+      if (['image', 'stylesheet', 'font', 'media'].includes(resourceType)) {
+        route.abort();
+      }
+      // Block common tracking and analytics scripts
+      else if (url.includes('google-analytics') || url.includes('googletagmanager') || 
+               url.includes('facebook.com') || url.includes('doubleclick') ||
+               url.includes('ads') || url.includes('analytics')) {
+        route.abort();
+      }
+      else {
+        route.continue();
+      }
+    });
+    console.log('Resource blocking configured for improved performance');
 
     // Login once at the beginning of the scan.
     console.log('Navigating to LinkedIn login page...');
@@ -167,8 +188,23 @@ export async function runScan(agent, url, options = {}) {
   } catch (error) {
     console.error('Error in runScan:', error);
     agent.backgroundJobs.scan.error = error.message;
+    agent.backgroundJobs.scan.status = 'failed';
     agent.backgroundJobs.scan.inProgress = false;
     agent.backgroundJobs.scan.endTime = new Date().toISOString();
+    
+    // Send failure notification email unless sendDigest is false
+    if (sendDigest) {
+      try {
+        const failureResult = await sendScanFailureNotification(agent.env, error.message);
+        if (failureResult.success) {
+          console.log('Failure notification sent successfully');
+        } else {
+          console.log(`Failed to send failure notification: ${failureResult.error}`);
+        }
+      } catch (digestError) {
+        console.error('Error sending failure notification:', digestError);
+      }
+    }
   } finally {
     // Ensure browser is always closed, even on error
     if (browser) {

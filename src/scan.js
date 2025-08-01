@@ -4,7 +4,7 @@ import { runScan } from './scan-helpers.js';
 export function getScanTool(agent) {
   return {
     name: "scan",
-    description: "Scans LinkedIn job pages. If a URL is provided, scans that page; otherwise scans URLs from the current plan.",
+    description: "Scans LinkedIn job pages for job opportunities. If a URL is provided, scans that specific page; otherwise scans all URLs from the current plan. After completion (successful or failed), automatically sends a digest email notification to DIGEST_TO unless skipDigest is true. For successful scans, the email contains job matches found. For failed scans, the email contains error details and failure notification. The scan includes both initial job discovery and deep scanning phases for detailed job analysis.",
     args: {
       url: z.string().url().optional().describe("An optional LinkedIn job search results page URL to scan."),
       skipDigest: z.boolean().optional().describe("Skip sending digest email after scan completion")

@@ -6,6 +6,47 @@
 import nodemailer from 'nodemailer';
 
 /**
+ * Format date with configured timezone
+ * @param {Date} date - Date to format
+ * @param {Object} env - Environment variables
+ * @param {Object} options - Formatting options
+ * @returns {string} - Formatted date string
+ */
+function formatDateWithTimezone(date = new Date(), env, options = {}) {
+  const { dateStyle = 'short', timeStyle = 'short', includeTime = true } = options;
+  const timezone = env.TIMEZONE || 'UTC';
+  
+  try {
+    if (includeTime) {
+      return date.toLocaleString('en-US', {
+        timeZone: timezone,
+        dateStyle,
+        timeStyle
+      });
+    } else {
+      return date.toLocaleDateString('en-US', {
+        timeZone: timezone,
+        dateStyle
+      });
+    }
+  } catch (error) {
+    console.warn(`Invalid timezone '${timezone}', falling back to UTC`);
+    if (includeTime) {
+      return date.toLocaleString('en-US', {
+        timeZone: 'UTC',
+        dateStyle,
+        timeStyle
+      });
+    } else {
+      return date.toLocaleDateString('en-US', {
+        timeZone: 'UTC',
+        dateStyle
+      });
+    }
+  }
+}
+
+/**
  * Check if SMTP is configured
  * @param {Object} env - Environment variables
  * @returns {Object} - Configuration status and missing variables
@@ -106,15 +147,31 @@ export function filterJobsForDigest(jobs, criteria = {}) {
 /**
  * Generate HTML email content for job digest
  * @param {Array} jobs - Array of jobs to include
+ * @param {Object} env - Environment variables (for timezone)
  * @param {Object} options - Email options
  * @param {string} options.source - Source of the digest (scan, rescan, etc.)
  * @param {boolean} options.onlyNew - Whether only new jobs are included
+ * @param {string} options.error - Error message for failed scans
  * @returns {string} - HTML email content
  */
-export function generateDigestHtml(jobs, options = {}) {
-  const { source, onlyNew } = options;
+export function generateDigestHtml(jobs, env, options = {}) {
+  const { source, onlyNew, error } = options;
   const sourceText = source ? ` from ${source}` : '';
   
+  // Handle scan failure notifications
+  if (source === 'scan_failed') {
+    return `
+      <h2 style="color: #d32f2f;">Scan Failed${sourceText}</h2>
+      <div style="background-color: #ffebee; padding: 15px; border-left: 4px solid #d32f2f; margin: 10px 0;">
+        <p><strong>Error:</strong> ${error || 'Unknown error occurred'}</p>
+      </div>
+      <p>The scheduled job search scan encountered an error and could not complete successfully.</p>
+      <p>Please check the system logs and configuration to resolve this issue.</p>
+      <p><em>Generated on ${formatDateWithTimezone(new Date(), env)}</em></p>
+    `;
+  }
+  
+  // Handle normal job digest
   return `
     <h2>Job Matches${sourceText}</h2>
     <p>Found ${jobs.length} potential job matches${onlyNew ? ' (new)' : ''}:</p>
@@ -136,7 +193,7 @@ export function generateDigestHtml(jobs, options = {}) {
         </tr>
       `).join('')}
     </table>
-    <p><em>Generated on ${new Date().toLocaleString()}</em></p>
+    <p><em>Generated on ${formatDateWithTimezone(new Date(), env)}</em></p>
   `;
 }
 
@@ -149,16 +206,24 @@ export function generateDigestHtml(jobs, options = {}) {
  * @param {string} options.subject - Custom email subject
  * @param {string} options.source - Source of the digest
  * @param {boolean} options.onlyNew - Whether only new jobs are included
+ * @param {string} options.error - Error message for failed scans
  * @returns {Object} - Result object with success status and message/error
  */
 export async function sendDigestEmail(toEmail, jobs, env, options = {}) {
   try {
-    const { subject, source, onlyNew } = options;
+    const { subject, source, onlyNew, error } = options;
     const sourceText = source ? ` from ${source}` : '';
-    const emailSubject = subject || `Job matches${sourceText} - ${new Date().toLocaleDateString()}`;
+    
+    // Adjust subject line for failed scans
+    let emailSubject;
+    if (source === 'scan_failed') {
+      emailSubject = subject || `Scan Failed - ${formatDateWithTimezone(new Date(), env, { includeTime: false })}`;
+    } else {
+      emailSubject = subject || `Job matches${sourceText} - ${formatDateWithTimezone(new Date(), env, { includeTime: false })}`;
+    }
     
     // Generate HTML content
-    const html = generateDigestHtml(jobs, { source, onlyNew });
+    const html = generateDigestHtml(jobs, env, { source, onlyNew, error });
     
     // Create nodemailer transporter
     const transporter = nodemailer.createTransport({
@@ -294,7 +359,7 @@ export async function sendScheduledTriggerNotification(env, triggerInfo = {}) {
     }
     
     const { scheduledTime, cron } = triggerInfo;
-    const triggerDate = scheduledTime ? new Date(scheduledTime).toLocaleString() : 'Unknown';
+    const triggerDate = scheduledTime ? formatDateWithTimezone(new Date(scheduledTime), env) : 'Unknown';
     
     // Create email content
     const subject = '🤖 Job Search Scan Started - Scheduled Trigger';
@@ -344,6 +409,48 @@ export async function sendScheduledTriggerNotification(env, triggerInfo = {}) {
     
   } catch (error) {
     console.error('Error sending scheduled trigger notification:', error);
+    return { success: false, error: error.message };
+  }
+}
+
+/**
+ * Send scan failure notification email
+ * @param {Object} env - Environment variables
+ * @param {string} errorMessage - The error message from the failed scan
+ * @returns {Object} - Result object with success status and message/error
+ */
+export async function sendScanFailureNotification(env, errorMessage) {
+  try {
+    // Check if DIGEST_TO is configured
+    if (!env.DIGEST_TO) {
+      console.log('DIGEST_TO not configured, skipping failure notification');
+      return { success: false, error: 'DIGEST_TO not configured' };
+    }
+    
+    // Check SMTP configuration
+    const smtpCheck = checkSmtpConfiguration(env);
+    if (!smtpCheck.isConfigured) {
+      console.log(`SMTP not configured, skipping failure notification. Missing: ${smtpCheck.missingVars.join(', ')}`);
+      return { success: false, error: 'SMTP not configured', missingVars: smtpCheck.missingVars };
+    }
+    
+    // Send failure notification email directly (no jobs needed)
+    console.log('Sending scan failure notification email...');
+    const emailResult = await sendDigestEmail(env.DIGEST_TO, [], env, {
+      source: 'scan_failed',
+      error: errorMessage
+    });
+    
+    if (emailResult.success) {
+      console.log('Scan failure notification sent successfully');
+      return { success: true, message: 'Scan failure notification sent' };
+    } else {
+      console.log(`Failed to send scan failure notification: ${emailResult.error}`);
+      return { success: false, error: emailResult.error };
+    }
+    
+  } catch (error) {
+    console.error('Error sending scan failure notification:', error);
     return { success: false, error: error.message };
   }
 }
