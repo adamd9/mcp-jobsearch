@@ -3,7 +3,7 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
 import OpenAI from "openai";
 import { launch } from "@cloudflare/playwright";
-import { getPlanTool, createPlanTool, updatePlanTool } from "./plan.js";
+import { getPlanTool, updatePlanTool } from "./plan.js";
 import { getScanTool, getRescanTool } from "./scan.js";
 import { getCancelScanTool } from "./cancel-scan.js";
 import { generateJobId, performSingleJobDeepScan } from "./scan-helpers.js";
@@ -84,7 +84,7 @@ export class JobSearchMCP extends McpAgent {
     // Plan tools (from plan.js)
     const planTools = [
       getPlanTool(this.env),
-      createPlanTool(this.env, this.openai),
+
       updatePlanTool(this.env, this.openai),
     ];
     for (const tool of planTools) {
