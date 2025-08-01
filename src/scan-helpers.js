@@ -1,6 +1,7 @@
 import { launch } from "@cloudflare/playwright";
 import { autoSendDigest, sendScanFailureNotification } from './digest.js';
 import { deepScanSingleJob } from './deep-scan.js';
+import { httpPerformDeepScan } from './http-deep-scan.js';
 
 // Generate a unique job ID from URL
 export function generateJobId(jobUrl) {
@@ -55,8 +56,9 @@ export async function runScan(agent, url, options = {}) {
     agent.backgroundJobs.scan.status = 'running';
     agent.backgroundJobs.scan.urlsToScan = urlsToProcess.map(u => u.url);
 
-    // Create browser instance that will be reused throughout scan and deep scan
-    console.log('Launching browser for scan and deep scan phases...');
+    // Create browser instance for authenticated LinkedIn search (still needed for search results)
+    // Note: Deep scan phase now uses HTTP requests instead of browser
+    console.log('Launching browser for authenticated LinkedIn search phase...');
     browser = await launch(agent.env.BROWSER);
     const page = await browser.newPage();
 
@@ -163,11 +165,11 @@ export async function runScan(agent, url, options = {}) {
     }
 
     // After all search URLs are processed, start deep scan phase
-    console.log('Starting deep scan phase with reused browser...');
+    console.log('Starting HTTP-based deep scan phase (no browser needed)...');
     agent.backgroundJobs.scan.status = 'deep_scanning';
     
-    // Pass the browser instance to deep scan to reuse it
-    await performDeepScan(agent, browser);
+    // Use HTTP-based deep scan instead of browser-based approach
+    await httpPerformDeepScan(agent);
     
     // Set status to completed before closing the browser to ensure state is updated.
     agent.backgroundJobs.scan.status = 'completed';
