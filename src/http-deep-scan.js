@@ -60,8 +60,7 @@ export async function httpDeepScanSingleJob(agent, job, profile, scanPrompt) {
       console.log(`  ⚠️  Warning: No job-related keywords found in content, may be blocked or redirected`);
     }
 
-    // Send full page content to LLM for extraction and matching (reuse existing function)
-    const { analyzeJobPageWithLLM } = await import('./deep-scan.js');
+    // Send full page content to LLM for extraction and matching
     const analysisResult = await analyzeJobPageWithLLM(agent, pageContent, job, profile, scanPrompt);
     
     console.log(`  → HTTP-based deep scan completed for ${job.url}, match score: ${analysisResult.matchScore}`);
@@ -99,6 +98,164 @@ function extractJobContent($) {
     .trim();
   
   return fullContent;
+}
+
+// Analyze full job page content with LLM
+export async function analyzeJobPageWithLLM(agent, pageContent, job, profile, scanPrompt) {
+  const prompt = `You are a job analysis system. Analyze the LinkedIn job page content and respond with ONLY a JSON object, no other text.
+
+Candidate Profile:
+${profile}
+
+Additional Criteria:
+${scanPrompt || 'None'}
+
+Job Page Content:
+${pageContent.fullContent.substring(0, 8000)}
+
+Extract job details and provide a match score from 0.0 to 1.0.
+
+Respond with ONLY this JSON format (no additional text):
+{
+  "title": "extracted job title",
+  "company": "extracted company name",
+  "location": "extracted location",
+  "description": "extracted job description",
+  "salary": "extracted salary or null",
+  "matchScore": 0.8,
+  "matchReason": "detailed explanation of match"
+}`;
+
+  // Use OpenAI for analysis
+  try {
+    console.log(`  → Analyzing full page with OpenAI...`);
+    const response = await agent.openai.chat.completions.create({
+      model: agent.env.OPENAI_MODEL || 'gpt-4o',
+      messages: [{ role: 'user', content: prompt }],
+      temperature: 0.1,
+      max_tokens: 1000
+    });
+    console.log(`  → OpenAI analysis complete`);
+
+    try {
+      // Clean and parse the response
+      let cleanResponse = response.choices[0].message.content
+        .replace(/[\x00-\x1F\x7F-\x9F]/g, '')
+        .replace(/\\n/g, '\n')
+        .replace(/\\t/g, '\t')
+        .trim();
+      
+      // Try to extract JSON from the response - look for complete JSON objects
+      let jsonMatch = cleanResponse.match(/\{[\s\S]*?"matchScore"[\s\S]*?\}/i);
+      if (!jsonMatch) {
+        // Try broader JSON pattern
+        jsonMatch = cleanResponse.match(/\{[\s\S]*\}/i);
+      }
+      if (jsonMatch) {
+        cleanResponse = jsonMatch[0];
+      } else {
+        // If no JSON found, log the response and try to extract key info
+        console.log(`  → No JSON found in response: ${cleanResponse.substring(0, 200)}...`);
+        throw new Error('No JSON structure found in AI response');
+      }
+      
+      console.log(`  → Extracted JSON: ${cleanResponse.substring(0, 200)}...`);
+      
+      const result = JSON.parse(cleanResponse);
+      
+      const analysisResult = {
+        title: result.title || job.title,
+        company: result.company || job.company,
+        location: result.location || job.location,
+        description: result.description || 'No description extracted',
+        salary: result.salary || null,
+        matchScore: Math.max(0, Math.min(1, result.matchScore || 0)),
+        matchReason: result.matchReason || 'No reason provided'
+      };
+      
+      console.log(`  → AI analysis result prepared: ${analysisResult.title} at ${analysisResult.company}`);
+      return analysisResult;
+      
+    } catch (parseError) {
+      console.error('Error parsing OpenAI analysis:', parseError);
+      console.log(`  → Falling back to keyword matching due to parse error`);
+      return fallbackJobMatching({ 
+        title: job.title,
+        company: job.company,
+        location: job.location,
+        description: pageContent.fullContent.substring(0, 2000)
+      }, profile, scanPrompt);
+    }
+    
+  } catch (aiError) {
+    console.log(`  → OpenAI analysis failed: ${aiError.message}`);
+    console.log(`  → Using fallback keyword matching...`);
+    return fallbackJobMatching({ 
+      title: job.title,
+      company: job.company,
+      location: job.location,
+      description: pageContent.fullContent.substring(0, 2000)
+    }, profile, scanPrompt);
+  }
+}
+
+// Fallback keyword matching when AI is unavailable
+export function fallbackJobMatching(jobDetails, profile, scanPrompt) {
+  try {
+    console.log(`  → Running fallback keyword matching...`);
+    
+    const jobText = `${jobDetails.title} ${jobDetails.company} ${jobDetails.location} ${jobDetails.description}`.toLowerCase();
+    const profileText = `${profile} ${scanPrompt}`.toLowerCase();
+    
+    // Extract keywords from profile
+    const profileKeywords = profileText.match(/\b\w{3,}\b/g) || [];
+    const uniqueKeywords = [...new Set(profileKeywords)];
+    
+    // Score based on keyword matches
+    let matchCount = 0;
+    let totalKeywords = Math.min(uniqueKeywords.length, 20); // Limit to top 20 keywords
+    
+    const matchedKeywords = [];
+    
+    for (const keyword of uniqueKeywords.slice(0, 20)) {
+      if (jobText.includes(keyword)) {
+        matchCount++;
+        matchedKeywords.push(keyword);
+      }
+    }
+    
+    // Bonus scoring for important terms
+    const bonusTerms = ['engineer', 'software', 'mechanical', 'new york', 'nyc', 'remote'];
+    let bonusScore = 0;
+    
+    for (const term of bonusTerms) {
+      if (jobText.includes(term) && profileText.includes(term)) {
+        bonusScore += 0.1;
+      }
+    }
+    
+    // Calculate final score
+    const baseScore = totalKeywords > 0 ? matchCount / totalKeywords : 0;
+    const finalScore = Math.min(1.0, baseScore + bonusScore);
+    
+    const reason = `Keyword matching: ${matchCount}/${totalKeywords} keywords matched. ` +
+                  `Matched terms: ${matchedKeywords.slice(0, 5).join(', ')}${matchedKeywords.length > 5 ? '...' : ''}. ` +
+                  `Bonus score: +${bonusScore.toFixed(1)} for important terms.`;
+    
+    console.log(`  → Fallback match score: ${finalScore.toFixed(2)}`);
+    
+    return {
+      matchScore: Math.round(finalScore * 100) / 100, // Round to 2 decimals
+      matchReason: reason
+    };
+    
+  } catch (error) {
+    console.error('Error in fallback matching:', error);
+    return {
+      matchScore: 0.5, // Default neutral score
+      matchReason: 'Fallback matching failed, assigned neutral score'
+    };
+  }
 }
 
 // HTTP-based version of performDeepScan that doesn't need browser management

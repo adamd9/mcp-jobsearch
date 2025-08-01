@@ -6,7 +6,8 @@ import { launch } from "@cloudflare/playwright";
 import { getPlanTool, updatePlanTool } from "./plan.js";
 import { getScanTool, getRescanTool } from "./scan.js";
 import { getCancelScanTool } from "./cancel-scan.js";
-import { generateJobId, performSingleJobDeepScan } from "./scan-helpers.js";
+import { generateJobId } from "./scan-helpers.js";
+import { httpDeepScanSingleJob } from "./http-deep-scan.js";
 import { 
   checkSmtpConfiguration, 
   getJobsForDigest, 
@@ -152,7 +153,7 @@ export class JobSearchMCP extends McpAgent {
           
           let scanResult;
           try {
-            scanResult = await performSingleJobDeepScan(this, mockJob, plan.profile, plan.scanPrompt || '');
+            scanResult = await httpDeepScanSingleJob(this, mockJob, plan.profile, plan.scanPrompt || '');
             console.log(`CHECKPOINT 1: Deep scan method returned`);
             console.log(`CHECKPOINT 2: About to log result for ${url}`);
             console.log(`Deep scan method returned result for ${url}`);
