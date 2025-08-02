@@ -11,10 +11,6 @@ crons = ["0 18 * * *"]
 tag = "v1"
 new_sqlite_classes = ["JobSearchMCP"]
 
-# Enable the AI bindings
-[ai]
-binding = "AI"
-
 # Enable Durable objects bindings   
 [[durable_objects.bindings]]
 name = "MCP_OBJECT"

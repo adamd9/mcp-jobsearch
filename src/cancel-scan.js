@@ -1,9 +1,11 @@
 import { z } from "zod";
 
+import { TOOL_DESCRIPTIONS, TOOL_SUCCESS } from './tool-descriptions.js';
+
 export function getCancelScanTool(agent) {
   return {
     name: "cancel_scan",
-    description: "Cancel the currently running scan job if one is in progress.",
+    description: TOOL_DESCRIPTIONS.CANCEL_SCAN,
     args: {},
     handler: async () => {
       const { backgroundJobs } = agent;

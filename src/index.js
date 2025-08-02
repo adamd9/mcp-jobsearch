@@ -5,8 +5,9 @@ import OpenAI from "openai";
 import { launch } from "@cloudflare/playwright";
 import { getPlanTool, updatePlanTool } from "./plan.js";
 import { getScanTool, getRescanTool } from "./scan.js";
-import { getCancelScanTool } from "./cancel-scan.js";
+import { getCancelScanTool } from './cancel-scan.js';
 import { generateJobId } from "./scan-helpers.js";
+import { TOOL_DESCRIPTIONS, TOOL_ARGS, TOOL_ERRORS, TOOL_SUCCESS } from './tool-descriptions.js';
 import { httpDeepScanSingleJob } from "./http-deep-scan.js";
 import { 
   checkSmtpConfiguration, 
@@ -40,10 +41,33 @@ export class JobSearchMCP extends McpAgent {
       apiKey: this.env.OPENAI_API_KEY,
     });
 
+    // Tool logging wrapper
+    this.loggedTool = (name, description, args, handler, options) => {
+      const wrappedHandler = async (params) => {
+        console.log(`🔧 TOOL CALLED: ${name}`);
+        console.log(`📝 Parameters:`, JSON.stringify(params, null, 2));
+        const startTime = Date.now();
+        
+        try {
+          const result = await handler(params);
+          const duration = Date.now() - startTime;
+          console.log(`✅ TOOL COMPLETED: ${name} (${duration}ms)`);
+          return result;
+        } catch (error) {
+          const duration = Date.now() - startTime;
+          console.log(`❌ TOOL FAILED: ${name} (${duration}ms)`);
+          console.log(`🚨 Error:`, error.message);
+          throw error;
+        }
+      };
+      
+      return this.server.tool(name, description, args, wrappedHandler, options);
+    };
+
     // Status tool
-    this.server.tool(
+    this.loggedTool(
       "status",
-      "Check the status of a background job, such as a scan.",
+      TOOL_DESCRIPTIONS.STATUS,
       {},
       async () => {
         const scanStatus = { ...this.backgroundJobs.scan };
@@ -90,7 +114,7 @@ export class JobSearchMCP extends McpAgent {
     ];
     for (const tool of planTools) {
       if (tool.args) {
-        this.server.tool(
+        this.loggedTool(
           tool.name,
           tool.description,
           tool.args,
@@ -98,7 +122,7 @@ export class JobSearchMCP extends McpAgent {
           tool.options
         );
       } else {
-        this.server.tool(
+        this.loggedTool(
           tool.name,
           tool.description,
           tool.handler,
@@ -109,21 +133,20 @@ export class JobSearchMCP extends McpAgent {
 
     // Scan & Rescan tools (from scan.js)
     const scanTool = getScanTool(this);
-    this.server.tool(scanTool.name, scanTool.description, scanTool.args, scanTool.handler, scanTool.options);
+    this.loggedTool(scanTool.name, scanTool.description, scanTool.args, scanTool.handler, scanTool.options);
 
     const rescanTool = getRescanTool(this);
-    this.server.tool(rescanTool.name, rescanTool.description, rescanTool.args, rescanTool.handler, rescanTool.options);
+    this.loggedTool(rescanTool.name, rescanTool.description, rescanTool.args, rescanTool.handler, rescanTool.options);
 
-    // Cancel scan tool
     const cancelScanTool = getCancelScanTool(this);
-    this.server.tool(cancelScanTool.name, cancelScanTool.description, cancelScanTool.args, cancelScanTool.handler, cancelScanTool.options);
+    this.loggedTool(cancelScanTool.name, cancelScanTool.description, cancelScanTool.args, cancelScanTool.handler, cancelScanTool.options);
 
     // Manual deep scan tool for debugging
-    this.server.tool(
+    this.loggedTool(
       "deep_scan_job",
-      "Manually deep scan a specific LinkedIn job URL for testing and debugging",
+      TOOL_DESCRIPTIONS.DEEP_SCAN_JOB,
       {
-        url: z.string().url().describe("LinkedIn job URL to deep scan")
+        url: z.string().url().describe(TOOL_ARGS.DEEP_SCAN_URL)
       },
       async ({ url }) => {
         try {
@@ -256,7 +279,7 @@ export class JobSearchMCP extends McpAgent {
     );
 
     // Failed jobs report tool
-    this.server.tool(
+    this.loggedTool(
       "failed_jobs",
       "Get a report of jobs that failed during deep scanning for manual verification",
       {
@@ -348,7 +371,7 @@ export class JobSearchMCP extends McpAgent {
     // Removed duplicate inline scan block
 
         // Job Indexing and Digests
-    this.server.tool(
+    this.loggedTool(
       "reset_job_index",
       "Reset the job index to start fresh - removes all stored jobs",
       {},
@@ -403,7 +426,7 @@ export class JobSearchMCP extends McpAgent {
       }
     );
 
-    this.server.tool(
+    this.loggedTool(
       "get_job_index",
       "Get the current raw job index data for inspection",
       {
@@ -523,7 +546,7 @@ export class JobSearchMCP extends McpAgent {
       }
     );
 
-    this.server.tool(
+    this.loggedTool(
       "send_digest",
       "Send digest email with job matches to the specified email address",
       {
@@ -848,17 +871,20 @@ Respond with ONLY this JSON format (no additional text):
   "matchReason": "detailed explanation of match"
 }`;
 
-    // Try Cloudflare AI first
+    // Use OpenAI for analysis
     try {
-      console.log(`  → Analyzing full page with Cloudflare AI...`);
-      const response = await this.env.AI.run('@cf/meta/llama-3.1-8b-instruct', {
-        messages: [{ role: 'user', content: prompt }]
+      console.log(`  → Analyzing full page with OpenAI...`);
+      const response = await this.openai.chat.completions.create({
+        model: this.env.OPENAI_MODEL || 'gpt-4o',
+        messages: [{ role: 'user', content: prompt }],
+        temperature: 0.1,
+        max_tokens: 1000
       });
-      console.log(`  → AI analysis complete`);
+      console.log(`  → OpenAI analysis complete`);
 
       try {
         // Clean and parse the response
-        let cleanResponse = response.response
+        let cleanResponse = response.choices[0].message.content
           .replace(/[\x00-\x1F\x7F-\x9F]/g, '')
           .replace(/\\n/g, '\n')
           .replace(/\\t/g, '\t')
@@ -939,16 +965,19 @@ Description: ${jobDetails.description}
 Provide a match score from 0.0 to 1.0 and a brief explanation.
 Respond in JSON format: {"matchScore": 0.8, "matchReason": "explanation"}`;
 
-      // Try Cloudflare AI first
+      // Use OpenAI for analysis
       let response;
       try {
-        console.log(`  → Attempting AI match with Cloudflare AI...`);
-        response = await this.env.AI.run('@cf/meta/llama-3.1-8b-instruct', {
-          messages: [{ role: 'user', content: prompt }]
+        console.log(`  → Attempting AI match with OpenAI...`);
+        response = await this.openai.chat.completions.create({
+          model: this.env.OPENAI_MODEL || 'gpt-4o',
+          messages: [{ role: 'user', content: prompt }],
+          temperature: 0.1,
+          max_tokens: 500
         });
-        console.log(`  → Cloudflare AI response received`);
+        console.log(`  → OpenAI response received`);
       } catch (aiError) {
-        console.log(`  → Cloudflare AI failed: ${aiError.message}`);
+        console.log(`  → OpenAI failed: ${aiError.message}`);
         
         // Fallback to simple keyword matching
         console.log(`  → Using fallback keyword matching...`);
@@ -957,7 +986,7 @@ Respond in JSON format: {"matchScore": 0.8, "matchReason": "explanation"}`;
 
       try {
         // Clean the response by removing control characters and fixing common issues
-        let cleanResponse = response.response
+        let cleanResponse = response.choices[0].message.content
           .replace(/[\x00-\x1F\x7F-\x9F]/g, '') // Remove control characters
           .replace(/\\n/g, '\n') // Fix escaped newlines
           .replace(/\\t/g, '\t') // Fix escaped tabs

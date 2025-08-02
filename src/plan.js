@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { TOOL_DESCRIPTIONS, TOOL_ARGS } from './tool-descriptions.js';
 
 // Utility: Generate LinkedIn search URLs from search terms and locations
 function generateSearchUrls(searchTerms, locations) {
@@ -78,7 +79,7 @@ async function generatePlanFeedback(plan, openai, env) {
 export function getPlanTool(env) {
   return {
     name: "get_plan",
-    description: "Get the current job search plan",
+    description: TOOL_DESCRIPTIONS.GET_PLAN,
     handler: async () => {
       const plan = await env.JOB_STORAGE.get("plan", "json");
       if (!plan) {
@@ -111,9 +112,9 @@ export function getPlanTool(env) {
 export function updatePlanTool(env, openai) {
   return {
     name: "update_plan",
-    description: "Create a new job search plan or update an existing one based on a description.",
+    description: TOOL_DESCRIPTIONS.UPDATE_PLAN,
     args: {
-      description: z.string().describe("Description of the job search plan or changes to make to an existing plan.")
+      description: z.string().describe(TOOL_ARGS.PLAN_DESCRIPTION)
     },
     handler: async ({ description }) => {
       const currentPlanJSON = await env.JOB_STORAGE.get("plan");

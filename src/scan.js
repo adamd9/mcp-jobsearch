@@ -1,13 +1,14 @@
 import { z } from "zod";
 import { runScan } from './scan-helpers.js';
+import { TOOL_DESCRIPTIONS, TOOL_ARGS, TOOL_ERRORS } from './tool-descriptions.js';
 
 export function getScanTool(agent) {
   return {
     name: "scan",
-    description: "Scans LinkedIn job pages for job opportunities. If a URL is provided, scans that specific page; otherwise scans all URLs from the current plan. After completion (successful or failed), automatically sends a digest email notification to DIGEST_TO unless skipDigest is true. For successful scans, the email contains job matches found. For failed scans, the email contains error details and failure notification. The scan includes both initial job discovery and deep scanning phases for detailed job analysis.",
+    description: TOOL_DESCRIPTIONS.SCAN,
     args: {
-      url: z.string().url().optional().describe("An optional LinkedIn job search results page URL to scan."),
-      skipDigest: z.boolean().optional().describe("Skip sending digest email after scan completion")
+      url: z.string().url().optional().describe(TOOL_ARGS.SCAN_URL),
+      skipDigest: z.boolean().optional().describe(TOOL_ARGS.SCAN_SKIP_DIGEST)
     },
     handler: async ({ url, skipDigest = false }) => {
       const sendDigest = !skipDigest;
@@ -59,7 +60,7 @@ export function getScanTool(agent) {
 export function getRescanTool(agent) {
   return {
     name: "rescan",
-    description: "Rescans LinkedIn job pages using the URLs stored in the last scan job (if any) or current plan.",
+    description: TOOL_DESCRIPTIONS.RESCAN,
     args: {
       skipDigest: z.boolean().optional().describe("Skip sending digest email after rescan completion")
     },
