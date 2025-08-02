@@ -40,3 +40,6 @@ SEND_DIGEST_ON_ZERO_JOBS = "false"
 # Enable browser rendering
 [browser]
 binding = "BROWSER"
+
+[observability.logs]
+enabled = true
