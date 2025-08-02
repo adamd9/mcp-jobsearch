@@ -7,7 +7,7 @@ import { getPlanTool, updatePlanTool } from "./plan.js";
 import { getScanTool, getRescanTool } from "./scan.js";
 import { getCancelScanTool } from './cancel-scan.js';
 import { generateJobId } from "./scan-helpers.js";
-import { TOOL_DESCRIPTIONS, TOOL_ARGS, TOOL_ERRORS, TOOL_SUCCESS } from './tool-descriptions.js';
+import { TOOL_DESCRIPTIONS, TOOL_ARGS, TOOL_ERRORS, TOOL_SUCCESS, SCAN_CONFIG } from './constants.js';
 import { httpDeepScanSingleJob } from "./http-deep-scan.js";
 import { 
   checkSmtpConfiguration, 
@@ -878,7 +878,7 @@ Respond with ONLY this JSON format (no additional text):
         model: this.env.OPENAI_MODEL || 'gpt-4o',
         messages: [{ role: 'user', content: prompt }],
         temperature: 0.1,
-        max_tokens: 1000
+        max_tokens: SCAN_CONFIG.MAX_LLM_TOKENS
       });
       console.log(`  → OpenAI analysis complete`);
 

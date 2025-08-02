@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-import { TOOL_DESCRIPTIONS, TOOL_SUCCESS } from './tool-descriptions.js';
+import { TOOL_DESCRIPTIONS, TOOL_SUCCESS } from './constants.js';
 
 export function getCancelScanTool(agent) {
   return {

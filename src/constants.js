@@ -1,5 +1,18 @@
-// Tool descriptions and configurations for the MCP Job Search system
-// Centralized location for easy review and editing of all tool descriptions
+// Constants and configurations for the MCP Job Search system
+// Centralized location for easy review and editing of all constants, tool descriptions, and configurations
+
+// Scan configuration constants
+export const SCAN_CONFIG = {
+  // Maximum number of jobs to deep scan in a single operation
+  // This limit helps prevent timeouts and excessive resource usage
+  MAX_DEEP_SCAN_JOBS: 200,
+  
+  // Default timeout for page loading (in milliseconds)
+  PAGE_TIMEOUT: 10000,
+  
+  // Maximum tokens for LLM analysis
+  MAX_LLM_TOKENS: 1000
+};
 
 export const TOOL_DESCRIPTIONS = {
   // Status and monitoring tools

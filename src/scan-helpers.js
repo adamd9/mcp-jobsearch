@@ -1,6 +1,7 @@
 import { launch } from "@cloudflare/playwright";
 import { autoSendDigest, sendScanFailureNotification } from './digest.js';
 import { httpPerformDeepScan } from './http-deep-scan.js';
+import { SCAN_CONFIG } from './constants.js';
 
 // Generate a unique job ID from URL
 export function generateJobId(jobUrl) {
@@ -115,7 +116,7 @@ export async function runScan(agent, url, options = {}) {
 
       try {
         // 1. Wait for the header to ensure the page is ready.
-        await page.waitForSelector('.jobs-search-results-list__header', { timeout: 10000 });
+        await page.waitForSelector('.jobs-search-results-list__header', { timeout: SCAN_CONFIG.PAGE_TIMEOUT });
 
         // 2. Use the user-provided selector for job cards.
         const jobSelector = '.job-card-list';

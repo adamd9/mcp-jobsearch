@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { runScan } from './scan-helpers.js';
-import { TOOL_DESCRIPTIONS, TOOL_ARGS, TOOL_ERRORS } from './tool-descriptions.js';
+import { TOOL_DESCRIPTIONS, TOOL_ARGS, TOOL_ERRORS } from './constants.js';
 
 export function getScanTool(agent) {
   return {

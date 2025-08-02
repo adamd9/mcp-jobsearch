@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { TOOL_DESCRIPTIONS, TOOL_ARGS } from './tool-descriptions.js';
+import { TOOL_DESCRIPTIONS, TOOL_ARGS } from './constants.js';
 
 // Utility: Generate LinkedIn search URLs from search terms and locations
 function generateSearchUrls(searchTerms, locations) {

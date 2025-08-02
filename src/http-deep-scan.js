@@ -1,4 +1,6 @@
+import fetch from 'node-fetch';
 import * as cheerio from 'cheerio';
+import { SCAN_CONFIG } from './constants.js';
 
 // HTTP-based deep scan implementation - more efficient than Playwright/Puppeteer
 export async function httpDeepScanSingleJob(agent, job, profile, scanPrompt) {
@@ -133,7 +135,7 @@ Respond with ONLY this JSON format (no additional text):
       model: agent.env.OPENAI_MODEL || 'gpt-4o',
       messages: [{ role: 'user', content: prompt }],
       temperature: 0.1,
-      max_tokens: 1000
+      max_tokens: SCAN_CONFIG.MAX_LLM_TOKENS
     });
     console.log(`  → OpenAI analysis complete`);
 
@@ -282,8 +284,8 @@ export async function httpPerformDeepScan(agent) {
       return;
     }
 
-    // Limit deep scan to avoid timeouts (max 10 jobs)
-    const limitedJobs = jobsToScan.slice(0, 10);
+    // Limit deep scan to avoid timeouts (configurable limit)
+    const limitedJobs = jobsToScan.slice(0, SCAN_CONFIG.MAX_DEEP_SCAN_JOBS);
     console.log(`HTTP deep scanning ${limitedJobs.length} jobs (no browser needed)...`);
     
     // Initialize progress tracking
