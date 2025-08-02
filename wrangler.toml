@@ -19,7 +19,7 @@ class_name = "JobSearchMCP"
 # KV namespace for job storage
 [[kv_namespaces]]
 binding = "JOB_STORAGE"
-id = "mcp-jobsearch-worker-test1" # Replace with actual KV namespace ID after creation
+id = "87d6a41eafcb40a081e9bdeee4a57abd" # Replace with actual KV namespace ID after creation
 
 # Environment variables
 [vars]
